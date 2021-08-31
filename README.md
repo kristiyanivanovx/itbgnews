@@ -21,12 +21,13 @@ npm run server
 # Run the React client only
 npm run client
 
-# Server runs on http://localhost:5000 and client on http://localhost:3000```
+# Server runs on http://localhost:5000 and client on http://localhost:3000
 # Note: all the commands above are executed in /src/backend
-
+```
 
 ## How to start (Next + Express)
 
+```bash
 # Install dependencies for server (in /src/backend)
 npm install
 
@@ -38,3 +39,4 @@ npm install
 
 # Run the Next client
 npm run start (or npm run dev)
+```
