@@ -1,6 +1,10 @@
+// import '@fortawesome/fontawesome-free/css/all.min.css';
+
+
 import Landing from './landing'
-import Footer from "./footer";
-import Navbar from "./navbar";
+import Footer from "./components/footer";
+import Navbar from "./components/navbar";
+import {Fragment} from "react";
 // import UsersList from './usersList'
 
 export async function getStaticProps() {
@@ -16,9 +20,9 @@ export default function Home({ users }) {
   return (
     <div>
         <Navbar />
-        <Landing />
+        <Landing/>
         <Footer/>
-        //<UsersList users={users} />
+        {/*<UsersList users={users} />*/}
     </div>
   )
 }
