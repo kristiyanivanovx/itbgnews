@@ -11,7 +11,7 @@ app.get('/api/customers', cors(), (req, res) => {
 
   res.json(customers);
 });
-
+const Jora = 2;
 const port = 5000;
 
 app.listen(port, () => `Server running on port ${port}`);
