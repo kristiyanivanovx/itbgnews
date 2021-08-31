@@ -2,6 +2,7 @@
 Project of the web development study group in IT Bulgaria
 
 Used for a starting point - https://github.com/bradtraversy/react_express_starter
+Login/register forms design - https://w3codepen.com/html-css-login-form-page/
 
 ## How to start
 

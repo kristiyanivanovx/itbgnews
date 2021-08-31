@@ -24,7 +24,7 @@ function Login() {
                             <p>Please enter your credentials to login.</p>
                         </div>
                     </div>
-                    <form method="post" action="/" className="login-form">
+                    <form method="post" action="/api/login" className="login-form">
                         <input type="text" name="username" placeholder="Username"/>
                         <input type="password" name="Password" placeholder="Password"/>
                         <button>login</button>

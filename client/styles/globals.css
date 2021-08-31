@@ -29,7 +29,7 @@ li{
   border-bottom: 1px dotted #777;
 }
 
-/* login and register */
+/* login and register VV */
 @import url(https://fonts.googleapis.com/css?family=Roboto:300);
 header .header{
   background-color: #fff;
@@ -100,6 +100,7 @@ header a img{
   max-width: 300px;
   margin: 0 auto;
 }
+/* login and register ^^ */
 
 /* navbar */
 /* Add a black background color to the top navigation */
