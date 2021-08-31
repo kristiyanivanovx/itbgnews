@@ -15,6 +15,6 @@ npm run server
 # Install dependencies for Next (in /client)
 npm install
 
-# Run the Next client
+# Run the Next client (in /server)
 npm run start (or npm run dev)
 ```
