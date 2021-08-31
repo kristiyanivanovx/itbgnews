@@ -4,14 +4,14 @@ import Navbar from "./navbar";
 import Link from "next/link";
 import Footer from "./footer";
 
-function Login() {
+function Register() {
     return (
         <div>
             <Navbar/>
             <main className={styles.main}>
                 <h1 className={styles.title}>
-                    <Link href="/login">
-                        <a>Login</a>
+                    <Link href="/register">
+                        <a>Register</a>
                     </Link>
                 </h1>
 
@@ -21,7 +21,7 @@ function Login() {
                             <label htmlFor="username">Username</label>
                             <br/>
 
-                            <input id="username" type="text" autoComplete="username" required/>
+                            <input id="name" type="text" autoComplete="username" required/>
                             <br/>
 
                             <label htmlFor="password">Password</label>
@@ -29,7 +29,12 @@ function Login() {
                             <input id="password" type="text" autoComplete="name" required/>
                             <br/>
 
-                            <button type="submit">Login</button>
+                            <label htmlFor="confirm-password">Confirm Password</label>
+                            <br/>
+                            <input id="confirm-password" type="text" autoComplete="confirm-name" required/>
+                            <br/>
+
+                            <button type="submit">Register</button>
                         </form>
                     </div>
                 </div>
@@ -39,4 +44,4 @@ function Login() {
     )
 }
 
-export default Login;
+export default Register;
