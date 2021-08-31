@@ -1,13 +1,13 @@
 {
-  "name": "reactexpress",
+  "name": "express",
   "version": "1.0.0",
   "description": "Starter kit for creating React and Express apps",
   "main": "server.js",
   "scripts": {
-    "client-install": "cd ../frontend && npm install",
+    "client-install": "cd ../react && npm install",
     "start": "node server.js",
     "server": "nodemon server.js",
-    "client": "npm start --prefix ../frontend",
+    "client": "npm start --prefix ../react",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "author": "Brad Traversy",
