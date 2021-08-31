@@ -22,16 +22,16 @@ npm run server
 npm run client
 
 # Server runs on http://localhost:5000 and client on http://localhost:3000
-# Note: all the commands above are executed in /src/backend
+# Note: all the commands above are executed in /src/server
 ```
 
 ## How to start (Next + Express)
 
 ```bash
-# Install dependencies for server (in /src/backend)
+# Install dependencies for server (in /src/server)
 npm install
 
-# Run the Express server (in /src/backend)
+# Run the Express server (in /src/server)
 npm run server
 
 # Install dependencies for Next (in /src/next)
