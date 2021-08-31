@@ -1,10 +1,19 @@
-import Next from './components/Next'
-import Users from './components/Users'
+import Next from './next'
+import UsersList from './usersList'
 
-export default function Home() {
+export async function getStaticProps() {
+    const res = await fetch('http://localhost:5000/api/customers');
+    const users = await res.json();
+
+    return {
+        props: { users }
+    }
+}
+
+export default function Home({ users }) {
   return (
     <div>
-        <Users />
+        <UsersList users={users} />
         <Next />
     </div>
   )
