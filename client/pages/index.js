@@ -4,7 +4,7 @@
 import Landing from './landing'
 import Footer from "./components/footer";
 import Navbar from "./components/navbar";
-import {Fragment} from "react";
+import { Fragment } from "react";
 // import UsersList from './usersList'
 
 export async function getStaticProps() {
