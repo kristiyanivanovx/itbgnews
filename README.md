@@ -1,4 +1,4 @@
-# hackernews-clone
+# itbgnews
 Project of the web development study group in IT Bulgaria
 
 Used for a starting point - https://github.com/bradtraversy/react_express_starter
