@@ -7,13 +7,10 @@ const cors = require('cors');
 
 const express = require('express');
 const app = express();
+app.use(cors())
 
-app.use(express.json());
-app.use(cors());
+const port = 5000;
 
-require('./config/database')(settings);
-require('./config/routes')(app);
+app.listen(port, () => console.log(`Server running on port ${port}`));
 
-app.listen(settings.port, () =>
-    console.log(`Server running on port ${settings.port}, env is ${env}...`),
-);
+
