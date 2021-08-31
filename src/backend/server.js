@@ -6,7 +6,7 @@ const app = express();
 app.get('/api/customers', cors(), (req, res) => {
   const customers = [
     {id: 1, firstName: 'John', lastName: 'Doe'},
-    {id: 3, firstName: 'Mary', lastName: 'Jane'},
+    {id: 2, firstName: 'Mary', lastName: 'Jane'},
   ];
 
   res.json(customers);
