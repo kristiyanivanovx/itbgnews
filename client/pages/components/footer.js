@@ -1,10 +1,15 @@
 import styles from "../../styles/Home.module.css";
-import Image from "next/image";
 
 export default function Footer() {
     return (
         <footer className={styles.footer}>
-            {new Date().getFullYear().toString()} • IT-BG News • {' '}
+            <div>
+                {new Date().getFullYear().toString()} •
+                IT-BG News&nbsp;
+            </div>
+            <div>
+                <a href="https://github.com/IT-BG/itbgnews">• Open Source System</a>
+            </div>
 
             {/*<span className={styles.logo}>*/}
             {/*    <Image src="/pepe.bmp"*/}

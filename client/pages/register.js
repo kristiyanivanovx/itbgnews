@@ -3,10 +3,12 @@ import React from "react";
 import Navbar from "./components/navbar";
 import Link from "next/link";
 import Footer from "./components/footer";
+import HeadComponent from "./headComponent";
 
 function Register() {
     return (
         <div>
+            <HeadComponent currentPageName={"Register"}/>
             <Navbar/>
             <div className="register-page">
                 <div className="form">
@@ -20,11 +22,11 @@ function Register() {
                             <p>Please enter your credentials to register.</p>
                         </div>
                     </div>
-                    <form method="post" action="/" className="login-form">
+                    <form method="post" action="/api/register" className="login-form">
                         <input type="text" name="username" placeholder="Username"/>
                         <input type="password" name="password" placeholder="Password"/>
                         <input type="password" name="confirm-password" placeholder="Confirm Password"/>
-                        <button>login</button>
+                        <button>Register</button>
                         <p className="message">You have already registered?
                             <Link href="/login">
                                 <a>{' '}Login</a>
