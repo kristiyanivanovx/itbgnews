@@ -1,0 +1,24 @@
+repository:
+  allowSquashMerge: true
+  allowMergeCommit: false
+  allowRebaseMerge: false
+  deleteBranchOnMerge: true
+
+branches:
+  main:
+    requiresApprovingReviews: true
+    requiredApprovingReviewCount: 2
+    dismissesStaleReviews: true
+    requiresCodeOwnerReviews: false
+    restrictsReviewDismissals: false
+    requiresStatusChecks: false
+    requiresStrictStatusChecks: false
+    requiredStatusCheckContexts: []
+    requiresConversationResolution: true
+    requiresCommitSignatures: false
+    requiresLinearHistory: true
+    isAdminEnforced: false
+    restrictsPushes: true
+    pushActorIds: []
+    allowsForcePushes: false
+    allowsDeletions: false

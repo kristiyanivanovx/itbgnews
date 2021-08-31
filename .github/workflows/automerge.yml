@@ -16,7 +16,7 @@ jobs:
           trigger: '/lgtm'
           prefix_only: true
         env:
-          GITHUB_TOKEN: ${{ secrets.AUTOMERGE_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ACTIONS_ACCESS_TOKEN }}
 
   check_permissions:
     runs-on: ubuntu-latest
@@ -30,7 +30,7 @@ jobs:
         with:
           permission: "admin"
         env:
-          GITHUB_TOKEN: ${{ secrets.AUTOMERGE_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ACTIONS_ACCESS_TOKEN }}
 
   automerge:
     runs-on: ubuntu-latest
@@ -42,7 +42,7 @@ jobs:
       - name: Automerge
         uses: "pascalgn/automerge-action@v0.14.2"
         env:
-          GITHUB_TOKEN: ${{ secrets.AUTOMERGE_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ACTIONS_ACCESS_TOKEN }}
           MERGE_METHOD: "squash"
           MERGE_COMMIT_MESSAGE: "pull-request-title-and-description"
           MERGE_LABELS:
