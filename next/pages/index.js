@@ -1,5 +1,6 @@
 import Next from './next'
 import UsersList from './usersList'
+import Footer from "./footer";
 
 export async function getStaticProps() {
     const res = await fetch('http://localhost:5000/api/customers');
@@ -13,8 +14,9 @@ export async function getStaticProps() {
 export default function Home({ users }) {
   return (
     <div>
-        <UsersList users={users} />
         <Next />
+        <UsersList users={users} />
+        <Footer/>
     </div>
   )
 }
