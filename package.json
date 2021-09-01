@@ -1,0 +1,9 @@
+{
+  "name": "itbgnews",
+  "main": "./server/server.js",
+  "scripts": {
+    "client-install": "cd client && npm install",
+    "server-install": "cd server && npm install",
+    "dev": "concurrently \"npm run --prefix server dev\" \"npm run --prefix client dev\""
+  }
+}
