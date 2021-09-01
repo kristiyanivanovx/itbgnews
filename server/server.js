@@ -3,22 +3,13 @@
 const env = process.env.NODE_ENV || 'development';
 const settings = require('./config/settings')[env];
 
+const cors = require('cors');
+
 const express = require('express');
 const app = express();
 
-const cors = require('cors');
-
 app.use(express.json());
-
 app.use(cors());
-
-app.post('/api/register', (req, res) => {
-    console.log(req.body);
-});
-
-app.post('/api/login', (req, res) => {
-    console.log(req.body);
-});
 
 require('./config/database')(settings);
 require('./config/routes')(app);

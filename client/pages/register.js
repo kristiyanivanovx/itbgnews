@@ -4,6 +4,7 @@ import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import HeadComponent from "../components/HeadComponent";
+import BASE_URL from "../utilities/common";
 
 const Register = () => {
     const [username, setUsername] = useState('');
@@ -11,17 +12,17 @@ const Register = () => {
     const [passwordConfirm, setPasswordConfirm] = useState('');
 
     const submitForm = async () => {
-        const response = await fetch('http://localhost:5000/api/register', {
+        await fetch(BASE_URL + '/api/register', {
             method: 'POST',
             body: JSON.stringify({ username, password, passwordConfirm }),
             headers: {
                 'Content-Type': 'application/json',
             },
-        })
+        });
     }
 
     return (
-        <>
+        <div>
             <HeadComponent currentPageName={"Register"}/>
             <Navbar/>
             <div className="register-page">
@@ -29,14 +30,13 @@ const Register = () => {
                     <div className="login">
                         <div className="login-header">
                             <h1 className={styles.title}>
-                                <Link href="/register">
+                                <Link href={"/register"}>
                                     <a>Register</a>
                                 </Link>
                             </h1>
                             <p>Please enter your credentials to register.</p>
                         </div>
                     </div>
-                    {/*<form method="post" action="/api/register" className="login-form">*/}
                     <input
                         type="text"
                         name="username"
@@ -55,11 +55,9 @@ const Register = () => {
                         placeholder="Confirm Password"
                         onChange={(e) => setPasswordConfirm(e.target.value)}
                     />
-
                     <button onClick={submitForm}>
                         Register
                     </button>
-
                     <p className="message">You have already registered?
                         <Link href={"/login"}>
                             <a>{' '}Login</a>
@@ -68,7 +66,7 @@ const Register = () => {
                 </div>
             </div>
             <Footer/>
-        </>
+        </div>
     )
 }
 
