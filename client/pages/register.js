@@ -1,13 +1,30 @@
 import styles from "../styles/Layout.module.css";
-import React from "react";
-import Navbar from "../components/navbar";
+import React, {useState} from "react";
 import Link from "next/link";
-import Footer from "../components/footer";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import HeadComponent from "../components/HeadComponent";
 
-function Register() {
+const Register = () => {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [passwordConfirm, setPasswordConfirm] = useState('');
+
+    const submitForm = async () => {
+        const response = await fetch('http://localhost:5000/api/register', {
+            method: 'POST',
+            body: JSON.stringify({ username, password, passwordConfirm }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+
+        //const data = await response.json();
+        //console.log(data);
+    }
+
     return (
-        <div>
+        <>
             <HeadComponent currentPageName={"Register"}/>
             <Navbar/>
             <div className="register-page">
@@ -22,21 +39,37 @@ function Register() {
                             <p>Please enter your credentials to register.</p>
                         </div>
                     </div>
-                    <form method="post" action="/api/register" className="login-form">
-                        <input type="text" name="username" placeholder="Username"/>
-                        <input type="password" name="password" placeholder="Password"/>
-                        <input type="password" name="confirm-password" placeholder="Confirm Password"/>
-                        <button>Register</button>
-                        <p className="message">You have already registered?
-                            <Link href="/login">
-                                <a>{' '}Login</a>
-                            </Link>
-                        </p>
-                    </form>
+                    {/*<form method="post" action="/api/register" className="login-form">*/}
+                    <input
+                        type="text"
+                        name="username"
+                        placeholder="Username"
+                        onChange={(e) => setUsername(e.target.value)}
+                    />
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <input
+                        type="password"
+                        name="confirm-password"
+                        placeholder="Confirm Password"
+                        onChange={(e) => setPasswordConfirm(e.target.value)}
+                    />
+                    <button onClick={submitForm}>
+                        Register
+                    </button>
+                    <p className="message">You have already registered?
+                        <Link href={"/login"}>
+                            <a>{' '}Login</a>
+                        </Link>
+                    </p>
                 </div>
             </div>
             <Footer/>
-        </div>
+        </>
     )
 }
 

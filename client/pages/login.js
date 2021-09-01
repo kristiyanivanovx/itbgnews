@@ -1,8 +1,8 @@
 import styles from "../styles/Layout.module.css";
 import React from "react";
-import Navbar from "../components/navbar";
 import Link from "next/link";
-import Footer from "../components/footer";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import HeadComponent from "../components/HeadComponent";
 
 function Login() {
