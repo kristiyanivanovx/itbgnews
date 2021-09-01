@@ -1,13 +1,13 @@
 import Link from "next/link";
 import React, { Component } from "react";
-import {Image} from "@material-ui/icons";
-// import {Box} from "@material-ui/core";
+import Image from "next/image";
 
 class Navbar extends Component {
     render() {
         return (
             <div className="topnav" >
-                {/*<Image src="/it-bg-logo.png" alt="it bg logo"/>*/}
+                {/*<Image src="/it-bg-logo.png" alt="it bg logo" width={50} height={50} />*/}
+
                 <Link href="/">
                     <a>Home</a>
                 </Link>
@@ -22,6 +22,10 @@ class Navbar extends Component {
 
                 <Link href="/register">
                     <a>Register</a>
+                </Link>
+
+                <Link href="/users">
+                    <a>Users</a>
                 </Link>
 
                 <a href="javascript:void(0);" className="icon" onClick="myFunction()">
