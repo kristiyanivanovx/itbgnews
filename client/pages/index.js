@@ -1,28 +1,24 @@
 // import '@fortawesome/fontawesome-free/css/all.min.css';
 
-
 import Landing from './landing'
 import Footer from "./components/footer";
 import Navbar from "./components/navbar";
-import { Fragment } from "react";
-// import UsersList from './usersList'
 
-export async function getStaticProps() {
-    const res = await fetch('http://localhost:5000/api/customers');
-    const users = await res.json();
+export const getStaticProps = async () => {
+    const result = await fetch(`http://localhost:5000/api/posts`)
+    const data = await result.json();
 
     return {
-        props: { users }
+        props: { posts: data },
     }
 }
 
-export default function Home({ users }) {
+export default function Home({ posts }) {
   return (
     <div>
         <Navbar />
-        <Landing/>
-        <Footer/>
-        {/*<UsersList users={users} />*/}
+        <Landing posts={posts} />
+        <Footer />
     </div>
   )
 }
