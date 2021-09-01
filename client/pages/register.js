@@ -18,9 +18,6 @@ const Register = () => {
                 'Content-Type': 'application/json',
             },
         })
-
-        //const data = await response.json();
-        //console.log(data);
     }
 
     return (
@@ -58,9 +55,11 @@ const Register = () => {
                         placeholder="Confirm Password"
                         onChange={(e) => setPasswordConfirm(e.target.value)}
                     />
+
                     <button onClick={submitForm}>
                         Register
                     </button>
+
                     <p className="message">You have already registered?
                         <Link href={"/login"}>
                             <a>{' '}Login</a>

@@ -16,6 +16,10 @@ app.post('/api/register', (req, res) => {
     console.log(req.body);
 });
 
+app.post('/api/login', (req, res) => {
+    console.log(req.body);
+});
+
 require('./config/database')(settings);
 require('./config/routes')(app);
 

@@ -1,11 +1,24 @@
 import styles from "../styles/Layout.module.css";
-import React from "react";
+import React, {useState} from "react";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import HeadComponent from "../components/HeadComponent";
 
-function Login() {
+const Login = () => {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+
+    const submitForm = async () => {
+        const response = await fetch('http://localhost:5000/api/login', {
+            method: 'POST',
+            body: JSON.stringify({ username, password }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+    }
+
     return (
         <div>
             <HeadComponent currentPageName={"Login"}/>
@@ -22,16 +35,28 @@ function Login() {
                             <p>Please enter your credentials to login.</p>
                         </div>
                     </div>
-                    <form method="post" action="/api/login" className="login-form">
-                        <input type="text" name="username" placeholder="Username"/>
-                        <input type="password" name="Password" placeholder="Password"/>
-                        <button>login</button>
-                        <p className="message">Not registered?
-                            <Link href="/register">
-                                <a>{' '}Create an account</a>
-                            </Link>
-                        </p>
-                    </form>
+                    <input
+                        type="text"
+                        name="username"
+                        placeholder="Username"
+                        onChange={(e) => setUsername(e.target.value)}
+                    />
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+
+                    <button onClick={submitForm}>
+                        Login
+                    </button>
+
+                    <p className="message">Not registered?
+                        <Link href={"/register"}>
+                            <a>{' '}Create an account</a>
+                        </Link>
+                    </p>
                 </div>
             </div>
             <Footer/>
