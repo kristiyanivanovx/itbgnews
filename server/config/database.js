@@ -2,7 +2,10 @@ const mongoose = require('mongoose');
 const User = require('../data/User');
 
 module.exports = (settings) => {
-    mongoose.connect(settings.db);
+    mongoose
+        .connect(settings.db)
+        .catch(err => console.error(err));
+
     let db = mongoose.connection;
 
     db.once('open', (err) => {

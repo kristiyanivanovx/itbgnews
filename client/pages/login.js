@@ -4,19 +4,20 @@ import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import HeadComponent from "../components/HeadComponent";
+import BASE_URL from "../utilities/common";
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
     const submitForm = async () => {
-        const response = await fetch('http://localhost:5000/api/login', {
+        await fetch( BASE_URL + '/api/login', {
             method: 'POST',
             body: JSON.stringify({ username, password }),
             headers: {
                 'Content-Type': 'application/json',
             },
-        })
+        });
     }
 
     return (
@@ -28,7 +29,7 @@ const Login = () => {
                     <div className="login">
                         <div className="login-header">
                             <h1 className={styles.title}>
-                                <Link href="/login">
+                                <Link href={"/login"}>
                                     <a>Login</a>
                                 </Link>
                             </h1>
@@ -47,11 +48,9 @@ const Login = () => {
                         placeholder="Password"
                         onChange={(e) => setPassword(e.target.value)}
                     />
-
                     <button onClick={submitForm}>
                         Login
                     </button>
-
                     <p className="message">Not registered?
                         <Link href={"/register"}>
                             <a>{' '}Create an account</a>
