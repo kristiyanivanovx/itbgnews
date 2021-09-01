@@ -1,8 +1,8 @@
-// import '@fortawesome/fontawesome-free/css/all.min.css';
-
-import Landing from './landing'
-import Footer from "./components/footer";
-import Navbar from "./components/navbar";
+import Landing from '../components/Landing'
+import Footer from "../components/Footer";
+import Navbar from "../components/Navbar";
+import HeadComponent from "../components/HeadComponent";
+import React from "react";
 
 export const getStaticProps = async () => {
     const result = await fetch(`http://localhost:5000/api/posts`)
@@ -16,6 +16,7 @@ export const getStaticProps = async () => {
 export default function Home({ posts }) {
   return (
     <div>
+        <HeadComponent currentPageName={"Index"}/>
         <Navbar />
         <Landing posts={posts} />
         <Footer />

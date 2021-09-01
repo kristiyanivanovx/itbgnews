@@ -1,4 +1,4 @@
-import styles from "../../styles/Home.module.css";
+import styles from "../styles/Layout.module.css";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronUp} from "@fortawesome/free-solid-svg-icons";
 import React, {Component} from "react";
