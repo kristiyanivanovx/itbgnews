@@ -1,11 +1,9 @@
-import styles from "../styles/Home.module.css";
+import styles from "../styles/Layout.module.css";
 import React from "react";
-import Navbar from "./components/navbar";
+import Navbar from "../components/navbar";
 import Link from "next/link";
-import Footer from "./components/footer";
-
-import { FormControl, InputLabel, Input, FormHelperText, Button } from '@material-ui/core';
-import HeadComponent from "./headComponent";
+import Footer from "../components/footer";
+import HeadComponent from "../components/HeadComponent";
 
 function Login() {
     return (

@@ -1,10 +1,10 @@
-import styles from "../styles/Home.module.css";
+import styles from "../styles/Layout.module.css";
 
-import React, { Component } from 'react';
-import HeadComponent from "./headComponent";
-import Footer from "./components/footer";
-import Navbar from "./components/navbar";
-import User from "./components/user";
+import React from 'react';
+import HeadComponent from "../components/HeadComponent";
+import Footer from "../components/footer";
+import Navbar from "../components/navbar";
+import User from "../components/user";
 import Link from "next/link";
 
 export const getStaticProps = async () => {
