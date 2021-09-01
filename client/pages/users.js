@@ -1,10 +1,9 @@
 import styles from "../styles/Layout.module.css";
-
 import React from 'react';
 import HeadComponent from "../components/HeadComponent";
-import Footer from "../components/footer";
-import Navbar from "../components/navbar";
-import User from "../components/user";
+import Footer from "../components/Footer";
+import Navbar from "../components/Navbar";
+import User from "../components/User";
 import Link from "next/link";
 
 export const getStaticProps = async () => {
@@ -22,10 +21,11 @@ const Users = ({ users }) => {
             <HeadComponent currentPageName={"Login"}/>
             <Navbar/>
             <h1 className={styles.title}>
-                <Link href="/users">
+                <Link href={"/users"}>
                     <a>Users</a>
                 </Link>
             </h1>
+
             <ul className={styles.alignCenter}>
                 {users.map(user => (
                     <User key={user.id} data={user}/>

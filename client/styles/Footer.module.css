@@ -11,3 +11,8 @@
     align-items: center;
     flex-grow: 1;
 }
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
