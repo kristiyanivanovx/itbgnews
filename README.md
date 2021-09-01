@@ -6,15 +6,12 @@ Used for a starting point - https://github.com/bradtraversy/react_express_starte
 ## How to start
 
 ```bash
-# Install dependencies for server (in /server)
-npm install
+# Install dependencies for server
+npm run server-install
 
-# Run the Express server (in /server)
-npm run server
+# Install dependencies for Next
+npm run client-install
 
-# Install dependencies for Next (in /client)
-npm install
-
-# Run the Next client
-npm run start (or npm run dev)
+# Run the Express server and Next server concurrently
+npm run dev
 ```
