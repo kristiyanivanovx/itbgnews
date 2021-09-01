@@ -1,17 +1,26 @@
-const express = require('express');
-const cors = require('cors');
+require("dotenv").config();
+const express = require("express");
+const mongoose = require("mongoose");
 
 const app = express();
 
-app.get('/api/customers', cors(), (req, res) => {
-  const customers = [
-    {id: 1, firstName: 'John', lastName: 'Doe'},
-    {id: 2, firstName: 'Mary', lastName: 'Jane'},
-  ];
-
-  res.json(customers);
+mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true });
+const db = mongoose.connection;
+db.on("error", (err) => {
+  console.error(err);
 });
 
-const port = 5000;
+db.once("open", () => {
+  console.log("Connected to DB");
+});
 
-app.listen(port, () => `Server running on port ${port}`);
+app.use(express.json());
+
+const articlesRouter = require("./routes/articles");
+const commentRouter = require("./routes/comments");
+app.use("/articles", articlesRouter);
+app.use("/addComment", commentRouter);
+
+app.listen(process.env.PORT, () => {
+  console.log(`server has started on port: ${process.env.PORT}`);
+});
