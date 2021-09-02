@@ -1,47 +1,78 @@
-// const express = require('express');
-// const cors = require('cors');
-// const passport = require('passport')
-// const router = express.Router()
-// const app = express();
-// app.use(cors())
-//
-// const mongoose = require("mongoose");
-// const port = 5000;
-// app.use(express.urlencoded({extended: false}))
-//
-// mongoose.connect('mongodb://localhost:27017/db', {useNewUrlParser: true}).then(() => {
-//     console.log("SUCCESS");
-// }).catch(er => console.log(er));
-//
-// const schema = new mongoose.Schema({
-//     username: String,
-// });
-//
-// const users = mongoose.model('Scehma', schema);
-// //users.collection.createIndex({ email: 1 }, {unique: true});
-//
-//
-// users.find({}, (err, q) => {
-//     console.log("test");
-//     if (err) console.log(err);
-//     q.map(function (user) {
-//         console.log(user);
-//
-//     });
-// })
-//
-//
-// app.listen(port, () => console.log(`Server running on port ${port}`));
-//
-//
-// app.post('/login', async (req, res) => {
-//     let name = req.body.username;
-//     console.log(name);
-//     const user = new users({username: name});
-//
-//     user.save().then(doc => {
-//         console.log("SUCCESS: " + doc);
-//     }).catch(err => {
-//         console.log("ERROR:" + err);
-//     });
-// })
+const express = require('express')
+const app = express()
+const bcrypt = require('bcrypt')
+const passport = require('passport')
+const session = require('express-session')
+
+const initializePassport = require('./utils/passport-config')
+initializePassport(
+    passport,
+    email => users.find(user => user.email === email),
+    id => users.find(user => user.id === id)
+)
+
+const users = []
+
+app.set('view-engine', 'ejs')
+app.use(express.urlencoded({ extended: false }))
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    saveUninitialized: false
+}))
+app.use(passport.initialize())
+app.use(passport.session())
+
+app.get('/', checkAuthenticated, (req, res) => {
+    res.render('index.ejs', { name: req.user.name })
+})
+
+app.get('/login', checkNotAuthenticated, (req, res) => {
+    res.render('login.ejs')
+})
+
+app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/login',
+    failureFlash: true
+}))
+
+app.get('/register', checkNotAuthenticated, (req, res) => {
+    res.render('register.ejs')
+})
+
+app.post('/register', checkNotAuthenticated, async (req, res) => {
+    try {
+        const hashedPassword = await bcrypt.hash(req.body.password, 10)
+        users.push({
+            id: Date.now().toString(),
+            name: req.body.name,
+            email: req.body.email,
+            password: hashedPassword
+        })
+        res.redirect('/login')
+    } catch {
+        res.redirect('/register')
+    }
+})
+
+app.delete('/logout', (req, res) => {
+    req.logOut()
+    res.redirect('/login')
+})
+
+function checkAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next()
+    }
+
+    res.redirect('/login')
+}
+
+function checkNotAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return res.redirect('/')
+    }
+    next()
+}
+
+app.listen(3000)

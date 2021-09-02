@@ -7,6 +7,8 @@
     "dev": "concurrently \"npm run --prefix server dev\" \"npm run --prefix client dev\""
   },
   "dependencies": {
-    "concurrently": "^6.2.1"
+    "concurrently": "^6.2.1",
+    "express-flash": "0.0.2",
+    "express-session": "^1.17.2"
   }
 }
