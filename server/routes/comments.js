@@ -6,7 +6,7 @@ const Comment = require("../models/comment");
 //Create a comment
 router.post("/", async (req, res) => {
   const comment = new Comment({
-    parent_article_id: req.body.parent_article_id,
+    parent_post_id: req.body.parent_post_id,
     author_id: req.body.author_id,
     text: req.body.text,
     date: Date.now(),

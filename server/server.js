@@ -16,9 +16,9 @@ db.once("open", () => {
 
 app.use(express.json());
 
-const articlesRouter = require("./routes/articles");
+const articlesRouter = require("./routes/posts");
 const commentRouter = require("./routes/comments");
-app.use("/articles", articlesRouter);
+app.use("/posts", articlesRouter);
 app.use("/addComment", commentRouter);
 
 app.listen(process.env.PORT, () => {
