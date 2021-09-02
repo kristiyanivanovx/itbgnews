@@ -1,6 +1,7 @@
 const LocalStrategy = require('passport').Strategy
 const bcrypt = require('bcrypt')
-
+// initialize functions for getting email and id from database will be created later
+// this function applies to be in session if you get
 function initialize(passport, getUserByEmail, getUserById) {
     const authenticateUser = async (email, password, done) => {
         // this function needs Mongo DB
@@ -18,8 +19,8 @@ function initialize(passport, getUserByEmail, getUserById) {
             return done(e)
         }
     }
-
-    passport.use(new LocalStrategy({ usernameField: 'email' }, authenticateUser))
+    const localStrategy = new LocalStrategy({ usernameField: 'email' })
+    passport.use(localStrategy, authenticateUser)
     passport.serializeUser((user, done) => done(null, user.id))
     passport.deserializeUser((id, done) => {
         return done(null, getUserById(id))
