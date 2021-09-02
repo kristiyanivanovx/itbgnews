@@ -1,5 +1,6 @@
 const LocalStrategy = require('passport').Strategy
 const bcrypt = require('bcrypt')
+const userSchema = require('../Models/user-schema')
 // initialize functions for getting email and id from database will be created later
 // this function applies to be in session if you get
 function initialize(passport, getUserByEmail, getUserById) {
@@ -28,3 +29,10 @@ function initialize(passport, getUserByEmail, getUserById) {
 }
 
 module.exports = initialize
+
+function getUserByEmail(email){
+    userSchema.findOne({'email' : email}, (error, person) => {
+        if(error) return handleError(error)
+
+    })
+}
