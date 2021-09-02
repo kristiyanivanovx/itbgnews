@@ -4,14 +4,13 @@ import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import HeadComponent from "../components/HeadComponent";
-import BASE_URL from "../utilities/common";
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
     const submitForm = async () => {
-        await fetch( BASE_URL + '/api/login', {
+        await fetch( 'http://localhost:5000/api/login', {
             method: 'POST',
             body: JSON.stringify({ username, password }),
             headers: {

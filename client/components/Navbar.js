@@ -11,8 +11,8 @@ class Navbar extends Component {
                     <a>Home</a>
                 </Link>
 
-                <Link href={"/users"}>
-                    <a>Users</a>
+                <Link href={"/post"}>
+                    <a>Post</a>
                 </Link>
 
                 <Link href={"/login"}>
