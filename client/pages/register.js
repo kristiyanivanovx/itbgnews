@@ -4,7 +4,6 @@ import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import HeadComponent from "../components/HeadComponent";
-import BASE_URL from "../utilities/common";
 
 const Register = () => {
     const [username, setUsername] = useState('');
@@ -12,7 +11,7 @@ const Register = () => {
     const [passwordConfirm, setPasswordConfirm] = useState('');
 
     const submitForm = async () => {
-        await fetch(BASE_URL + '/api/register', {
+        await fetch('http://localhost:5000/api/register', {
             method: 'POST',
             body: JSON.stringify({ username, password, passwordConfirm }),
             headers: {

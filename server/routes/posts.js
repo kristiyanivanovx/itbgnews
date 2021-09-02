@@ -38,4 +38,8 @@ router.get("/", (req, res) => {
     res.json(posts);
 });
 
+router.post('/create', (req, res) => {
+    console.log(req.body)
+})
+
 module.exports = router;
