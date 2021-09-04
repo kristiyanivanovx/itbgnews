@@ -1,66 +1,9 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-}
 
-a {
+button, input {
   color: inherit;
-  text-decoration: none;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-/* users  */
-ul {
-  padding:0;
-  list-style:none;
-  width: 30%;
-  margin:auto;
-}
-
-li{
-  font-size:1.2rem;
-  line-height: 2rem;
-  border-bottom: 1px dotted #777;
-}
-
-/* navbar */
-/* Add a black background color to the top navigation */
-.topnav {
-  background-color: #fff;
-  color: #0070f3;
-  overflow: hidden;
-}
-
-/* Style the links inside the navigation bar */
-.topnav a {
-  float: left;
-  display: block;
-  color: #0070f3;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  font-size: 17px;
-}
-
-/* Change the color of links on hover */
-.topnav a:hover {
-  color: black;
-  text-decoration: underline;
-}
-
-/* Add an active class to highlight the current page */
-.topnav a.active {
-  background-color: #0070f3;
-  color: white;
-}
-
-/* Hide the link that should open and close the topnav on small screens */
-.topnav .icon {
-  display: none;
+  background-color: inherit;
+  font-size: inherit;
+  font-family: inherit;
+  border: 0;
+  padding: 0;
 }

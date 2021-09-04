@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-router.get("/", (req, res) => {
+router.get('/', (req, res) => {
     const posts = [
         {
             id: 1,
@@ -16,7 +16,8 @@ router.get("/", (req, res) => {
         {
             id: 2,
             title: 'Tor is a great sysadmin tool (2020)',
-            fullURL: 'https://www.jamieweb.net/blog/tor-is-a-great-sysadmin-tool/',
+            fullURL:
+                'https://www.jamieweb.net/blog/tor-is-a-great-sysadmin-tool/',
             shortURL: 'jamieweb.net',
             creatorUsername: 'azalemeth',
             commentsCount: 6,
@@ -26,7 +27,8 @@ router.get("/", (req, res) => {
         {
             id: 3,
             title: 'Apple banned a pay equity Slack channel',
-            fullURL: 'https://www.theverge.com/2021/8/31/22650751/apple-bans-pay-equity-slack-channel',
+            fullURL:
+                'https://www.theverge.com/2021/8/31/22650751/apple-bans-pay-equity-slack-channel',
             shortURL: 'theverge.com',
             creatorUsername: 'jbredeche',
             commentsCount: 0,
@@ -39,7 +41,7 @@ router.get("/", (req, res) => {
 });
 
 router.post('/create', (req, res) => {
-    console.log(req.body)
-})
+    console.log(req.body);
+});
 
 module.exports = router;

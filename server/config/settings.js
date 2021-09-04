@@ -3,9 +3,8 @@ module.exports = {
         db: 'mongodb://localhost:27017/itbgnews',
         port: 5000,
     },
-    staging: {
-    },
+    staging: {},
     production: {
-        port: process.env.PORT
-    }
-}
+        port: process.env.PORT,
+    },
+};

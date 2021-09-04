@@ -1,9 +1,9 @@
-import styles from "../styles/Layout.module.css";
-import React, {useState} from "react";
-import Link from "next/link";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import HeadComponent from "../components/HeadComponent";
+import styles from '../styles/Layout.module.css';
+import React, { useState } from 'react';
+import Link from 'next/link';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import HeadComponent from '../components/HeadComponent';
 
 const Register = () => {
     const [username, setUsername] = useState('');
@@ -18,18 +18,18 @@ const Register = () => {
                 'Content-Type': 'application/json',
             },
         });
-    }
+    };
 
     return (
         <div>
-            <HeadComponent currentPageName={"Register"}/>
-            <Navbar/>
+            <HeadComponent currentPageName={'Register'} />
+            <Navbar />
             <div className="register-page">
                 <div className="form">
                     <div className="login">
                         <div className="login-header">
                             <h1 className={styles.title}>
-                                <Link href={"/register"}>
+                                <Link href={'/register'}>
                                     <a>Register</a>
                                 </Link>
                             </h1>
@@ -54,19 +54,18 @@ const Register = () => {
                         placeholder="Confirm Password"
                         onChange={(e) => setPasswordConfirm(e.target.value)}
                     />
-                    <button onClick={submitForm}>
-                        Register
-                    </button>
-                    <p className="message">You have already registered?
-                        <Link href={"/login"}>
-                            <a>{' '}Login</a>
+                    <button onClick={submitForm}>Register</button>
+                    <p className="message">
+                        You have already registered?
+                        <Link href={'/login'}>
+                            <a> Login</a>
                         </Link>
                     </p>
                 </div>
             </div>
-            <Footer/>
+            <Footer />
         </div>
-    )
-}
+    );
+};
 
 export default Register;

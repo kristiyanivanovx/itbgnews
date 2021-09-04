@@ -11,34 +11,37 @@ let userSchema = new mongoose.Schema({
     },
     firstName: {
         type: String,
-        required: REQUIRED_VALIDATION_MESSAGE
+        required: REQUIRED_VALIDATION_MESSAGE,
     },
     lastName: {
         type: String,
-        required: REQUIRED_VALIDATION_MESSAGE
+        required: REQUIRED_VALIDATION_MESSAGE,
     },
     salt: String,
     hashedPass: String,
     roles: [String],
-})
+});
 
 userSchema.method({
     authenticate: (password) => {
-        return encryption.generateHashedPassword(this.salt, password) === this.hashedPassword;
-    }
-})
+        return (
+            encryption.generateHashedPassword(this.salt, password) ===
+            this.hashedPassword
+        );
+    },
+});
 
-let User = mongoose.model('User', userSchema)
+let User = mongoose.model('User', userSchema);
 
 module.exports = User;
 module.exports.seedAdminUser = () => {
-    User.find({}).then(users => {
+    User.find({}).then((users) => {
         if (users.length > 0) {
             return;
         }
 
         let salt = encryption.generateSalt();
-        let hashedPassword = encryption.generateHashedPassword(salt, '123456')
+        let hashedPassword = encryption.generateHashedPassword(salt, '123456');
 
         User.create({
             username: 'Admin',
@@ -46,7 +49,7 @@ module.exports.seedAdminUser = () => {
             lastName: 'Admin',
             salt: salt,
             hashedPassword: hashedPassword,
-            roles: ['Admin']
-        })
-    })
-}
+            roles: ['Admin'],
+        });
+    });
+};

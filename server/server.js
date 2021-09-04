@@ -14,7 +14,6 @@ app.use(cors());
 require('./config/database')(settings);
 require('./config/routes')(app);
 
-app.listen(
-    settings.port,
-    () => console.log(`Server running on port ${settings.port}, env is ${env}...`)
+app.listen(settings.port, () =>
+    console.log(`Server running on port ${settings.port}, env is ${env}...`),
 );
