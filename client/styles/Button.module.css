@@ -1,0 +1,51 @@
+.btn {
+    position: relative;
+    width: 410px;
+    height: 65px;
+}
+
+
+/* Rectangle 23 */
+.backgroundBtn {
+    position: absolute;
+    left: 0%;
+    right: 0%;
+    top: 6.15%;
+    bottom: -6.15%;
+
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), linear-gradient(264.39deg, #BA2BAC -36.33%, #E655E8 20.2%, #6369FA 106.31%, rgba(255, 6, 230, 0) 130.66%);
+    border-radius: 10px;
+}
+
+/* Rectangle 22 */
+/*.another-background-btn {*/
+.anotherBackgroundBtn {
+    position: absolute;
+    left: 0%;
+    right: 0%;
+    top: 0%;
+    bottom: 0%;
+
+    background: linear-gradient(264.39deg, #BA2BAC -36.33%, #E655E8 20.2%, #6369FA 106.31%, rgba(255, 6, 230, 0) 130.66%);
+    border-radius: 10px;
+}
+
+/* Влез */
+.text {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 16px;
+    bottom: 0;
+
+    font-family: Nunito;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 33px;
+    /*display: flex;*/
+    align-items: center;
+    text-align: center;
+
+    color: #FFFFFF;
+}

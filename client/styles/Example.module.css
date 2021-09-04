@@ -1,0 +1,37 @@
+
+
+.search-bar {
+    position: relative;
+    width: 1050px;
+    height: 77px;
+}
+
+/* Rectangle 24 */
+.rectangle {
+    position: absolute;
+    left: 0%;
+    right: 0%;
+    top: 0%;
+    bottom: 0%;
+    border-radius: 15px;
+
+    background: #554360;
+}
+
+/* Търси новини */
+.text {
+    position: absolute;
+    left: 9.62%;
+    right: 3.05%;
+    top: 0%;
+    bottom: 0%;
+
+    font-style: normal;
+    font-weight: normal;
+    font-size: 30px;
+    line-height: 41px;
+    display: flex;
+    align-items: center;
+
+    color: #FFFFFF;
+}

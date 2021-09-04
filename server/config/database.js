@@ -2,9 +2,7 @@ const mongoose = require('mongoose');
 const User = require('../data/User');
 
 module.exports = (settings) => {
-    mongoose
-        .connect(settings.db)
-        .catch(err => console.error(err));
+    mongoose.connect(settings.db).catch((err) => console.error(err));
 
     let db = mongoose.connection;
 
@@ -14,9 +12,10 @@ module.exports = (settings) => {
         }
 
         console.log('MongoDB has connected!');
-
         User.seedAdminUser();
-    })
+    });
 
-    db.on('err', err => console.error('An error has occurred with MongoDB: ' + err));
-}
+    db.on('err', (err) =>
+        console.error('An error has occurred with MongoDB: ' + err),
+    );
+};

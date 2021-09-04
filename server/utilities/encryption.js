@@ -4,5 +4,5 @@ module.exports = {
     },
     generateHashedPassword: (salt, password) => {
         return salt + password;
-    }
-}
+    },
+};

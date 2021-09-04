@@ -14,5 +14,5 @@ module.exports = (app) => {
         res.status(404);
         res.send('404 Not Found!');
         res.end();
-    })
-}
+    });
+};
