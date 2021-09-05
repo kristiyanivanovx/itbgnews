@@ -1,3 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200;400;700&display=swap');
+* {
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --ff-primary: 'Nunito', sans-serif;
+
+  --fw-reg: 200;
+  --fw-bold: 700;
+
+  --clr-background: #302636;
+  --clr-main: #554360;
+  --clr-grey: #51515B;
+  --clr-purple: #D03AD2;
+  --clr-white: #FFFFFF;
+
+  --fs-h2: 3.5rem;
+  --fs-h3: 2.5rem;
+  --fs-h4: 2rem;
+
+  --fs-body: 1.25rem;
+  --fs-small: .5rem;
+
+}
+
+body {
+  background: var(--clr-background);
+  font-family: var(--ff-primary);
+  font-size: var(--fs-body);
+  color: var(--clr-white);
+}
 
 button, input {
   color: inherit;
@@ -7,3 +40,271 @@ button, input {
   border: 0;
   padding: 0;
 }
+
+h2,
+h3,
+h4  {
+  line-height: 1;
+  margin: 0;
+  font-weight: var(--fw-bold);
+}
+
+h2 {
+  font-size: var(--fs-h2);
+}
+
+h3 {
+  font-size: var(--fs-h3)
+}
+
+h4 {
+  font-size: var(--fs-h4);
+}
+
+.container {
+  width: 90%;
+  max-width: 1600px;
+  margin: auto;
+}
+
+.brand__logo {
+  width: 1em;
+  height: 1em;
+}
+
+.search-bar {
+  position: relative;
+  width: 1050px;
+  height: 77px;
+}
+
+
+.search-bar__background {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 15px;
+
+  background: #554360;
+}
+
+.search-bar__input {
+  position: absolute;
+  left: 9.62%;
+  right: 3.05%;
+  top: 0%;
+  bottom: 0%;
+
+
+  font-size: 30px;
+  line-height: 41px;
+  display: flex;
+  align-items: center;
+
+  color: #FFFFFF;
+}
+
+.article__rounded {
+  border-top-right-radius: 15px;
+  border-top-left-radius: 15px;
+}
+
+
+.article__regular {
+  background: #554360;
+  width: 1054px;
+  height: 194px;
+  margin-bottom: 0.5rem ;
+}
+
+.article__votes--icon {
+  width: 40px;
+  height: 40px;
+  color: #fff;
+  background: #E655E8;
+  border-radius: 30px;
+}
+
+.article__main {
+  padding: 30px 0 50px 20px;
+  display: flex;
+}
+
+/*.article__votes {*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*}*/
+
+.col {
+  display: flex;
+}
+/* от admin */
+
+/*position: absolute;*/
+/*left: 2.94%;*/
+/*right: 79.51%;*/
+/*top: 72.16%;*/
+/*bottom: 8.76%;*/
+
+/*font-family: Nunito;*/
+/*font-style: normal;*/
+/*font-weight: normal;*/
+/*font-size: 24px;*/
+/*line-height: 33px;*/
+/*display: flex;*/
+/*align-items: center;*/
+/*text-align: center;*/
+
+/*color: #FFFFFF;*/
+
+
+
+/*!* преди 4 часа *!*/
+
+/*position: absolute;*/
+/*left: 41.65%;*/
+/*right: 40.8%;*/
+/*top: 72.16%;*/
+/*bottom: 8.76%;*/
+
+/*font-family: Nunito;*/
+/*font-style: normal;*/
+/*font-weight: normal;*/
+/*font-size: 24px;*/
+/*line-height: 33px;*/
+/*display: flex;*/
+/*align-items: center;*/
+/*text-align: center;*/
+
+/*color: #FFFFFF;*/
+
+
+
+/*!* 103 коментара *!*/
+
+/*position: absolute;*/
+/*left: 80.36%;*/
+/*right: 2.09%;*/
+/*top: 72.16%;*/
+/*bottom: 8.76%;*/
+
+/*font-family: Roboto;*/
+/*font-style: normal;*/
+/*font-weight: normal;*/
+/*font-size: 24px;*/
+/*line-height: 28px;*/
+/*display: flex;*/
+/*align-items: center;*/
+
+/*color: #FFFFFF;*/
+
+
+
+/*!* Vector *!*/
+
+/*position: absolute;*/
+/*left: 40.61%;*/
+/*right: 57.09%;*/
+/*top: 75.77%;*/
+/*bottom: 11.74%;*/
+
+/*background: #FFFFFF;*/
+
+
+/*!* user-alt *!*/
+
+/*position: absolute;*/
+/*left: 3.98%;*/
+/*right: 93.64%;*/
+/*top: 78.35%;*/
+/*bottom: 8.76%;*/
+
+
+
+/*!* Vector *!*/
+
+/*position: absolute;*/
+/*left: 2.94%;*/
+/*right: 94.69%;*/
+/*top: 75.26%;*/
+/*bottom: 11.86%;*/
+
+/*background: #FFFFFF;*/
+
+
+/*!* Vector *!*/
+
+/*position: absolute;*/
+/*left: 77.04%;*/
+/*right: 20.59%;*/
+/*top: 76.8%;*/
+/*bottom: 11.92%;*/
+
+/*background: #FFFFFF;*/
+
+
+/*!* Rectangle 16 *!*/
+
+/*position: absolute;*/
+/*left: 91.75%;*/
+/*right: 4.46%;*/
+/*top: 17.01%;*/
+/*bottom: 62.37%;*/
+
+/*background: #E655E8;*/
+/*border-radius: 30px;*/
+
+
+/*!* Vector *!*/
+
+/*position: absolute;*/
+/*left: 92.69%;*/
+/*right: 5.41%;*/
+/*top: 21.13%;*/
+/*bottom: 65.98%;*/
+
+/*background: #FFFFFF;*/
+
+
+/*!* 9 гласа *!*/
+
+/*position: absolute;*/
+/*left: 89.37%;*/
+/*right: 2.09%;*/
+/*top: 37.63%;*/
+/*bottom: 40.21%;*/
+
+/*font-family: Nunito;*/
+/*font-style: normal;*/
+/*font-weight: normal;*/
+/*font-size: 24px;*/
+/*line-height: 33px;*/
+/*display: flex;*/
+/*align-items: center;*/
+/*text-align: center;*/
+
+/*color: #FFFFFF;*/
+
+
+
+/*!* Случайна фалшива новина *!*/
+
+/*position: absolute;*/
+/*left: 2.94%;*/
+/*right: 16.41%;*/
+/*top: 12.37%;*/
+/*bottom: 53.61%;*/
+
+/*font-family: Nunito;*/
+/*font-style: normal;*/
+/*font-weight: bold;*/
+/*font-size: 48px;*/
+/*line-height: 65px;*/
+/*!* identical to box height *!*/
+/*display: flex;*/
+/*align-items: center;*/
+
+/*color: #FFFFFF;*/
+
