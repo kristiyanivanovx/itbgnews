@@ -8,13 +8,17 @@ const commentSchema = new mongoose.Schema({
     required: true,
   },
   author_id: {
-    type: Schema.Types.ObjectId,
+    type: String,
+    //type: Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },
   text: {
     type: String,
     required: true,
+  },
+  upvotes: {
+    type: Number,
   },
   date: {
     type: Date,

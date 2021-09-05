@@ -15,6 +15,9 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  upvotes: {
+    type: Number,
+  },
   date: {
     type: Date,
     required: true,
