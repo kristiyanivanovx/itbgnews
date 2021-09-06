@@ -23,6 +23,7 @@
     padding-right: .5rem;
 }
 
+/* for active links */
 .active {
-    color: red;
+    color: pink;
 }

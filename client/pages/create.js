@@ -7,6 +7,7 @@ import Form from '../components/Form';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
 
+
 const Create = () => {
     return (
         <>

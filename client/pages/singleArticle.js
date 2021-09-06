@@ -69,6 +69,7 @@ const SingleArticle = () => {
     );
 };
 
+
 SingleArticle.getLayout = getDefaultLayout;
 
 export default SingleArticle;
