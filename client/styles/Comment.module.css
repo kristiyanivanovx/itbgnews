@@ -1,0 +1,5 @@
+.comment__regular {
+    background: var(--clr-comment);
+    height: 194px;
+    margin-bottom: 0.1rem;
+}

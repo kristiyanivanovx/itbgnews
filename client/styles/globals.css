@@ -13,17 +13,17 @@
 
     --clr-background: #302636;
     --clr-main: #554360;
-    --clr-grey: #51515B;
-    --clr-purple: #D03AD2;
-    --clr-white: #FFFFFF;
+    --clr-grey: #51515b;
+    --clr-purple: #d03ad2;
+    --clr-white: #ffffff;
+    --clr-comment: #755a85;
 
     --fs-h2: 3rem;
     --fs-h3: 2.5rem;
     --fs-h4: 2rem;
 
     --fs-body: 1.25rem;
-    --fs-small: .5rem;
-
+    --fs-small: 0.5rem;
 }
 
 body {
@@ -33,13 +33,23 @@ body {
     color: var(--clr-white);
 }
 
-button, input {
+button,
+input {
     color: inherit;
     background-color: inherit;
     font-size: inherit;
     font-family: inherit;
     border: 0;
     padding: 0;
+}
+
+a {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
 }
 
 h2,
@@ -55,7 +65,7 @@ h2 {
 }
 
 h3 {
-    font-size: var(--fs-h3)
+    font-size: var(--fs-h3);
 }
 
 h4 {
@@ -88,7 +98,6 @@ image {
     background: var(--clr-main);
 }
 
-
 .search-bar__background {
     width: 70%;
     /*height: 40px;*/
@@ -110,7 +119,6 @@ image {
     margin-left: 5rem;
     /*height: 100%;*/
     /*margin: 1rem 0 1rem 4rem;*/
-
 }
 
 .article__rounded {
@@ -126,7 +134,6 @@ image {
     width: 20%;
     margin-top: 1rem;
     font-size: 30px;
-
 }
 .nav__item:hover {
     color: var(--clr-white);
@@ -142,7 +149,7 @@ image {
 }
 
 .nav__icon {
-    padding-right: .5rem;
+    padding-right: 0.5rem;
 }
 .article__regular {
     background: var(--clr-main);
@@ -181,7 +188,7 @@ image {
 }
 
 .article__information__icon {
-    padding-right: .5rem ;
+    padding-right: 0.5rem;
 }
 
 .col {
@@ -193,7 +200,6 @@ image {
 .icon__search {
     font-size: xx-large !important;
 }
-
 
 /* AUTHENTICATION  */
 
@@ -211,7 +217,14 @@ image {
     top: 6.15%;
     bottom: -6.15%;
 
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), linear-gradient(264.39deg, #BA2BAC -36.33%, #E655E8 20.2%, #6369FA 106.31%, rgba(255, 6, 230, 0) 130.66%);
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
+        linear-gradient(
+            264.39deg,
+            #ba2bac -36.33%,
+            #e655e8 20.2%,
+            #6369fa 106.31%,
+            rgba(255, 6, 230, 0) 130.66%
+        );
     border-radius: 10px;
 }
 
@@ -222,17 +235,22 @@ image {
     top: 0;
     bottom: 0;
 
-    background: linear-gradient(264.39deg, #BA2BAC -36.33%, #E655E8 20.2%, #6369FA 106.31%, rgba(255, 6, 230, 0) 130.66%);
+    background: linear-gradient(
+        264.39deg,
+        #ba2bac -36.33%,
+        #e655e8 20.2%,
+        #6369fa 106.31%,
+        rgba(255, 6, 230, 0) 130.66%
+    );
     border-radius: 10px;
 }
 
-.auth__btn--text{
+.auth__btn--text {
     position: absolute;
     left: 0;
     right: 0;
     top: 16px;
     bottom: 0;
-
 
     font-weight: var(--fw-bold);
     font-size: 24px;
@@ -258,7 +276,7 @@ image {
 .auth__title {
     margin-bottom: 1rem;
     /*margin: 1rem auto;*/
-    padding: .5rem 0;
+    padding: 0.5rem 0;
     /*width: 300px;*/
     /*text-align: left;*/
 }
@@ -266,7 +284,6 @@ image {
 .auth__input {
     display: flex;
     flex-direction: column;
-
 }
 
 .user__input {
@@ -280,7 +297,6 @@ image {
     margin: 1rem 0;
     outline: none;
 }
-
 
 .user__input::placeholder {
     padding-left: 1rem;
@@ -313,7 +329,14 @@ image {
     top: 6.15%;
     bottom: -6.15%;
 
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), linear-gradient(264.39deg, #BA2BAC -36.33%, #E655E8 20.2%, #6369FA 106.31%, rgba(255, 6, 230, 0) 130.66%);
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
+        linear-gradient(
+            264.39deg,
+            #ba2bac -36.33%,
+            #e655e8 20.2%,
+            #6369fa 106.31%,
+            rgba(255, 6, 230, 0) 130.66%
+        );
     border-radius: 10px;
 }
 
@@ -324,17 +347,22 @@ image {
     top: 0;
     bottom: 0;
 
-    background: linear-gradient(264.39deg, #BA2BAC -36.33%, #E655E8 20.2%, #6369FA 106.31%, rgba(255, 6, 230, 0) 130.66%);
+    background: linear-gradient(
+        264.39deg,
+        #ba2bac -36.33%,
+        #e655e8 20.2%,
+        #6369fa 106.31%,
+        rgba(255, 6, 230, 0) 130.66%
+    );
     border-radius: 10px;
 }
 
-.exit__btn--text{
+.exit__btn--text {
     position: absolute;
     left: 0;
     right: 0;
     top: 11px;
     bottom: 0;
-
 
     font-weight: var(--fw-bold);
     font-size: 24px;
@@ -355,7 +383,6 @@ image {
 .user__profile-pic {
     /*width: 25%;*/
     margin: 0 2rem;
-
 }
 
 .profile-pic {
