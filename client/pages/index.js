@@ -3,25 +3,35 @@ import Article from '../components/Article';
 import SideNav from '../components/SideNav';
 import SearchBar from '../components/SearchBar';
 import Brand from '../components/Brand';
-import Footer from '../components/Footer';
 import HeadComponent from '../components/HeadComponent';
+import getDefaultLayout from '../utilities/getDefaultLayout';
 
-export default function Home() {
-    const items = [];
+function Home() {
+    let key = 0;
+    const items = [
+        <Article
+            key={key}
+            title={'Binary Search. ' + key}
+            upvotes={9}
+            username={'admin'}
+            hours={5}
+            comments={103}
+            link={'https://it-bg.github.io/'}
+            isFirstArticle={true}
+        />,
+    ];
 
-    for (let i = 0; i < 4; i++) {
+    for (let i = key + 1; i < 4; i++) {
         items.push(
-            <article key={i} className={"article__regular"}>
-                <div className={"article__main"}>
-                    <h2 className={"article__title"}>Ивелин направи Binary Search???</h2>
-                    <span className={"article__votes"}><FontAwesomeIcon className={"article__votes--icon"} icon={faChevronUp} />9 гласа</span>
-                </div>
-                <div className={"article__information"}>
-                    <span><FontAwesomeIcon icon={faUser} className={"article__information__icon"} />от admin</span>
-                    <span><FontAwesomeIcon icon={faClock} className={"article__information__icon"}/>преди 5 часа</span>
-                    <span><FontAwesomeIcon icon={faComment} className={"article__information__icon"}/>103 коментара</span>
-                </div>
-            </article>
+            <Article
+                key={i}
+                title={'Merge Sort. ' + i}
+                upvotes={9 + i}
+                username={'admin'}
+                hours={5 + i}
+                comments={103 + i}
+                link={'https://it-bg.github.io/'}
+            />,
         );
     }
 
@@ -61,3 +71,7 @@ export default function Home() {
         </>
     );
 }
+
+Home.getLayout = getDefaultLayout;
+
+export default Home;

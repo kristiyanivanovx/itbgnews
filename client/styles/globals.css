@@ -45,16 +45,9 @@ body {
     grid-template-rows: 1fr auto;
 }
 
-/* sticky footer */
 html {
     height: 100%;
 }
-
-#__next {
-    display: flex;
-    flex-direction: column;
-}
-/* end of footer needed styles */
 
 button,
 input {
@@ -110,7 +103,6 @@ a:hover {
     display: flex;
     justify-content: space-between;
 
-    /* disabled because of new sticky footer rules */
     /*margin: 40px 0 40px 0;*/
     margin-bottom: 40px;
 }
@@ -123,3 +115,7 @@ a:hover {
     font-size: unset;
 }
 
+/*#__next {*/
+/*    width: 100vw;*/
+/*    height: 100vh;*/
+/*}*/
