@@ -3,9 +3,11 @@
   height: 194px;
   margin-bottom: 0.5rem;
 }
+
 .article__title {
   width: 85%;
 }
+
 .article__votes {
   display: flex;
   flex-direction: column;

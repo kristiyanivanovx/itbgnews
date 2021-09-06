@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styles from '../styles/Article.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -7,6 +7,7 @@ import {
     faComment,
     faUser,
 } from '@fortawesome/free-solid-svg-icons';
+import Link from 'next/link';
 
 const Article = ({
     title,
@@ -29,7 +30,7 @@ const Article = ({
         <article className={articleClasses}>
             <div className={styles.article__main}>
                 <h2 className={styles.article__title}>
-                    <a href={link}> {title}</a>
+                    <a href={link}>{title}</a>
                 </h2>
                 <div className={styles.article__votes}>
                     <FontAwesomeIcon
@@ -52,7 +53,9 @@ const Article = ({
                         icon={faClock}
                         className={styles.article__information__icon}
                     />
-                    преди {hours} часа
+                    <Link href={'/singleArticle'}>
+                        <a>преди {hours} часа</a>
+                    </Link>
                 </div>
                 <div>
                     <FontAwesomeIcon

@@ -35,6 +35,7 @@ export default function Home() {
             />,
         );
     }
+
     return (
         <>
             <HeadComponent currentPageName={'All Articles'} />
