@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styles from '../styles/Article.module.css';
 import commentStyles from '../styles/Comment.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -13,7 +13,7 @@ const Comment = ({ title, link, username, hours, comments, upvotes, tabs }) => {
     const width = 100 - tabs * 10;
 
     return (
-        <article
+        <div
             className={commentStyles.comment__regular}
             style={{ width: width + '%' }}
         >
@@ -52,7 +52,7 @@ const Comment = ({ title, link, username, hours, comments, upvotes, tabs }) => {
                     {comments} коментара
                 </div>
             </div>
-        </article>
+        </div>
     );
 };
 

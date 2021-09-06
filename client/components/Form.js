@@ -1,12 +1,8 @@
-import React, { Component } from 'react';
-import styles from '../styles/Auth.module.css';
+import React from 'react';
+import styles from '../styles/Form.module.css';
 
-class Form extends Component {
-    render() {
-        return (
-            <div className={styles.generic__input}>{this.props.children}</div>
-        );
-    }
-}
+const Form = ({ children }) => {
+    return <div className={styles.form__input}>{children}</div>;
+};
 
 export default Form;

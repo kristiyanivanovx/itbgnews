@@ -4,8 +4,6 @@ import SearchBar from '../components/SearchBar';
 import SideNav from '../components/SideNav';
 import Profile from '../components/Profile';
 import Footer from '../components/Footer';
-import Article from '../components/Article';
-import Articles from '../components/Articles';
 import HeadComponent from '../components/HeadComponent';
 
 const MyProfile = () => {
