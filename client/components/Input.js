@@ -1,12 +1,13 @@
-// import styles from '../styles/Input.module.css';
+import styles from '../styles/Auth.module.css';
+import React from 'react';
 
 export default function Input({ type, name, placeholder }) {
     return (
         <input
-            type={type}
             name={name}
+            type={type}
             placeholder={placeholder}
-            // onChange={(e) => setUsername(e.target.value)}
+            className={styles.user__input}
         />
     );
 }

@@ -2,6 +2,39 @@
 
 * {
     margin: 0;
+    box-sizing: border-box;
+    padding: 0;
+}
+
+:root {
+    --ff-primary: 'Nunito', sans-serif;
+
+    --fw-reg: 200;
+    --fw-bold: 700;
+
+    --clr-background: #302636;
+    --clr-main: #554360;
+    --clr-grey: #51515b;
+    --clr-purple: #d03ad2;
+    --clr-white: #ffffff;
+
+    --fs-h2: 3rem;
+    --fs-h3: 2.5rem;
+    --fs-h4: 2rem;
+
+    --fs-body: 1.25rem;
+    --fs-small: 0.5rem;
+}
+
+body {
+    background: var(--clr-background);
+    font-family: var(--ff-primary);
+    font-size: var(--fs-body);
+    color: var(--clr-white);
+}
+
+* {
+    margin: 0;
     padding: 0;
 }
 
@@ -417,4 +450,58 @@ image {
 .profile-top {
     display: flex;
     justify-content: space-between;
+}
+
+h2,
+h3,
+h4 {
+    line-height: 1;
+    margin: 0;
+    font-weight: var(--fw-bold);
+}
+
+h2 {
+    font-size: var(--fs-h2);
+}
+
+h3 {
+    font-size: var(--fs-h3);
+}
+
+h4 {
+    font-size: var(--fs-h4);
+}
+
+image {
+    width: 0;
+    height: 0;
+}
+
+a {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.container {
+    width: 90%;
+    max-width: 1600px;
+    margin: 40px auto 0 auto;
+}
+
+.col {
+    display: flex;
+    justify-content: space-between;
+    margin: 40px 0 40px 0;
+}
+
+.articles {
+    width: 70%;
+}
+
+.articles__profile {
+    width: 100%;
 }

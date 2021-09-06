@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+<<<<<<< HEAD
 
 
 const Login = () => {
@@ -24,6 +25,33 @@ const Login = () => {
             </form>
         </div>
        </>
+=======
+import Input from '../components/Input';
+import Button from '../components/Button';
+import AuthTitle from '../components/AuthTitle';
+import AuthLinks from '../components/AuthLinks';
+import AuthContainer from '../components/AuthContainer';
+import Form from '../components/Form';
+import HeadComponent from '../components/HeadComponent';
+
+const Login = () => {
+    return (
+        <>
+            <AuthContainer>
+                <HeadComponent currentPageName={'Login'} />
+                <AuthTitle text={'Вход'} />
+                <Form>
+                    <Input placeholder={'Е-мейл'} />
+                    <Input placeholder={'Парола'} />
+                    <Button text={'Влез'} />
+                    <AuthLinks
+                        firstText={'Нямаш профил?'}
+                        secondText={'Забравена парола?'}
+                    />
+                </Form>
+            </AuthContainer>
+        </>
+>>>>>>> 7fe7fa093ea24e64dffb6ee410543f024ee7fa97
     );
 };
 

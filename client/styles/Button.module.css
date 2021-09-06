@@ -2,14 +2,13 @@
     position: relative;
     width: 410px;
     height: 65px;
+    margin: 1rem 0;
 }
 
-
-/* Rectangle 23 */
-.backgroundBtn {
+.btn__background {
     position: absolute;
-    left: 0%;
-    right: 0%;
+    left: 0;
+    right: 0;
     top: 6.15%;
     bottom: -6.15%;
 
@@ -17,35 +16,28 @@
     border-radius: 10px;
 }
 
-/* Rectangle 22 */
-/*.another-background-btn {*/
-.anotherBackgroundBtn {
+.btn__shadow {
     position: absolute;
-    left: 0%;
-    right: 0%;
-    top: 0%;
-    bottom: 0%;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
 
     background: linear-gradient(264.39deg, #BA2BAC -36.33%, #E655E8 20.2%, #6369FA 106.31%, rgba(255, 6, 230, 0) 130.66%);
     border-radius: 10px;
 }
 
-/* Влез */
-.text {
+.btn__text{
     position: absolute;
     left: 0;
     right: 0;
     top: 16px;
     bottom: 0;
 
-    font-family: Nunito;
-    font-style: normal;
-    font-weight: bold;
+
+    font-weight: var(--fw-bold);
     font-size: 24px;
-    line-height: 33px;
-    /*display: flex;*/
-    align-items: center;
     text-align: center;
 
-    color: #FFFFFF;
+    color: var(--clr-white);
 }
