@@ -1,40 +1,27 @@
-const LocalStrategy = require('passport-local').Strategy;
-const bcrypt = require('bcrypt');
-const userSchema = require('../models/user-schema');
-// initialize functions for getting email and id from database will be created later
-// this function applies to be in session if you get
-function initialize(passport) {
-   const authenticateUser = async (email, password, done) => {
-      const user = await userSchema.findOne({ email });
-      if (user == null) {
-         return done(null, false, { message: 'No user with that email' });
-      }
-      console.log(user.password);
-      console.log(password);
-      try {
-         if (bcrypt.compare(password, user.password)) {
-            console.log('Everything is great');
-            return done(null, user);
-         } else {
-            return done(null, false, { message: 'Password incorrect' });
-         }
-      } catch (e) {
-         return done(e);
-      }
-   };
-   passport.use(
-      new LocalStrategy(
-         {
-            usernameField: 'email',
-            passwordField: 'password'
-         },
-         authenticateUser
-      )
-   );
-   passport.serializeUser((user, done) => done(null, user._id));
-   passport.deserializeUser((id, done) => {
-      return done(null, userSchema.findById({ id }));
-   });
-}
+const JwtStrategy = require('passport-jwt').Strategy;
+const ExtractJwt = require('passport-jwt').ExtractJwt;
+const User = require('../models/user-schema');
 
-module.exports = initialize;
+const options = {
+   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+   secretOrKey: 'some_public_key',
+   algorithms: ['RS256']
+};
+
+module.exports = (passport) => {
+   passport.use(
+      // jwt_payload.syb is the id for the provided user which is passed in the createToken function
+      new JwtStrategy(options, function (jwt_payload, done) {
+         User.findOne({ _id: jwt_payload.sub }, function (err, user) {
+            if (err) {
+               return done(err, false);
+            }
+            if (user) {
+               return done(null, user);
+            } else {
+               return done(null, false);
+            }
+         });
+      })
+   );
+};
