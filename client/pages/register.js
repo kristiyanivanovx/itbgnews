@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import AuthContainer from '../components/AuthContainer';
 import AuthTitle from '../components/AuthTitle';
 import Form from '../components/Form';

@@ -3,6 +3,7 @@ import Image from 'next/image';
 import logo from '../public/it-bg-logo.png';
 import styles from '../styles/SingleArticle.module.css';
 import Article from '../components/Article';
+import SideNav from '../components/SideNav';
 import Comment from '../components/Comment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -42,31 +43,7 @@ const SingleArticle = () => {
                     </div>
                 </div>
                 <div className={'col'}>
-                    <nav className={'nav'}>
-                        <ul className={'nav__list'}>
-                            <li className={'nav__item'}>
-                                <FontAwesomeIcon
-                                    className={'nav__icon'}
-                                    icon={faNewspaper}
-                                />
-                                Всички Статии
-                            </li>
-                            <li className={'nav__item'}>
-                                <FontAwesomeIcon
-                                    className={'nav__icon'}
-                                    icon={faPlus}
-                                />
-                                Създай Статия
-                            </li>
-                            <li className={'nav__item'}>
-                                <FontAwesomeIcon
-                                    className={'nav__icon'}
-                                    icon={faUser}
-                                />
-                                Моят Профил
-                            </li>
-                        </ul>
-                    </nav>
+                    <SideNav />
                     <main className={'articles'}>
                         <section className="article__wrapper">
                             <Article
