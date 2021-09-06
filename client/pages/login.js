@@ -6,16 +6,16 @@ import AuthLinks from '../components/AuthLinks';
 import FormContainer from '../components/FormContainer';
 import Form from '../components/Form';
 import HeadComponent from '../components/HeadComponent';
-import Footer from '../components/Footer';
+import getDefaultLayout from '../utilities/getDefaultLayout';
 
 const Login = () => {
     return (
         <>
+            <HeadComponent currentPageName={'Login'} />
             <FormContainer>
-                <HeadComponent currentPageName={'Login'} />
                 <FormTitle text={'Вход'} />
                 <Form>
-                    <Input placeholder={'Е-мейл'} />
+                    <Input placeholder={'Имейл'} />
                     <Input placeholder={'Парола'} />
                     <Button text={'Влез'} />
                     <AuthLinks
@@ -24,9 +24,10 @@ const Login = () => {
                     />
                 </Form>
             </FormContainer>
-            <Footer />
         </>
     );
 };
+
+Login.getLayout = getDefaultLayout;
 
 export default Login;

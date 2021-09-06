@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import profile from '../public/profile.png';
 import styles from '../styles/Profile.module.css';
-import Article from '../components/Article';
+import Article from './Article';
 
 const Profile = () => {
     let key = 0;
