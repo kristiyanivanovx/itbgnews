@@ -3,15 +3,15 @@ import Article from '../components/Article';
 import SideNav from '../components/SideNav';
 import SearchBar from '../components/SearchBar';
 import Brand from '../components/Brand';
-import Footer from '../components/Footer';
 import HeadComponent from '../components/HeadComponent';
+import getDefaultLayout from '../utilities/getDefaultLayout';
 
-export default function Home() {
+function Home() {
     let key = 0;
     const items = [
         <Article
             key={key}
-            title={'Ивелин направи Binary Search???'}
+            title={'Binary Search. ' + key}
             upvotes={9}
             username={'admin'}
             hours={5}
@@ -21,16 +21,15 @@ export default function Home() {
         />,
     ];
 
-    key++;
-    for (let i = key; i < 4; i++) {
+    for (let i = key + 1; i < 4; i++) {
         items.push(
             <Article
-                key={key}
-                title={'123'}
-                upvotes={9}
+                key={i}
+                title={'Merge Sort. ' + i}
+                upvotes={9 + i}
                 username={'admin'}
-                hours={5}
-                comments={103}
+                hours={5 + i}
+                comments={103 + i}
                 link={'https://it-bg.github.io/'}
             />,
         );
@@ -48,8 +47,11 @@ export default function Home() {
                     <SideNav />
                     <main className={'articles'}>{items}</main>
                 </div>
-                <Footer />
             </div>
         </>
     );
 }
+
+Home.getLayout = getDefaultLayout;
+
+export default Home;

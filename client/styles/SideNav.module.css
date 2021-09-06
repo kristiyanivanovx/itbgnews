@@ -3,6 +3,7 @@
     margin-top: 1rem;
     font-size: 30px;
 }
+
 .nav__item:hover, .nav__item a:hover {
     color: var(--clr-white);
     cursor: pointer;
@@ -20,4 +21,8 @@
 
 .nav__icon {
     padding-right: .5rem;
+}
+
+.active {
+    color: red;
 }

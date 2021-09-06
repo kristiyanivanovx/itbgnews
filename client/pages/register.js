@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import FormContainer from '../components/FormContainer';
 import FormTitle from '../components/FormTitle';
 import Form from '../components/Form';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import HeadComponent from '../components/HeadComponent';
-import Footer from '../components/Footer';
+import getDefaultLayout from '../utilities/getDefaultLayout';
 
 const Register = () => {
     return (
@@ -15,14 +15,15 @@ const Register = () => {
                 <FormTitle text={'Регистрация'} />
                 <Form>
                     <Input placeholder={'Име'} />
-                    <Input placeholder={'Е-мейл'} />
+                    <Input placeholder={'Имейл'} />
                     <Input placeholder={'Парола'} />
                     <Button text={'Регистрация'} />
                 </Form>
             </FormContainer>
-            <Footer />
         </>
     );
 };
+
+Register.getLayout = getDefaultLayout;
 
 export default Register;
