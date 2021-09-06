@@ -4,6 +4,7 @@ import SideNav from '../components/SideNav';
 import SearchBar from '../components/SearchBar';
 import Brand from '../components/Brand';
 import Footer from '../components/Footer';
+import HeadComponent from '../components/HeadComponent';
 
 export default function Home() {
     let key = 0;
@@ -36,6 +37,7 @@ export default function Home() {
     }
     return (
         <>
+            <HeadComponent currentPageName={'All Articles'} />
             <div className={'container'}>
                 <div className={'col'}>
                     <Brand />

@@ -6,10 +6,12 @@ import Profile from '../components/Profile';
 import Footer from '../components/Footer';
 import Article from '../components/Article';
 import Articles from '../components/Articles';
+import HeadComponent from '../components/HeadComponent';
 
 const MyProfile = () => {
     return (
-        <div>
+        <>
+            <HeadComponent currentPageName={'My Profile'} />
             <div className={'container'}>
                 <div className={'col'}>
                     <Brand />
@@ -21,7 +23,7 @@ const MyProfile = () => {
                 </div>
             </div>
             <Footer />
-        </div>
+        </>
     );
 };
 
