@@ -1,8 +1,9 @@
-import styles from '../styles/Layout.module.css';
 import React, { useState } from 'react';
-import Link from 'next/link';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import AuthContainer from '../components/AuthContainer';
+import AuthTitle from '../components/AuthTitle';
+import Form from '../components/Form';
+import Input from '../components/Input';
+import Button from '../components/Button';
 import HeadComponent from '../components/HeadComponent';
 
 const Register = () => {
@@ -21,50 +22,18 @@ const Register = () => {
     };
 
     return (
-        <div>
+        <>
             <HeadComponent currentPageName={'Register'} />
-            <Navbar />
-            <div className="register-page">
-                <div className="form">
-                    <div className="login">
-                        <div className="login-header">
-                            <h1 className={styles.title}>
-                                <Link href={'/register'}>
-                                    <a>Register</a>
-                                </Link>
-                            </h1>
-                            <p>Please enter your credentials to register.</p>
-                        </div>
-                    </div>
-                    <input
-                        type="text"
-                        name="username"
-                        placeholder="Username"
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="Password"
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <input
-                        type="password"
-                        name="confirm-password"
-                        placeholder="Confirm Password"
-                        onChange={(e) => setPasswordConfirm(e.target.value)}
-                    />
-                    <button onClick={submitForm}>Register</button>
-                    <p className="message">
-                        You have already registered?
-                        <Link href={'/login'}>
-                            <a> Login</a>
-                        </Link>
-                    </p>
-                </div>
-            </div>
-            <Footer />
-        </div>
+            <AuthContainer>
+                <AuthTitle text={'Регистрация'} />
+                <Form>
+                    <Input placeholder={'Име'} />
+                    <Input placeholder={'Е-мейл'} />
+                    <Input placeholder={'Парола'} />
+                    <Button text={'Регистрация'} />
+                </Form>
+            </AuthContainer>
+        </>
     );
 };
 

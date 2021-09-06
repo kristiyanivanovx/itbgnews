@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const User = require('../data/User');
+// const User = require('../data/User');
 
 module.exports = (settings) => {
     mongoose.connect(settings.db).catch((err) => console.error(err));
@@ -12,7 +12,7 @@ module.exports = (settings) => {
         }
 
         console.log('MongoDB has connected!');
-        User.seedAdminUser();
+        // User.seedAdminUser();
     });
 
     db.on('err', (err) =>
