@@ -3,6 +3,7 @@
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 :root {
@@ -66,6 +67,7 @@ image {
     width: 0;
     height: 0;
 }
+
 .container {
     width: 90%;
     max-width: 1600px;
@@ -128,10 +130,12 @@ image {
     font-size: 30px;
 
 }
+
 .nav__item:hover {
     color: var(--clr-white);
     cursor: pointer;
 }
+
 .nav__list {
     list-style: none;
     color: var(--clr-grey);
@@ -144,14 +148,17 @@ image {
 .nav__icon {
     padding-right: .5rem;
 }
+
 .article__regular {
     background: var(--clr-main);
     height: 194px;
     margin-bottom: 0.5rem;
 }
+
 .article__title {
     width: 85%;
 }
+
 .article__votes {
     display: flex;
     flex-direction: column;
@@ -181,7 +188,7 @@ image {
 }
 
 .article__information__icon {
-    padding-right: .5rem ;
+    padding-right: .5rem;
 }
 
 .col {
@@ -191,7 +198,7 @@ image {
 }
 
 .icon__search {
-    font-size: xx-large !important;
+    font-size: xx-large;
 }
 
 
@@ -226,7 +233,7 @@ image {
     border-radius: 10px;
 }
 
-.auth__btn--text{
+.auth__btn--text {
     position: absolute;
     left: 0;
     right: 0;
@@ -242,17 +249,25 @@ image {
 }
 
 .auth {
-    /*display: flex;*/
-    /*flex-direction: column;*/
-    /*justify-content: center;*/
-    /*align-items: center;*/
-    /*margin-top: 15%;*/
-    width: 22%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     margin: auto;
+    min-height: 100vh;
+    /*margin-top: 15%;*/
+    /*width: 22%;*/
+    /*height: 100%;*/
     /*display: flex;*/
     /*justify-content: center;*/
     /*align-items: center;*/
     /*border: 1px solid red;*/
+    /*margin-left: auto;*/
+    /*margin-right: auto;*/
+    /*display: table;*/
+
+
+
 }
 
 .auth__title {
@@ -266,7 +281,6 @@ image {
 .auth__input {
     display: flex;
     flex-direction: column;
-
 }
 
 .user__input {
@@ -274,7 +288,7 @@ image {
     height: 65px;
     color: var(--clr-white);
     font-weight: var(--fw-reg);
-    /*padding-left: 1.75rem ;*/
+    padding-left: 1.75rem ;
     border: 2px solid var(--clr-grey);
     border-radius: 10px;
     margin: 1rem 0;
@@ -283,9 +297,9 @@ image {
 
 
 .user__input::placeholder {
-    padding-left: 1rem;
     color: var(--clr-white);
 }
+
 .auth__links {
     display: flex;
     justify-content: space-between;
@@ -328,7 +342,7 @@ image {
     border-radius: 10px;
 }
 
-.exit__btn--text{
+.exit__btn--text {
     position: absolute;
     left: 0;
     right: 0;
@@ -370,6 +384,7 @@ image {
     object-fit: cover;
     border: 1px solid red;
 }
+
 .user__information {
     width: 70%;
 }
@@ -390,4 +405,8 @@ image {
 .profile-top {
     display: flex;
     justify-content: space-between;
+}
+
+.svg-inline--fa :global {
+    font-size: unset;
 }
