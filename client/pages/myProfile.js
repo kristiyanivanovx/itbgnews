@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Brand from '../components/Brand';
 import SearchBar from '../components/SearchBar';
 import SideNav from '../components/SideNav';
 import Profile from '../components/Profile';
-import Footer from '../components/Footer';
 import HeadComponent from '../components/HeadComponent';
+import getDefaultLayout from '../utilities/getDefaultLayout';
 
 const MyProfile = () => {
     return (

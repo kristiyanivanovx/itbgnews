@@ -4,9 +4,13 @@
     font-size: 30px;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> ab93b9d5 (merge branches  (#8))
+=======
+
+>>>>>>> a6b987de (merge branches (#10))
 .nav__item:hover, .nav__item a:hover {
     color: var(--clr-white);
     cursor: pointer;
@@ -26,9 +30,17 @@
     padding-right: .5rem;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 .active {
     color: red;
 }
 =======
 >>>>>>> ab93b9d5 (merge branches  (#8))
+=======
+
+/* for active links */
+.active {
+    color: pink;
+}
+>>>>>>> a6b987de (merge branches (#10))
