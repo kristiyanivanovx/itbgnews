@@ -1,11 +1,10 @@
 import React from 'react';
-import LoginButton from '../components/LoginButton';
-import styles from '../styles/Button.module.css';
-import Image from "next/image";
-import logo from '../public/it-bg-logo.png'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faNewspaper, faPlus, faUser, faClock, faComment, faChevronUp, faSearch} from '@fortawesome/free-solid-svg-icons';
-import NavButton from "../components/NavButton";
+import Article from '../components/Article';
+import SideNav from '../components/SideNav';
+import SearchBar from '../components/SearchBar';
+import Brand from '../components/Brand';
+import Footer from '../components/Footer';
+import HeadComponent from '../components/HeadComponent';
 
 export default function Home() {
     const items = [];
@@ -28,19 +27,11 @@ export default function Home() {
     return (
 
         <>
-            <div className={"container"}>
-                <div className={"col"}>
-                    <div className={"brand"}>
-                        <Image className={"brand__logo"} src={logo} width={"70px"} height={"70px"}  alt={'logo'} />
-                        <div className={"brand__title"}>IT-BG News</div>
-                    </div>
-                    <div className="search-bar">
-                        <div className="search-bar__background">
-                            <FontAwesomeIcon className={"icon__search"} icon={faSearch} />
-                            {/*<NavButton />*/}
-                            <input className="search-bar__input " />
-                        </div>
-                    </div>
+            <HeadComponent currentPageName={'All Articles'} />
+            <div className={'container'}>
+                <div className={'col'}>
+                    <Brand />
+                    <SearchBar />
                 </div>
                 <div className={"col"}>
                     <nav className={"nav"}>
