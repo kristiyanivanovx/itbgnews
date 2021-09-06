@@ -7,7 +7,6 @@ import SearchBar from '../components/SearchBar';
 import SideNav from '../components/SideNav';
 import HeadComponent from '../components/HeadComponent';
 import Footer from '../components/Footer';
-import getDefaultLayout from '../utilities/getDefaultLayout';
 
 const SingleArticle = () => {
     return (
@@ -23,7 +22,7 @@ const SingleArticle = () => {
                     <main className={'articles'}>
                         <section className="article__wrapper">
                             <Article
-                                title={'Ех този Binary Search!'}
+                                title={'Ивелин направи Binary Search???'}
                                 upvotes={9}
                                 username={'admin'}
                                 hours={5}
@@ -65,10 +64,9 @@ const SingleArticle = () => {
                     </main>
                 </div>
             </div>
+            <Footer />
         </>
     );
 };
-
-SingleArticle.getLayout = getDefaultLayout;
 
 export default SingleArticle;

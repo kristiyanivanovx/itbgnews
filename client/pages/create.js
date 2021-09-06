@@ -1,28 +1,27 @@
 import React from 'react';
 import Input from '../components/Input';
 import Button from '../components/Button';
-import FormTitle from '../components/FormTitle';
-import FormContainer from '../components/FormContainer';
+import Title from '../components/FormTitle';
+import Container from '../components/FormContainer';
 import Form from '../components/Form';
 import HeadComponent from '../components/HeadComponent';
-import getDefaultLayout from '../utilities/getDefaultLayout';
+import Footer from '../components/Footer';
 
 const Create = () => {
     return (
         <>
-            <HeadComponent currentPageName={'Създай Статия'} />
-            <FormContainer>
-                <FormTitle text={'Създай Статия'} />
+            <HeadComponent currentPageName={'Create an Article'} />
+            <Container>
+                <Title text={'Създай Статия'} />
                 <Form>
                     <Input placeholder={'Заглавие'} />
                     <Input placeholder={'Линк'} />
                     <Button text={'Създай'} />
                 </Form>
-            </FormContainer>
+            </Container>
+            <Footer />
         </>
     );
 };
-
-Create.getLayout = getDefaultLayout;
 
 export default Create;

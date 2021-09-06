@@ -3,7 +3,10 @@
     margin-top: 1rem;
     font-size: 30px;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> ab93b9d5 (merge branches  (#8))
 .nav__item:hover, .nav__item a:hover {
     color: var(--clr-white);
     cursor: pointer;
@@ -22,7 +25,10 @@
 .nav__icon {
     padding-right: .5rem;
 }
+<<<<<<< HEAD
 
 .active {
     color: red;
 }
+=======
+>>>>>>> ab93b9d5 (merge branches  (#8))
