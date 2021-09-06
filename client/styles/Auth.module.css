@@ -1,0 +1,9 @@
+.auth__links {
+    display: flex;
+    justify-content: space-between;
+}
+
+.auth__link:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}

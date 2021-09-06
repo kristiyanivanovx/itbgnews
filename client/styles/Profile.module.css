@@ -1,0 +1,93 @@
+.profile {
+    width: 70%;
+}
+
+.profile__information {
+    display: flex;
+    margin: 3rem 0;
+}
+
+.profile__pic {
+    width: 200px !important;
+    height: 200px !important;
+    min-width: 200px !important;
+    max-width: 200px !important;
+    min-height: 200px !important;
+    max-height: 200px !important;
+    margin: 0 !important;
+    border-radius: 50%;
+    object-fit: cover;
+    /*border: 1px solid red;*/
+}
+
+.profile__top {
+    display: flex;
+    justify-content: space-between;
+}
+
+.user__information {
+    width: 70%;
+}
+
+.user__profile__pic {
+    /*width: 25%;*/
+    margin: 0 2rem;
+}
+
+.user__bio {
+    margin: 1.5rem 5rem 3rem 0;
+}
+
+.user__activities {
+    display: flex;
+    justify-content: space-around;
+}
+
+.user__activity {
+    text-align: center;
+}
+
+/* exit button in profile*/
+.exit__btn {
+    position: relative;
+    width: 157px;
+    height: 53px;
+    display: inline-block;
+    /*margin: 1rem 0;*/
+}
+
+.exit__btn__background {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 6.15%;
+    bottom: -6.15%;
+
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), linear-gradient(264.39deg, #BA2BAC -36.33%, #E655E8 20.2%, #6369FA 106.31%, rgba(255, 6, 230, 0) 130.66%);
+    border-radius: 10px;
+}
+
+.exit__btn__shadow {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+
+    background: linear-gradient(264.39deg, #BA2BAC -36.33%, #E655E8 20.2%, #6369FA 106.31%, rgba(255, 6, 230, 0) 130.66%);
+    border-radius: 10px;
+}
+
+.exit__btn__text {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 11px;
+    bottom: 0;
+
+    font-weight: var(--fw-bold);
+    font-size: 24px;
+    text-align: center;
+
+    color: var(--clr-white);
+}
