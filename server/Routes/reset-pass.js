@@ -5,10 +5,13 @@ const verifySchema = require('../models/verify-schema');
 const userSchema = require('../models/user-schema');
 
 const mail = require('@sendgrid/mail');
-
 const crypto = require('crypto');
 
-mail.setApiKey("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");
+const message = require('../models/mailMessage');
+const dotenv = require('dotenv');
+dotenv.config();
+
+mail.setApiKey(process.env.MAIL_API);
 
 router.use(app.json());
 
@@ -30,12 +33,7 @@ router.post('/password-reset', (req, res) => {
     }));
 
     console.log("HERE?");
-})
-/*
-{
-    "mail": "galinaliobomirova@gmail.com"
-}
-*/
+});
 
 router.patch('/password-token', (req, res) => {
 
@@ -53,13 +51,7 @@ router.patch('/password-token', (req, res) => {
         console.log(`${req.body.mail} has been added successfully`);
     });
 
-    const msg = {
-        to: `${req.body.mail}`,
-        from: 'itbghackernews@gmail.com',
-        subject: 'Reset Password',
-        text: 'Click the link to reset password',
-        html: `<a href="https://localhost:3000/reset-pass?token=${code}">Click here to verify</a>`,
-    }
+    const msg = message(req.body.mail, code);
 
     mail
         .send(msg)
