@@ -47,7 +47,6 @@ function Home() {
                     <SideNav />
                     <main className={'articles'}>{items}</main>
                 </div>
-                <Footer />
             </div>
         </>
     );
