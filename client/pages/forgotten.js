@@ -14,9 +14,9 @@ const Login = () => {
                 <HeadComponent currentPageName={'Forgotten'} />
                 <FormTitle text={'Забравена Парола'} />
                 <Form>
-                    <p>Въведете е-мейлa, свързан с акаунтът ви.</p>
-                    <Input placeholder={'Е-мейл'} />
-                    <Button text={'Изпрати Паролата'} />
+                    <p>Въведете имейлa, свързан с акаунтът ви.</p>
+                    <Input placeholder={'Имейл'} />
+                    <Button text={'Изпрати код за възстановяване'} />
                 </Form>
             </FormContainer>
             <Footer />
