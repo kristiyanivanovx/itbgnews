@@ -17,11 +17,23 @@ const postSchema = new mongoose.Schema({
   },
   upvotes: {
     type: Number,
+    default: 0
   },
-  date: {
+  //if textContent is true then the file is available.
+  //False => it has been deleted
+  textContent: {
+    type: Boolean,
+    required: true,
+    default: true,
+  },
+  last_edit_date: {
+    type: Date,
+    required: true,
+  },
+  creation_date: {
     type: Date,
     required: true,
   },
 });
 
-module.exports = mongoose.model("post", postSchema);
+module.exports = mongoose.model("Post", postSchema);

@@ -8,7 +8,7 @@ let getPost = async (req, res, next) => {
   let post;
   try {
     post = await Post.findById(req.params.id);
-    if (!post)
+    if (!post || !post.textContent)
       return res
         .status(404)
         .json({ message: `Cannot find post with id: ${req.params.id}` });
@@ -28,31 +28,26 @@ router.get("/", async (req, res) => {
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
   try {
-    const Posts = await Post.find();
+    const Posts = await Post.find({ textContent: true });
     const posts_page = Posts.slice(startIndex, endIndex);
     res.send(posts_page);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
-//Getting comments on each post (by page)
-router.get("/:id", async (req, res) => {
-  const page = req.query.page;
-  const limit = req.query.limit;
-
-  const startIndex = (page - 1) * limit;
-  const endIndex = page * limit;
-
+//Getting comments and post by post id
+router.get("/:id", getPost, async (req, res) => {
   try {
-    const comments = await Comment.find({
+    let comments = await Comment.find({
       parent_post_id: req.params.id,
     });
-    const commets_page = comments.slice(startIndex, endIndex);
-    res.send(commets_page);
+
+    res.send({ post: res.post, comments });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
+
 //Additng a Post
 router.post("/", async (req, res) => {
   const post = new Post({
@@ -77,15 +72,17 @@ router.patch("/:id", async (req, res) => {
   }
   try {
     const updatedPost = await res.post.save();
+    res.post.last_edit_date = Date.now();
     res.json(updatedPost);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });
-//Deleting a Post
+//'Deletes' a Post (does not remove it from the database)
 router.delete("/:id", getPost, async (req, res) => {
   try {
-    await res.post.remove();
+    res.post.textContent = false;
+    await res.post.save();
     res.json({ message: "post deleted!" });
   } catch (err) {
     res.status(500).json({ message: err.message });

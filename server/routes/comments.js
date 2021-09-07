@@ -7,7 +7,7 @@ let getComment = async (req, res, next) => {
   let comment;
   try {
     comment = await Comment.findById(req.params.id);
-    if (!comment)
+    if (!comment || !comment.textContent)
       return res
         .status(404)
         .json({ message: `Cannot find comment with id: ${req.params.id}` });
@@ -24,8 +24,10 @@ router.post("/", async (req, res) => {
   const comment = new Comment({
     parent_post_id: req.body.parent_post_id,
     author_id: req.body.author_id,
+    parent_comment_id: req.body.parent_comment_id,
     text: req.body.text,
-    date: Date.now(),
+    creation_date: Date.now(),
+    last_edit_date: Date.now(),
   });
 
   try {
@@ -42,20 +44,22 @@ router.patch("/:id", async (req, res) => {
   }
   //IDK HOW THE UPVOTE SYSTEM SHOULD WORK
   //FOR NOW IF ACTIVATES IF THERE IS ANY VAULE != NULL IN req.body.upvote
-  if (req.body.upvote) {
+  /*if (req.body.upvote) {
     res.post.upvote += 1;
-  }
+  }*/
   try {
     const updatedComment = await res.comment.save();
+    res.comment.last_edit_date = Date.now();
     res.json(updatedComment);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });
-//Delete a comment
+//'Deletes' a comment (does not remove it from the database)
 router.delete("/:id", getComment, async (req, res) => {
   try {
-    await res.comment.remove();
+    res.comment.textContent = false;
+    await res.comment.save();
     res.json({ message: "comment deleted!" });
   } catch (err) {
     res.status(500).json({ message: err.message });
