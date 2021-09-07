@@ -9,21 +9,25 @@ const crypto = require('crypto');
 
 const message = require('../models/mailMessage');
 const dotenv = require('dotenv');
+
+const { hash } = require('bcrypt');
+
 dotenv.config();
 
 mail.setApiKey(process.env.MAIL_API);
 
 router.use(app.json());
 
-router.post('/password-reset', (req, res) => {
+router.post('/password-reset', async (req, res) => {
     const { token, mail, password } = req.body;
 
+    const encryptedPassword = await hash(password, 10);
     console.log(verifySchema.findOneAndDelete({token: token}, function(err, docs) {
         if(err)
             console.log(err);
         else {
             console.log(docs);
-            userSchema.updateOne({mail: mail}, {password: password}).catch(err => {
+            userSchema.updateOne({mail: mail}, {password: encryptedPassword}).catch(err => {
                 console.log(err);
             }).then(docs => {
                 console.log("SUCCESS " + docs);
@@ -35,7 +39,7 @@ router.post('/password-reset', (req, res) => {
     console.log("HERE?");
 });
 
-router.patch('/password-token', (req, res) => {
+router.patch('/forgotten', (req, res) => {
 
     console.log(req.body);
     let code = crypto.randomBytes(8).toString('hex');
@@ -52,9 +56,8 @@ router.patch('/password-token', (req, res) => {
     });
 
     const msg = message(req.body.mail, code);
-
-    mail
-        .send(msg)
+    
+    mail.send(msg)
         .then((response) => {
             console.log(response[0].statusCode)
             console.log(response[0].headers)
@@ -63,10 +66,6 @@ router.patch('/password-token', (req, res) => {
             console.error(error)
         })
     res.send("Hello");
-});
-
-router.get('/', (res, req) => {
-    console.log("==============here");
 });
 
 module.exports = router;
