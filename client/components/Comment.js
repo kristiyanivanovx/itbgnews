@@ -1,6 +1,5 @@
 import React from 'react';
-import styles from '../styles/Article.module.css';
-import commentStyles from '../styles/Comment.module.css';
+import styles from '../styles/Comment.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faChevronUp,
@@ -13,41 +12,38 @@ const Comment = ({ title, link, username, hours, comments, upvotes, tabs }) => {
     const width = 100 - tabs * 10;
 
     return (
-        <div
-            className={commentStyles.comment__regular}
-            style={{ width: width + '%' }}
-        >
-            <div className={styles.article__main}>
-                <p className={styles.article__title}>
+        <div className={styles.comment__regular} style={{ width: width + '%' }}>
+            <div className={styles.comment__main}>
+                <p className={styles.comment__title}>
                     <a href={link}> {title}</a>
                 </p>
-                <div className={styles.article__votes}>
+                <div className={styles.comment__votes}>
                     <FontAwesomeIcon
-                        className={styles.article__votes__icon}
+                        className={styles.comment__votes__icon}
                         icon={faChevronUp}
                     />
                     {upvotes} гласа
                 </div>
             </div>
-            <div className={styles.article__information}>
+            <div className={styles.comment__information}>
                 <div>
                     <FontAwesomeIcon
                         icon={faUser}
-                        className={styles.article__information__icon}
+                        className={styles.comment__information__icon}
                     />
                     от {username}
                 </div>
                 <div>
                     <FontAwesomeIcon
                         icon={faClock}
-                        className={styles.article__information__icon}
+                        className={styles.comment__information__icon}
                     />
                     преди {hours} часа
                 </div>
                 <div>
                     <FontAwesomeIcon
                         icon={faComment}
-                        className={styles.article__information__icon}
+                        className={styles.comment__information__icon}
                     />
                     {comments} коментара
                 </div>
