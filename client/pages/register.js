@@ -31,12 +31,6 @@ const Register = () => {
             <FormContainer>
                 <FormTitle text={'Регистрация'} />
                 <Form>
-<<<<<<< HEAD
-                    <Input placeholder={'Име'} />
-                    <Input placeholder={'Имейл'} />
-                    <Input placeholder={'Парола'} />
-                    <Button text={'Регистрация'} />
-=======
                     <Input
                         onClick={(e) => setUsername(e)}
                         placeholder={'Име'}
@@ -50,7 +44,6 @@ const Register = () => {
                         onClick={(e) => submitForm(e)}
                         text={'Регистрация'}
                     />
->>>>>>> 7343bc21 (fix identation)
                 </Form>
             </FormContainer>
         </>
