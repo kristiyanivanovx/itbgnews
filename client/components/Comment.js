@@ -12,15 +12,12 @@ const Comment = ({ title, link, username, hours, comments, upvotes, tabs }) => {
     const width = 100 - tabs * 10;
 
     return (
-        <div
-            className={commentStyles.comment__regular}
-            style={{ width: width + '%' }}
-        >
-            <div className={styles.article__main}>
-                <p className={styles.article__title}>
+        <div className={styles.comment__regular} style={{ width: width + '%' }}>
+            <div className={styles.comment__main}>
+                <p className={styles.comment__title}>
                     <a href={link}> {title}</a>
                 </p>
-                <div className={styles.article__votes}>
+                <div className={styles.comment__votes}>
                     <FontAwesomeIcon
                         className={styles.comment__votes__icon}
                         icon={faChevronUp}
