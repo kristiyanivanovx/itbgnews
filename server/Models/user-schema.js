@@ -9,7 +9,8 @@ const userSchema = new Schema({
    email: String,
    username: String,
    password: String,
-   date: Date
+   date: Date,
+   token: String
 });
 
 userSchema.index(
