@@ -18,9 +18,9 @@ const Comment = ({ title, link, username, hours, comments, upvotes, tabs }) => {
             style={{ width: width + '%' }}
         >
             <div className={styles.article__main}>
-                <h2 className={styles.article__title}>
+                <p className={styles.article__title}>
                     <a href={link}> {title}</a>
-                </h2>
+                </p>
                 <div className={styles.article__votes}>
                     <FontAwesomeIcon
                         className={styles.article__votes__icon}

@@ -16,7 +16,7 @@ const Forgotten = () => {
                 <Form>
                     <p>Въведете имейлa, свързан с акаунтът ви.</p>
                     <Input placeholder={'Имейл'} />
-                    <Button text={'Изпрати Паролата'} />
+                    <Button text={'Изпрати код за възстановяване'} />
                 </Form>
             </FormContainer>
         </>
