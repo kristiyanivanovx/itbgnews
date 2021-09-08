@@ -41,26 +41,6 @@ const SingleArticle = () => {
                                     tabs={1}
                                 />
                             </div>
-                            <div className={styles.comment__wrapper}>
-                                <Comment
-                                    title={'Не е добре.'}
-                                    upvotes={20}
-                                    username={'Иван'}
-                                    hours={13}
-                                    comments={0}
-                                    tabs={2}
-                                />
-                            </div>
-                            <div className={styles.comment__wrapper}>
-                                <Comment
-                                    title={'Нещо друго...'}
-                                    upvotes={9}
-                                    username={'Петър'}
-                                    hours={20}
-                                    comments={330}
-                                    tabs={1}
-                                />
-                            </div>
                         </section>
                     </main>
                 </div>
