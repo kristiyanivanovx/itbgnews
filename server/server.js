@@ -1,11 +1,12 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
-const passport = require('passport');
-const routes = require('./routes/login-route');
-const flash = require('express-flash');
-// all middlewares needed for app
+app.use(express.json());
 
-app.use(flash());
-app.use(passport.initialize());
-app.use('', routes);
-app.listen(5000);
+// routes
+const auth_routes = require('./routes/auth-route');
+app.use('', auth_routes);
+
+app.listen(5000, () => {
+   console.log(`Listening on port ${process.env.BACKEND_PORT}`);
+});
