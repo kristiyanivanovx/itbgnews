@@ -20,7 +20,6 @@ const MyProfile = () => {
                     <Profile />
                 </div>
             </div>
-            <Footer />
         </>
     );
 };
