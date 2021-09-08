@@ -5,7 +5,7 @@ import Title from '../components/FormTitle';
 import Container from '../components/FormContainer';
 import Form from '../components/Form';
 import HeadComponent from '../components/HeadComponent';
-import Footer from '../components/Footer';
+import getDefaultLayout from '../utilities/getDefaultLayout';
 
 const Create = () => {
     return (

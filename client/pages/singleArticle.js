@@ -30,7 +30,7 @@ const SingleArticle = () => {
                                 link={'https://it-bg.github.io/'}
                                 isFirstArticle={true}
                             />
-                            <div className="comment-wrapper">
+                            <div className={styles.comment__wrapper}>
                                 <Comment
                                     title={'Добре.'}
                                     upvotes={19}
@@ -69,4 +69,9 @@ const SingleArticle = () => {
     );
 };
 
+<<<<<<< HEAD
+=======
+SingleArticle.getLayout = getDefaultLayout;
+
+>>>>>>> 7343bc21 (fix identation)
 export default SingleArticle;
