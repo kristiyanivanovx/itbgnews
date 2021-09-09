@@ -7,3 +7,21 @@
     text-decoration: underline;
     cursor: pointer;
 }
+
+.auth__container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    /*margin-top: 15%;*/
+    /*width: 22%;*/
+    /*height: 100%;*/
+    /*display: flex;*/
+    /*justify-content: center;*/
+    /*align-items: center;*/
+    /*border: 1px solid red;*/
+    /*margin-left: auto;*/
+    /*margin-right: auto;*/
+    /*display: table;*/
+}
