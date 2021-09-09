@@ -65,7 +65,7 @@ h4 {
 }
 
 h2 {
-    font-size: var(--fs-h2);
+    font-size: clamp(20px, 5vw, var(--fs-h2));
 }
 
 h3 {

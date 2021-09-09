@@ -1,5 +1,4 @@
 .brand {
-    width: 20%;
     display: flex;
 }
 .brand__logo {
@@ -8,6 +7,7 @@
 }
 
 .brand__title {
-    font-size: 30px;
+    font-size: clamp(20px, 2vw, 30px);
     margin: auto 0 auto 1rem;
+    padding-right: 10px;
 }

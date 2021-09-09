@@ -32,15 +32,19 @@ const Article = ({
                 <h2 className={styles.article__title}>
                     <a href={link}>{title}</a>
                 </h2>
-                <div className={styles.article__votes}>
-                        <FontAwesomeIcon
-                            className={styles.article__votes__icon}
-                            icon={faChevronUp}
-                        />
+                <div
+                    className={`${styles.article__votes} ${styles.small_text}`}
+                >
+                    <FontAwesomeIcon
+                        className={styles.article__votes__icon}
+                        icon={faChevronUp}
+                    />
                     {upvotes} гласа
                 </div>
             </div>
-            <div className={styles.article__information}>
+            <div
+                className={`${styles.article__information} ${styles.small_text}`}
+            >
                 <div>
                     <FontAwesomeIcon
                         icon={faUser}
