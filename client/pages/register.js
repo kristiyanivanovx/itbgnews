@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import FormContainer from '../components/FormContainer';
 import FormTitle from '../components/FormTitle';
 import Form from '../components/Form';
@@ -13,9 +13,13 @@ const Register = () => {
     const [password, setPassword] = useState('');
 
     const submitForm = async () => {
-        const response = await fetch('https://localhost:5000/register', {
+        const response = await fetch('http://localhost:5000/register', {
             method: 'POST',
-            body: JSON.stringify({ username, email, password }),
+            body: JSON.stringify({
+                username,
+                email,
+                password,
+            }),
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -33,11 +37,17 @@ const Register = () => {
                 <Form>
                     <Input
                         onClick={(e) => setUsername(e)}
+                        type={'text'}
                         placeholder={'Име'}
                     />
-                    <Input onClick={(e) => setEmail(e)} placeholder={'Имейл'} />
+                    <Input
+                        onClick={(e) => setEmail(e)}
+                        type={'text'}
+                        placeholder={'Имейл'}
+                    />
                     <Input
                         onClick={(e) => setPassword(e)}
+                        type={'password'}
                         placeholder={'Парола'}
                     />
                     <Button

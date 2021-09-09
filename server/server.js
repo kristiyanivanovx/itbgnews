@@ -1,19 +1,16 @@
-// const cors = require('cors');
-
-const env = process.env.NODE_ENV || 'development';
-const settings = require('./config/settings')[env];
-
 const cors = require('cors');
-
 const express = require('express');
+
+require('dotenv').config();
+
 const app = express();
 
 app.use(express.json());
 app.use(cors());
 
-require('./config/database')(settings);
-require('./config/routes')(app);
+// const auth_routes = require("./routes/auth-route");
+// app.use("", auth_routes);
 
-app.listen(settings.port, () =>
-    console.log(`Server running on port ${settings.port}, env is ${env}...`),
-);
+app.listen(5000, () => {
+    console.log(`Listening on port ${process.env.BACKEND_PORT}`);
+});
