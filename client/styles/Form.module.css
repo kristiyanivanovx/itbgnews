@@ -41,6 +41,14 @@
     outline: none;
 }
 
+.user__input__error {
+    border: 2px solid var(--clr-red);
+}
+
+.user__input__error__text {
+    /*color: var(--clr-red);*/
+}
+
 .user__input::placeholder {
     padding-left: 1rem;
     color: var(--clr-white);

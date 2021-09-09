@@ -7,19 +7,16 @@ import FormContainer from '../components/FormContainer';
 import Form from '../components/Form';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
-import { useRouter } from 'next/router';
 
 const Login = () => {
-    const router = useRouter();
-
     return (
         <>
             <HeadComponent currentPageName={'Login'} />
             <FormContainer>
                 <FormTitle text={'Вход'} />
                 <Form>
-                    <Input placeholder={'Имейл'} />
-                    <Input placeholder={'Парола'} />
+                    <Input type={'text'} placeholder={'Имейл'} />
+                    <Input type={'password'} placeholder={'Парола'} />
                     <Button text={'Влез'} />
                     <AuthLinks
                         firstText={'Нямаш профил?'}
