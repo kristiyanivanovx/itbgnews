@@ -2,6 +2,9 @@
     width: 20%;
     display: flex;
 }
+.brand__logo {
+
+}
 
 .brand__title {
     font-size: 30px;
