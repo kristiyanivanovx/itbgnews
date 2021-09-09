@@ -6,8 +6,11 @@ import styles from '../styles/Search.module.css';
 const SearchBar = () => {
     return (
         <div className={styles.search__bar}>
-            <FontAwesomeIcon className={styles.icon__search} icon={faSearch} />
-            <input className={styles.search__bar__input} />
+                <FontAwesomeIcon
+                    className={styles.search__icon}
+                    icon={faSearch}
+                />
+                <input className={styles.search__bar__input} />
         </div>
     );
 };

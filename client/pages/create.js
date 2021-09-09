@@ -6,19 +6,33 @@ import Form from '../components/Form';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
 import AuthContainer from '../components/AuthContainer';
+import Brand from "../components/Brand";
+import SearchBar from "../components/SearchBar";
+import SideNav from "../components/SideNav";
+import FormContainer from "../components/FormContainer";
 
 const Create = () => {
     return (
         <>
+
             <HeadComponent currentPageName={'Създай Статия'} />
-            <AuthContainer>
+            <div className={"container"}>
+            <div className={"col"}>
+                <Brand />
+                <SearchBar />
+            </div>
+            <div className={"col"}>
+            <SideNav />
+            <FormContainer>
                 <FormTitle text={'Създай Статия'} />
                 <Form>
                     <Input placeholder={'Заглавие'} />
                     <Input placeholder={'Линк'} />
                     <Button text={'Създай'} />
                 </Form>
-            </AuthContainer>
+            </FormContainer>
+            </div>
+            </div>
         </>
     );
 };

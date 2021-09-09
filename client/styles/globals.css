@@ -28,6 +28,43 @@
     --fs-footer: 1rem;
 }
 
+@media (max-width: 1400px) {
+    :root {
+        --fs-h2: 2.5rem;
+        --fs-h3: 1.5rem;
+        --fs-h4: 1rem;
+
+        --fs-body: 1.2rem;
+        --fs-small: 0.5rem;
+        --fs-footer: 1rem;
+    }
+}
+
+@media (max-width: 800px) {
+    :root {
+        --fs-h2: 2rem;
+        --fs-h3: 1rem;
+        --fs-h4: .5rem;
+
+        --fs-body: 1.25rem;
+        --fs-small: 0.5rem;
+        --fs-footer: 1rem;
+    }
+}
+
+@media (max-width: 800px) {
+    :root {
+        --fs-h2: 2rem;
+        --fs-h3: 1rem;
+        --fs-h4: .5rem;
+
+        --fs-body: 1.25rem;
+        --fs-small: 0.5rem;
+        --fs-footer: 1rem;
+    }
+}
+
+
 body {
     background: var(--clr-background);
     font-family: var(--ff-primary);
@@ -99,10 +136,10 @@ a:hover {
 .col {
     display: flex;
     justify-content: space-between;
-
     /*margin: 40px 0 40px 0;*/
     margin-bottom: 40px;
 }
+
 
 .articles {
     width: 70%;
@@ -110,6 +147,26 @@ a:hover {
 
 .svg-inline--fa :global {
     font-size: unset;
+}
+
+
+@media (max-width: 800px) {
+    .articles {
+        width: 100%;
+    }
+
+}
+
+@media (max-width: 550px) {
+    :root {
+        --fs-h2: 2rem;
+        --fs-h3: 1rem;
+        --fs-h4: .5rem;
+
+        --fs-body: 1rem;
+        --fs-small: 0.5rem;
+        --fs-footer: 1rem;
+    }
 }
 
 /*#__next {*/

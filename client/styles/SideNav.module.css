@@ -27,3 +27,15 @@
 .active {
     color: pink;
 }
+
+@media (max-width: 1400px) {
+    .nav {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 800px) {
+    .nav {
+        display: none;
+    }
+}
