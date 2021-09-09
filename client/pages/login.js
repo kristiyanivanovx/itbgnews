@@ -7,8 +7,11 @@ import FormContainer from '../components/FormContainer';
 import Form from '../components/Form';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
+import { useRouter } from 'next/router';
 
 const Login = () => {
+    const router = useRouter();
+
     return (
         <>
             <HeadComponent currentPageName={'Login'} />
