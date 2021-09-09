@@ -1,12 +1,19 @@
 .article__regular {
     background: var(--clr-main);
-    height: 194px;
+    min-height: 194px;
     margin-bottom: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .article__votes {
     display: flex;
     flex-direction: column;
+}
+
+.article__votes svg {
+    margin-bottom: 5px;
 }
 
 .article__rounded {
@@ -26,7 +33,6 @@
 
 .article__main {
     padding: 1.5rem 1.5rem 1rem 1.5rem;
-    height: 80%;
     display: flex;
     justify-content: space-between;
 }
@@ -36,13 +42,25 @@
     justify-content: space-between;
     padding: 0 1.5rem 0 1.5rem;
     text-align: end;
+    margin-bottom: 0.5rem;
 }
 
-.small_text {
+.article__small__text {
     font-size: clamp(10px, 2vw, 1.3rem);
 }
 
 .article__information__icon {
     padding-right: 0.5rem;
     width: 2em !important;
+}
+
+@media (max-width: 600px) {
+    .article__small__text {
+        font-size: clamp(12px, 1vw, 1rem);
+    }
+
+    .article__information svg {
+        display: block;
+        margin: 0 auto 8px auto;
+    }
 }

@@ -1,6 +1,5 @@
 import React from 'react';
-import Brand from '../components/Brand';
-import SearchBar from '../components/SearchBar';
+import Header from '../components/Header';
 import SideNav from '../components/SideNav';
 import Profile from '../components/Profile';
 import HeadComponent from '../components/HeadComponent';
@@ -12,8 +11,7 @@ const MyProfile = () => {
             <HeadComponent currentPageName={'My Profile'} />
             <div className={'container'}>
                 <div className={'col'}>
-                    <Brand />
-                    <SearchBar />
+                    <Header />
                 </div>
                 <div className={'col'}>
                     <SideNav />

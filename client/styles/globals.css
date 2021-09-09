@@ -112,46 +112,23 @@ a:hover {
     font-size: unset;
 }
 
-/*@media (max-width: 1400px) {*/
-/*    :root {*/
-/*        --fs-h2: 2.5rem;*/
-/*        --fs-h3: 1.5rem;*/
-/*        --fs-h4: 1rem;*/
+@media (max-width: 600px) {
+    .container {
+        margin-top: 25px;
+    }
 
-/*        --fs-body: 1.2rem;*/
-/*        --fs-small: 0.5rem;*/
-/*        --fs-footer: 1rem;*/
-/*    }*/
-/*}*/
+    .articles {
+        width: 100%;
+    }
 
-/*@media (max-width: 800px) {*/
-/*    :root {*/
-/*        --fs-h2: 2rem;*/
-/*        --fs-h3: 1rem;*/
-/*        --fs-h4: .5rem;*/
+    .col {
+        margin-bottom: 20px;
+    }
 
-/*        --fs-body: 1.25rem;*/
-/*        --fs-small: 0.5rem;*/
-/*        --fs-footer: 1rem;*/
-/*    }*/
-
-/*    .articles {*/
-/*        width: 100%;*/
-/*    }*/
-
-/*}*/
-
-/*@media (max-width: 550px) {*/
-/*    :root {*/
-/*        --fs-h2: 2rem;*/
-/*        --fs-h3: 1rem;*/
-/*        --fs-h4: .5rem;*/
-
-/*        --fs-body: 1rem;*/
-/*        --fs-small: 0.5rem;*/
-/*        --fs-footer: 1rem;*/
-/*    }*/
-/*}*/
+    .search__bar {
+        margin-top: 10px;
+    }
+}
 
 /*#__next {*/
 /*    width: 100vw;*/
