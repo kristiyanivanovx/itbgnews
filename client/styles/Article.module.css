@@ -19,12 +19,13 @@
 }
 
 .article__votes__icon {
-  /*width: 70px;*/
-  /*height: 70px;*/
+  width: 25px !important;
+  height: 25px !important;
   font-weight: bold;
   color: var(--clr-white);
   background: var(--clr-purple);
   border-radius: 30px;
+  margin: 0 auto;
 }
 
 .article__main {
