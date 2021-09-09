@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const Post = require("../Models/post");
-const Comment = require("../Models/comment");
+const Post = require("../models/post");
+const Comment = require("../models/comment");
+const User = require("../models/user");
 
 //Gets post with specific Id
 let getPost = async (req, res, next) => {
@@ -19,7 +20,21 @@ let getPost = async (req, res, next) => {
   res.post = post;
   next();
 };
+let getUser = async (req, res, next) => {
+  let user;
+  try {
+    user = await User.findById(req.body.user_id);
+    if (!user)
+      return res
+        .status(404)
+        .json({ message: `Cannot find user with id: ${req.body.post_id}` });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
 
+  res.user = user;
+  next();
+};
 //Getting all Posts by page
 router.get("/", async (req, res) => {
   const page = req.query.page;
@@ -84,17 +99,39 @@ router.patch("/", getPost, async (req, res) => {
 });
 
 //Voting on a post
-router.patch("/upvote", async (req, res) => {
-  //I get user_id from frontend and if it does not match any upvoters I add the user
-  //to the upvoters else I find the user and remove him from the upvoters
-  //returns the total number of upvotes (upvoters.lenght)
-  //and mayble the user_ids' of all upvoters instead
-  //const post_id = req.body.post_id;
-  //const upvoter_id = req.body.user_id;
+router.patch("/upvote", getPost, getUser, async (req, res) => {
+  const post = res.post;
+  const user = res.user;
 
-  const post = await Post.findById(post_id);
-  //const user = await post.findById(user_id)
-  res.json(post);
+  //check if upvote exists
+  const upvoteExists = !!(await Post.findOne({
+    post,
+    upvoters: { $elemMatch: { user_id: res.user._id } },
+  }));
+
+  try {
+    if (upvoteExists) {
+      //remove the upvote
+      await Post.updateOne(post, {
+        $pull: { upvoters: { user_id: res.user._id } },
+      });
+
+      res.status(200).json({
+        count: post.upvoters.length,
+        message: `removed ${user.username}`,
+      });
+    } else {
+      //Add the upvote
+      post.upvoters.push({ user_id: user._id });
+      post.save();
+      res.status(201).json({
+        count: post.upvoters.length,
+        message: `added ${user.username}`,
+      });
+    }
+  } catch (err) {
+    res.status(304).json({ message: err.message });
+  }
 });
 
 //'Deletes' a Post (does not remove it from the database)

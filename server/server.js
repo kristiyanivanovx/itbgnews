@@ -32,15 +32,17 @@ app.listen(process.env.PORT, () => {
 --------------------------- Posts -----------------------------
 GET      /posts => returns posts post by page and limit
 GET      /posts/comments => returns the post and comments of post with id req.body must have (post_id)
-POST     /posts => adding a post req.body must have (text && url)
+POST     /posts => creating a post req.body must have (text && url)
 PATCH    /posts => updating a post req.body must have (post_id && (text || url))
 DELETE   /posts/ => deletes a post post by id (does not remove it from the server)
+PATCH    /posts/upvote => adds/removes an upvote req.body must have (post_id && user_id)
 
 --------------------------- Comments --------------------------
-POST     /comment => adding a comment to a post, req.body must have 
+POST     /comments => creating a comment to a post, req.body must have 
                     (parent_post_id && author_id && parent_comment_id && text)
 PATCH    /comments => updating a comment req.body must have (comment_id && text)
 DELETE   /comments => deletes a comment by id req.body must have(comment_id) (does not remove it from the server)
+PATCH    /comments/upvote => adds/removes an upvote req.body must have (comment_id && user_id)
 */
 
 /*

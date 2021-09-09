@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const Comment = require("../Models/comment");
-
+const Comment = require("../models/comment");
+const User = require("../models/user");
 //gets a comment with specific id
 let getComment = async (req, res, next) => {
   let comment;
@@ -16,6 +16,22 @@ let getComment = async (req, res, next) => {
   }
 
   res.comment = comment;
+  next();
+};
+
+let getUser = async (req, res, next) => {
+  let user;
+  try {
+    user = await User.findById(req.body.user_id);
+    if (!user)
+      return res
+        .status(404)
+        .json({ message: `Cannot find user with id: ${req.body.post_id}` });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+
+  res.user = user;
   next();
 };
 //Create a comment
@@ -36,7 +52,43 @@ router.post("/", async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
-//Updateting a comment and adding upvote
+//Adding/removing an upvote
+router.patch("/upvote", getComment, getUser, async (req, res) => {
+  const comment = res.comment;
+  const user = res.user;
+
+  //check if upvote exists
+  const upvoteExists = !!(await Comment.findOne({
+    comment,
+    upvoters: { $elemMatch: { user_id: res.user._id } },
+  }));
+
+  try {
+    if (upvoteExists) {
+      //remove the upvote
+      await Comment.updateOne(comment, {
+        $pull: { upvoters: { user_id: res.user._id } },
+      });
+
+      res.status(200).json({
+        count: comment.upvoters.length - 1,
+        message: `removed ${user.username}`,
+      });
+    } else {
+      //Add the upvote
+      comment.upvoters.push({ user_id: user._id });
+      comment.save();
+      res.status(201).json({
+        count: comment.upvoters.length,
+        message: `added ${user.username}`,
+      });
+    }
+  } catch (err) {
+    res.status(304).json({ message: err.message });
+  }
+});
+
+//Updateting a comment
 router.patch("/", getComment, async (req, res) => {
   let hasChanged = false;
   if (req.body.text) {

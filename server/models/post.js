@@ -4,7 +4,6 @@ const Schema = mongoose.Schema;
 const postSchema = new mongoose.Schema({
   text: {
     type: String,
-    required: true,
   },
   author: {
     type: Schema.Types.ObjectId,
@@ -12,13 +11,12 @@ const postSchema = new mongoose.Schema({
   },
   url: {
     type: String,
-    required: true,
   },
   upvoters: [
     {
       user_id: {
-        type: String,
-        required: true,
+        type: Schema.Types.ObjectId,
+        ref: "User",
       },
     },
   ],
@@ -26,16 +24,13 @@ const postSchema = new mongoose.Schema({
   //False => it has been deleted
   textContent: {
     type: Boolean,
-    required: true,
     default: true,
   },
   last_edit_date: {
     type: Date,
-    required: true,
   },
   creation_date: {
     type: Date,
-    required: false,
   },
 });
 
