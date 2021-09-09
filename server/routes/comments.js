@@ -6,11 +6,11 @@ const Comment = require("../Models/comment");
 let getComment = async (req, res, next) => {
   let comment;
   try {
-    comment = await Comment.findById(req.params.id);
+    comment = await Comment.findById(req.body.comment_id);
     if (!comment || !comment.textContent)
-      return res
-        .status(404)
-        .json({ message: `Cannot find comment with id: ${req.params.id}` });
+      return res.status(404).json({
+        message: `Cannot find comment with id: ${req.body.comment_id}`,
+      });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
@@ -18,7 +18,6 @@ let getComment = async (req, res, next) => {
   res.comment = comment;
   next();
 };
-
 //Create a comment
 router.post("/", async (req, res) => {
   const comment = new Comment({
@@ -38,29 +37,28 @@ router.post("/", async (req, res) => {
   }
 });
 //Updateting a comment and adding upvote
-router.patch("/:id", async (req, res) => {
+router.patch("/", getComment, async (req, res) => {
+  let hasChanged = false;
   if (req.body.text) {
-    res.post.text = req.body.text;
+    res.comment.text = req.body.text;
+    hasChanged = true;
   }
-  //IDK HOW THE UPVOTE SYSTEM SHOULD WORK
-  //FOR NOW IF ACTIVATES IF THERE IS ANY VAULE != NULL IN req.body.upvote
-  /*if (req.body.upvote) {
-    res.post.upvote += 1;
-  }*/
+  if (hasChanged) res.comment.last_edit_date = Date.now();
+
   try {
-    const updatedComment = await res.comment.save();
-    res.comment.last_edit_date = Date.now();
-    res.json(updatedComment);
+    if (!hasChanged) res.status(304).json({ message: "Nothing was changed." });
+    const updated = await res.comment.save();
+    res.status(200).json(updated);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });
 //'Deletes' a comment (does not remove it from the database)
-router.delete("/:id", getComment, async (req, res) => {
+router.delete("/", getComment, async (req, res) => {
   try {
     res.comment.textContent = false;
     await res.comment.save();
-    res.json({ message: "comment deleted!" });
+    res.status(200).json({ message: "comment deleted!" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

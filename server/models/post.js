@@ -8,17 +8,20 @@ const postSchema = new mongoose.Schema({
   },
   author: {
     type: Schema.Types.ObjectId,
-    required: true,
     ref: "User",
   },
   url: {
     type: String,
     required: true,
   },
-  upvotes: {
-    type: Number,
-    default: 0
-  },
+  upvoters: [
+    {
+      user_id: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
   //if textContent is true then the file is available.
   //False => it has been deleted
   textContent: {
@@ -32,7 +35,7 @@ const postSchema = new mongoose.Schema({
   },
   creation_date: {
     type: Date,
-    required: true,
+    required: false,
   },
 });
 

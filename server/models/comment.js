@@ -22,10 +22,15 @@ const commentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  upvotes: {
-    type: Number,
-    default: 0,
-  },
+  //Create systrem for upvotes
+  upvoters: [
+    {
+      user_id: {
+        type: Schema.Types.ObjectId,
+        required: true,
+      },
+    },
+  ],
   //if textContent is true then the file is available.
   //False => it has been deleted
   textContent: {
@@ -35,11 +40,10 @@ const commentSchema = new mongoose.Schema({
   },
   last_edit_date: {
     type: Date,
-    required: true,
+    required: false,
   },
   creation_date: {
     type: Date,
-    required: true,
   },
 });
 
