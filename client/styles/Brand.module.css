@@ -1,0 +1,9 @@
+.brand {
+    width: 20%;
+    display: flex;
+}
+
+.brand__title {
+    font-size: 30px;
+    margin: auto 0 auto 1rem;
+}

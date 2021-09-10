@@ -1,33 +1,20 @@
+require('dotenv').config();
+
 const express = require('express');
 const app = express();
-const passport = require('passport');
-const session = require('express-session');
-const usersSchema = require('./models/user-schema');
-const initializePassport = require('./utils/passport-config');
-const routes = require('./routes/login-route');
+const cors = require('cors');
 
-const reset = require('./routes/reset-pass');
+app.use(cors());
+app.use(express.json());
 
-const dotenv = require('dotenv');
-dotenv.config();
+const loginRoutes = require('./routes/login-route');
+const resetRoutes = require('./routes/reset-pass');
+const authRoutes = require('./routes/auth-route');
 
-app.get('/', (req, res) => {
-   res.send("Fuck you");
-})
+app.use('', authRoutes);
+app.use('', loginRoutes);
+app.use('', resetRoutes);
 
-app.use('', reset);
-
-initializePassport(passport);
-// all middlewares needed for app
-app.use(
-   session({
-      secret: '12',
-      resave: false,
-      saveUninitialized: false
-   })
-);
-app.use(session());
-app.use(passport.initialize());
-app.use(passport.session());
-app.use('', routes);
-app.listen(process.env.PORT);
+app.listen(process.env.PORT, () => {
+    console.log(`Listening on port ${process.env.BACKEND_PORT}...`);
+});

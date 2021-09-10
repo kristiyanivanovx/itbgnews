@@ -3,40 +3,15 @@ Project of the web development study group in IT Bulgaria
 
 Used for a starting point - https://github.com/bradtraversy/react_express_starter
 
-## How to start (React + Express)
-
-``` bash
-# Install dependencies for server
-npm install
-
-# Install dependencies for client
-npm run client-install
-
-# Run the client & server with concurrently 
-npm run dev
-
-# Run the Express server only
-npm run server
-
-# Run the React client only
-npm run client
-
-# Server runs on http://localhost:5000 and client on http://localhost:3000
-# Note: all the commands above are executed in /src/server
-```
-
-## How to start (Next + Express)
+## How to start
 
 ```bash
-# Install dependencies for server (in /src/server)
-npm install
+# Install dependencies for server 
+npm run server-install
 
-# Run the Express server (in /src/server)
-npm run server
+# Install dependencies for Next
+npm run client-install
 
-# Install dependencies for Next (in /src/next)
-npm install
-
-# Run the Next client
-npm run start (or npm run dev)
+# Run the Express server and Next server concurrently
+npm run dev
 ```

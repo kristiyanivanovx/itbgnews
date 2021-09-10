@@ -1,42 +1,33 @@
-import styles from "../styles/Home.module.css";
-import React from "react";
-import Navbar from "./navbar";
-import Link from "next/link";
-import Footer from "./footer";
+import React, { useState } from 'react';
+import Input from '../components/Input';
+import Button from '../components/Button';
+import FormTitle from '../components/FormTitle';
+import AuthLinks from '../components/AuthLinks';
+import FormContainer from '../components/FormContainer';
+import Form from '../components/Form';
+import HeadComponent from '../components/HeadComponent';
+import getDefaultLayout from '../utilities/getDefaultLayout';
 
-function Login() {
+const Login = () => {
     return (
-        <div>
-            <Navbar/>
-            <main className={styles.main}>
-                <h1 className={styles.title}>
-                    <Link href="/login">
-                        <a>Login</a>
-                    </Link>
-                </h1>
+        <>
+            <HeadComponent currentPageName={'Login'} />
+            <FormContainer>
+                <FormTitle text={'Вход'} />
+                <Form>
+                    <Input type={'text'} placeholder={'Имейл'} />
+                    <Input type={'password'} placeholder={'Парола'} />
+                    <Button text={'Влез'} />
+                    <AuthLinks
+                        firstText={'Нямаш профил?'}
+                        secondText={'Забравена парола?'}
+                    />
+                </Form>
+            </FormContainer>
+        </>
+    );
+};
 
-                <div className={styles.grid}>
-                    <div className={styles.card}>
-                        <form action="/" method="POST">
-                            <label htmlFor="username">Username</label>
-                            <br/>
-
-                            <input id="username" type="text" autoComplete="username" required/>
-                            <br/>
-
-                            <label htmlFor="password">Password</label>
-                            <br/>
-                            <input id="password" type="text" autoComplete="name" required/>
-                            <br/>
-
-                            <button type="submit">Login</button>
-                        </form>
-                    </div>
-                </div>
-            </main>
-            <Footer/>
-        </div>
-    )
-}
+Login.getLayout = getDefaultLayout;
 
 export default Login;
