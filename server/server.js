@@ -15,7 +15,7 @@ app.get('/', (req, res) => {
    res.send("Fuck you");
 })
 
-app.use('/login', reset);
+app.use('', reset);
 
 initializePassport(passport);
 // all middlewares needed for app

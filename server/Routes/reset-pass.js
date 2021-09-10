@@ -4,23 +4,22 @@ const router = app.Router();
 const verifySchema = require('../models/verify-schema');
 const userSchema = require('../models/user-schema');
 
-const mail = require('@sendgrid/mail');
+const {mail} = require('../models/mailMessage');
 const crypto = require('crypto');
 
-const message = require('../models/mailMessage');
+const { createMessage } = require('../models/mailMessage');
 const dotenv = require('dotenv');
 
 const { hash } = require('bcrypt');
 
 dotenv.config();
 
-mail.setApiKey(process.env.MAIL_API);
-
 router.use(app.json());
 
 router.post('/password-reset', async (req, res) => {
     const { token, mail, password } = req.body;
-
+    
+    console.log(password);
     const encryptedPassword = await hash(password, 10);
     console.log(verifySchema.findOneAndDelete({token: token}, function(err, docs) {
         if(err)
@@ -39,6 +38,14 @@ router.post('/password-reset', async (req, res) => {
     console.log("HERE?");
 });
 
+/*
+{
+    "token": "d19e3772914ca2ac",
+    "mail": "galinaliobomirova@gmail.com",
+    "password": "321"
+}
+*/
+
 router.patch('/forgotten', (req, res) => {
 
     console.log(req.body);
@@ -55,7 +62,7 @@ router.patch('/forgotten', (req, res) => {
         console.log(`${req.body.mail} has been added successfully`);
     });
 
-    const msg = message(req.body.mail, code);
+    const msg = createMessage(req.body.mail, code);
     
     mail.send(msg)
         .then((response) => {
