@@ -11,13 +11,32 @@ import {
     EXISTING_USER_ERROR_CODE,
     SUCCESSFUL_REGISTRATION_MESSAGE,
 } from '../utilities/common';
+import Router from 'next/router';
 
 const Register = () => {
+    const [modalMessage, setModalMessage] = useState('');
     const [shouldDisplay, setShouldDisplay] = useState(false);
     const [errors, setErrors] = useState({});
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    function toggleModal() {
+        setShouldDisplay((shouldDisplay) => !shouldDisplay);
+    }
+
+    const checkResponse = (result) => {
+        if (result.message === SUCCESSFUL_REGISTRATION_MESSAGE) {
+            setModalMessage(() => 'Регистрирахте се успешно!');
+            toggleModal();
+            setTimeout(() => Router.push('/login'), 2000);
+        } else if (result.data?.code === EXISTING_USER_ERROR_CODE) {
+            setModalMessage(
+                () => 'Потребител с това име или имейл вече съществува.',
+            );
+            toggleModal();
+        }
+    };
 
     const submitForm = async () => {
         let jsonData = JSON.stringify({ username, email, password });
@@ -33,24 +52,15 @@ const Register = () => {
         let result = await response.json();
         setErrors(() => result);
 
-        if (result.message === SUCCESSFUL_REGISTRATION_MESSAGE) {
-            toggleModal();
-        } else if (result.data?.code === EXISTING_USER_ERROR_CODE) {
-            console.log('User with that username or password already exists.');
-        }
+        checkResponse(result);
     };
-
-    function toggleModal() {
-        setShouldDisplay((shouldDisplay) => !shouldDisplay);
-    }
 
     return (
         <>
             <HeadComponent currentPageName={'Register'} />
             <FormContainer>
                 <Modal
-                    text={'Регистрирахте се успешно!'}
-                    message={'Влезте от тук.'}
+                    text={modalMessage}
                     shouldDisplay={shouldDisplay}
                     toggleModal={(shouldDisplay) =>
                         setShouldDisplay(!shouldDisplay)
