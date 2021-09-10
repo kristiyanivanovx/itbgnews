@@ -2,6 +2,7 @@ const User = require('../models/user-schema');
 const jwt = require('jsonwebtoken');
 const redis_client = require('../config/redis-connect');
 const bcrypt = require('bcrypt');
+const { makeRefresh } = require('../utilities/generatingTokens');
 
 async function Register(req, res) {
    const { username, password, email } = req.body;
@@ -14,10 +15,11 @@ async function Register(req, res) {
 
    try {
       const saved_user = await user.save();
+      const [access_token, refresh_token] = makeRefresh(saved_user._id);
       res.json({
          status: true,
          message: 'Registered successfully.',
-         data: saved_user
+         data: { access_token, refresh_token }
       });
    } catch (error) {
       res.status(400).json({
@@ -29,7 +31,6 @@ async function Register(req, res) {
 }
 
 async function Login(req, res) {
-   console.log(req.body);
    const { password, email } = req.body;
 
    try {
@@ -42,27 +43,19 @@ async function Login(req, res) {
             status: false,
             message: 'There is not such username in the database'
          });
-      console.log(user);
       const isValid = await bcrypt.compare(password, user.password);
       if (!isValid) {
          res.status(401).json({
             error: 'Incorrect password'
          });
       }
-      const access_token = jwt.sign(
-         { sub: user._id },
-         process.env.JWT_ACCESS_SECRET,
-         { expiresIn: process.env.JWT_ACCESS_TIME }
-      );
-      console.log('access_token', access_token);
-      const refresh_token = GenerateRefreshToken(user._id);
+      const [access_token, refresh_token] = makeRefresh(user.id);
       return res.json({
          status: true,
          message: 'login success',
          data: { access_token, refresh_token }
       });
    } catch (error) {
-      console.log(error);
       return res
          .status(401)
          .json({ status: true, message: 'login fail', data: error });
@@ -83,36 +76,13 @@ async function Logout(req, res) {
 }
 
 function GetAccessToken(req, res) {
-   const user_id = req.userData.sub;
-   const access_token = jwt.sign(
-      { sub: user_id },
-      process.env.JWT_ACCESS_SECRET,
-      { expiresIn: process.env.JWT_ACCESS_TIME }
-   );
-   const refresh_token = GenerateRefreshToken(user_id);
+   const userId = req.userData.sub;
+   const [access_token, refresh_token] = makeRefresh(userId);
    return res.json({
       status: true,
       message: 'success',
       data: { access_token, refresh_token }
    });
-}
-
-function GenerateRefreshToken(user_id) {
-   const refresh_token = jwt.sign(
-      { sub: user_id },
-      process.env.JWT_REFRESH_SECRET,
-      { expiresIn: process.env.JWT_REFRESH_TIME }
-   );
-   redis_client.get(user_id.toString(), (err, data) => {
-      if (err) throw err;
-
-      redis_client.set(
-         user_id.toString(),
-         JSON.stringify({ token: refresh_token })
-      );
-   });
-
-   return refresh_token;
 }
 
 module.exports = {

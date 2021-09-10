@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 mongoose
-   .connect('mongodb://localhost:27017/hackerNews')
+   .connect(process.env.MONGO_CONNECT_STRING)
    .then((er) => console.log('Connected to MongoDB...'))
-   .catch((er) => console.log('Cannot connect to MongoDB'));
+   .catch((er) => console.log('Cannot connect to MongoDB...'));
 
 module.exports = mongoose;

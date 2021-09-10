@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const redis_client = require('../config/redis-connect');
-
+const { validateEmail } = require('../utilities/validateEmail');
 function verifyToken(req, res, next) {
    try {
       // Bearer tokenstring
@@ -11,7 +11,7 @@ function verifyToken(req, res, next) {
 
       req.token = token;
 
-      // varify blacklisted access token.
+      // verify blacklisted access token.
       redis_client.get('BL_' + decoded.sub.toString(), (err, data) => {
          if (err) throw err;
 
@@ -19,9 +19,10 @@ function verifyToken(req, res, next) {
             return res
                .status(401)
                .json({ status: false, message: 'blacklisted token.' });
-         next();
       });
+      next();
    } catch (error) {
+      console.log(error);
       return res.status(401).json({
          status: false,
          message: 'Your session is not valid.',
@@ -32,7 +33,6 @@ function verifyToken(req, res, next) {
 
 function verifyRefreshToken(req, res, next) {
    const token = req.body.token;
-
    if (token === null)
       return res
          .status(401)
@@ -56,7 +56,7 @@ function verifyRefreshToken(req, res, next) {
                message: 'Invalid request. Token is not same in store.'
             });
 
-         next();
+         return next();
       });
    } catch (error) {
       return res.status(401).json({
@@ -67,23 +67,27 @@ function verifyRefreshToken(req, res, next) {
    }
 }
 
-function validateEmail(email) {
-   const re =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-   return re.test(email.toLowerCase());
-}
-
 function validateInputData(req, res, next) {
    const re = /\d/;
-   const { username, password, email } = req.body;
-   if (username.length < 6 || username.length > 14)
-      res.send('Username must be at least 6 letters and at most 14');
-   else if (!validateEmail(email)) res.send('This email is not valid');
-   else if (password.length < 6 || password.length > 20 || !re.test(password)) {
-      res.send(
-         'The password must have one digit at least, and to be between 6 and 20 symbols'
-      );
+   const { password, username, email } = req.body;
+   let errors = {};
+
+   if (username.length < 6 || username.length > 14) {
+      errors.errorUsername =
+         'Username must be at least 7 letters and at most 14.';
    }
+   if (!validateEmail(email)) {
+      errors.errorEmail = 'The provided email is not valid.';
+   }
+   if (password.length < 6 || password.length > 20 || !re.test(password)) {
+      errors.errorPassword =
+         'The password must have one digit at least, and to be between 7 and 20 symbols';
+   }
+   // isEmpty [made by kris]
+   if (Object.keys(errors).length) {
+      res.json(errors);
+   }
+
    next();
 }
 
