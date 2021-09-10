@@ -41,12 +41,12 @@ async function Login(req, res) {
       if (user === null)
          res.status(401).json({
             status: false,
-            message: 'There is not such username in the database'
+            errorEmail: 'There is not such email in the database'
          });
       const isValid = await bcrypt.compare(password, user.password);
       if (!isValid) {
          res.status(401).json({
-            error: 'Incorrect password'
+            errorPassword: 'Incorrect password'
          });
       }
       const [access_token, refresh_token] = makeRefresh(user.id);
