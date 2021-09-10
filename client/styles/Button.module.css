@@ -27,7 +27,7 @@
     border-radius: 10px;
 }
 
-.btn__text{
+.btn__text {
     position: absolute;
     left: 0;
     right: 0;
@@ -39,4 +39,19 @@
     text-align: center;
 
     color: var(--clr-white);
+}
+
+@media (max-width: 600px) {
+    .btn {
+        width: 296px;
+        height: 46px;
+    }
+
+    .btn__text {
+        left: 0;
+        right: 0;
+        top: 11px;
+        bottom: 0;
+        font-size: 18px;
+    }
 }
