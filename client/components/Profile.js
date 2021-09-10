@@ -49,11 +49,10 @@ const Profile = () => {
                     <div className={styles.profile__top}>
                         <h3 className={styles.user__name}>Никола</h3>
                         <button className={styles.exit__btn}>
-                            <div className={styles.exit__btn__background}>
-                                {' '}
-                            </div>
                             <div className={styles.exit__btn__shadow}> </div>
-                            <div className={styles.exit__btn__text}>Изход</div>
+                            <span className={styles.exit__btn__text}>
+                                Изход
+                            </span>
                         </button>
                     </div>
                     <div className={styles.user__bio}>Да жиевее българия.</div>
