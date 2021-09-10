@@ -72,14 +72,14 @@ function validateInputData(req, res, next) {
    const { password, username, email } = req.body;
    let errors = {};
 
-   if (username.length < 6 || username.length > 14) {
+   if (username.length < 6 || username.length > 100000) {
       errors.errorUsername =
          'Username must be at least 7 letters and at most 14.';
    }
    if (!validateEmail(email)) {
       errors.errorEmail = 'The provided email is not valid.';
    }
-   if (password.length < 6 || password.length > 20 || !re.test(password)) {
+   if (password.length < 6 || password.length > 100000 || !re.test(password)) {
       errors.errorPassword =
          'The password must have one digit at least, and to be between 7 and 20 symbols';
    }
