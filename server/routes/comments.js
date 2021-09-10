@@ -1,40 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const Comment = require("../models/comment");
-const User = require("../models/user");
-//gets a comment with specific id
-let getComment = async (req, res, next) => {
-  let comment;
-  try {
-    comment = await Comment.findById(req.body.comment_id);
-    if (!comment || !comment.textContent)
-      return res.status(404).json({
-        message: `Cannot find comment with id: ${req.body.comment_id}`,
-      });
-  } catch (err) {
-    return res.status(500).json({ message: err.message });
-  }
+const { getComment, getUser } = require("../functions/getters");
 
-  res.comment = comment;
-  next();
-};
-
-let getUser = async (req, res, next) => {
-  let user;
-  try {
-    user = await User.findById(req.body.user_id);
-    if (!user)
-      return res
-        .status(404)
-        .json({ message: `Cannot find user with id: ${req.body.post_id}` });
-  } catch (err) {
-    return res.status(500).json({ message: err.message });
-  }
-
-  res.user = user;
-  next();
-};
-//Create a comment
+//Create a comment ✔
 router.post("/", async (req, res) => {
   const comment = new Comment({
     parent_post_id: req.body.parent_post_id,
@@ -52,11 +21,14 @@ router.post("/", async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
-//Adding/removing an upvote
+//Adding/removing an upvote ✔
 router.patch("/upvote", getComment, getUser, async (req, res) => {
   const comment = res.comment;
   const user = res.user;
 
+  if (String(comment.author_id) === String(user._id)) {
+    res.status(405).json({ message: "You can't vote on your own comment!" });
+  }
   //check if upvote exists
   const upvoteExists = !!(await Comment.findOne({
     comment,
@@ -88,7 +60,7 @@ router.patch("/upvote", getComment, getUser, async (req, res) => {
   }
 });
 
-//Updateting a comment
+//Updateting a comment ✔
 router.patch("/", getComment, async (req, res) => {
   let hasChanged = false;
   if (req.body.text) {
@@ -105,15 +77,22 @@ router.patch("/", getComment, async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
-//'Deletes' a comment (does not remove it from the database)
-router.delete("/", getComment, async (req, res) => {
-  try {
-    res.comment.textContent = false;
-    await res.comment.save();
-    res.status(200).json({ message: "comment deleted!" });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+//'Deletes' a comment (does not remove it from the database) ✔
+router.delete("/", getComment, getUser, async (req, res) => {
+  const comment = res.comment;
+  const user = res.user;
+
+  if (String(comment.author_id) === String(user._id)) {
+    try {
+      comment.textContent = false;
+      await comment.save();
+      res.status(200).json({ message: "comment deleted!" });
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+    return;
   }
+  res.status(401).json({ message: "The user does not own the comment!" });
 });
 
 module.exports = router;

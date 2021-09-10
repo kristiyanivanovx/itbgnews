@@ -1,41 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const Post = require("../models/post");
-const Comment = require("../models/comment");
-const User = require("../models/user");
+const { getPost, getUser, getComments } = require("../functions/getters");
 
-//Gets post with specific Id
-let getPost = async (req, res, next) => {
-  let post;
-  try {
-    post = await Post.findById(req.body.post_id);
-    if (!post || !post.textContent)
-      return res
-        .status(404)
-        .json({ message: `Cannot find post with id: ${req.body.post_id}` });
-  } catch (err) {
-    return res.status(500).json({ message: err.message });
-  }
-
-  res.post = post;
-  next();
-};
-let getUser = async (req, res, next) => {
-  let user;
-  try {
-    user = await User.findById(req.body.user_id);
-    if (!user)
-      return res
-        .status(404)
-        .json({ message: `Cannot find user with id: ${req.body.post_id}` });
-  } catch (err) {
-    return res.status(500).json({ message: err.message });
-  }
-
-  res.user = user;
-  next();
-};
-//Getting all Posts by page
+//Getting all Posts by page ✔
 router.get("/", async (req, res) => {
   const page = req.query.page;
   const limit = req.query.limit;
@@ -50,25 +18,23 @@ router.get("/", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
-//Getting comments and post by post id
+//Getting comments and post by post id ✔
 router.get("/comments", getPost, async (req, res) => {
   try {
-    let comments = await Comment.find({
-      parent_post_id: res.post._id,
-      textContent: true,
-    });
-    res.json({ post: res.post, comments });
+    let comments = await getComments(res);
+    res.status(200).json({ post: res.post, comments });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
-
-//Additng a Post
+//Creating a Post ✔
 router.post("/", async (req, res) => {
   const post = new Post({
     text: req.body.text,
     url: req.body.url,
-    date: Date.now(),
+    author_id: req.body.user_id,
+    last_edit_date: Date.now(),
+    creation_date: Date.now(),
   });
   try {
     const newPost = await post.save();
@@ -77,7 +43,7 @@ router.post("/", async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
-//Updateting a Post
+//Updateting a Post ✔
 router.patch("/", getPost, async (req, res) => {
   let hasChanged = false;
   if (req.body.text) {
@@ -90,7 +56,8 @@ router.patch("/", getPost, async (req, res) => {
   }
   if (hasChanged) res.post.last_edit_date = Date.now();
   try {
-    if (!hasChanged) res.status(304).json({ message: "Nothing was changed." });
+    if (!hasChanged) res.status(400).json({ message: "Nothing was changed." });
+
     const updated = await res.post.save();
     res.status(200).json(updated);
   } catch (err) {
@@ -98,10 +65,14 @@ router.patch("/", getPost, async (req, res) => {
   }
 });
 
-//Voting on a post
+//Voting on a post ✔
 router.patch("/upvote", getPost, getUser, async (req, res) => {
   const post = res.post;
   const user = res.user;
+
+  if (String(post.author_id) === String(user._id)) {
+    res.status(405).json({ message: "You can't vote on your own post!" });
+  }
 
   //check if upvote exists
   const upvoteExists = !!(await Post.findOne({
@@ -117,7 +88,7 @@ router.patch("/upvote", getPost, getUser, async (req, res) => {
       });
 
       res.status(200).json({
-        count: post.upvoters.length,
+        count: post.upvoters.length - 1,
         message: `removed ${user.username}`,
       });
     } else {
@@ -134,15 +105,22 @@ router.patch("/upvote", getPost, getUser, async (req, res) => {
   }
 });
 
-//'Deletes' a Post (does not remove it from the database)
-router.delete("/", getPost, async (req, res) => {
-  try {
-    res.post.textContent = false;
-    await res.post.save();
-    res.status(200).json({ message: "post deleted!" });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+//'Deletes' a Post (does not remove it from the database) ✔
+router.delete("/", getPost, getUser, async (req, res) => {
+  const post = res.post;
+  const user = res.user;
+
+  if (String(post.author_id) === String(user._id)) {
+    try {
+      res.post.textContent = false;
+      await res.post.save();
+      res.status(200).json({ message: "post deleted!" });
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+    return;
   }
+  res.status(401).json({ message: "The user does not own the post!" });
 });
 
 module.exports = router;

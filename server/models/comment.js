@@ -18,7 +18,6 @@ const commentSchema = new mongoose.Schema({
   text: {
     type: String,
   },
-  //Create systrem for upvotes
   upvoters: [
     {
       user_id: {
