@@ -1,6 +1,6 @@
-const User = require('../models/user-schema');
+const User = require('../models/userSchema');
 const jwt = require('jsonwebtoken');
-const redis_client = require('../config/redis-connect');
+const redis_client = require('../config/redisConfig');
 const bcrypt = require('bcrypt');
 
 async function Register(req, res) {
@@ -29,7 +29,6 @@ async function Register(req, res) {
 }
 
 async function Login(req, res) {
-    console.log(req.body);
     const { password, email } = req.body;
 
     try {
@@ -40,12 +39,12 @@ async function Login(req, res) {
         if (user === null) {
             res.status(401).json({
                 status: false,
-                message: 'There is not such username in the database',
+                message: 'There is no such user in the database.',
             });
         }
 
-        console.log(user);
         const isValid = await bcrypt.compare(password, user.password);
+
         if (!isValid) {
             res.status(401).json({
                 error: 'Incorrect password',
@@ -56,7 +55,9 @@ async function Login(req, res) {
             process.env.JWT_ACCESS_SECRET,
             { expiresIn: process.env.JWT_ACCESS_TIME },
         );
+
         console.log('access_token', access_token);
+
         const refresh_token = GenerateRefreshToken(user._id);
         return res.json({
             status: true,
@@ -106,7 +107,9 @@ function GenerateRefreshToken(user_id) {
         { expiresIn: process.env.JWT_REFRESH_TIME },
     );
     redis_client.get(user_id.toString(), (err, data) => {
-        if (err) throw err;
+        if (err) {
+            throw err;
+        }
 
         redis_client.set(
             user_id.toString(),
