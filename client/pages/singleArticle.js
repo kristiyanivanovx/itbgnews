@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../styles/Header.module.css';
+import styles from '../styles/SingleArticle.module.css';
 import Article from '../components/Article';
 import Comment from '../components/Comment';
 import Header from '../components/Header';

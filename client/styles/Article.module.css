@@ -10,10 +10,14 @@
 .article__votes {
     display: flex;
     flex-direction: column;
+    text-align: center;
+    margin-left: 6px;
 }
 
 .article__votes svg {
+    padding: 4px;
     margin-bottom: 5px;
+    width: 2em !important;
 }
 
 .article__rounded {
@@ -37,11 +41,14 @@
     justify-content: space-between;
 }
 
+.article__title {
+    flex: 1;
+}
+
 .article__information {
     display: flex;
     justify-content: space-between;
     padding: 0 1.5rem 0 1.5rem;
-    text-align: end;
     margin-bottom: 0.5rem;
 }
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import styles from '../styles/Comment.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -9,7 +9,22 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 const Comment = ({ title, link, username, hours, comments, upvotes, tabs }) => {
-    const width = 100 - tabs * 10;
+    // const [windowVar, setWindowVar] = useState(null);
+    const [tabsPercent, setTabsPercent] = useState(5);
+
+    // useEffect(() => {
+    //     console.log(window, !window);
+    //     setWindowVar(window);
+    // }, []);
+
+    // useEffect(() => {
+    //     if (!window) return;
+    //     if (windowVar.innerWidth <= 600) {
+    //         tabsPercent = 2;
+    //     }
+    // }, [windowVar]);
+
+    const width = 100 - tabs * tabsPercent;
 
     return (
         <div className={styles.comment__border} style={{ width: width + '%' }}>
@@ -18,7 +33,9 @@ const Comment = ({ title, link, username, hours, comments, upvotes, tabs }) => {
                     <p className={styles.comment__title}>
                         <a href={link}> {title}</a>
                     </p>
-                    <div className={styles.comment__votes}>
+                    <div
+                        className={`${styles.comment__votes} ${styles.comment__small__text}`}
+                    >
                         <FontAwesomeIcon
                             className={styles.comment__votes__icon}
                             icon={faChevronUp}
@@ -26,7 +43,9 @@ const Comment = ({ title, link, username, hours, comments, upvotes, tabs }) => {
                         {upvotes} гласа
                     </div>
                 </div>
-                <div className={styles.comment__information}>
+                <div
+                    className={`${styles.comment__information} ${styles.comment__small__text}`}
+                >
                     <div>
                         <FontAwesomeIcon
                             icon={faUser}
