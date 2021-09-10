@@ -16,20 +16,19 @@ function verifyToken(req, res, next) {
          if (err) throw err;
 
          if (data === token)
-            return res.status(401).json({
-               status: false,
-               message: 'blacklisted token.'
-            });
+            return res
+               .status(401)
+               .json({ status: false, message: 'blacklisted token.' });
       });
+      next();
    } catch (error) {
       console.log(error);
-      res.status(401).json({
+      return res.status(401).json({
          status: false,
          message: 'Your session is not valid.',
          data: error
       });
    }
-   next();
 }
 
 function verifyRefreshToken(req, res, next) {

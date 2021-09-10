@@ -1,28 +1,13 @@
 require('dotenv').config();
 
 const BACKEND_PORT = process.env.BACKEND_PORT || 5000;
-const PORT = process.env.BACKEND_PORT || 5000;
-const ENV = process.env.NODE_ENV || 'development';
+const ENV = process.env.NODE_ENV;
 
-//const mongoose = require("mongoose");
 const express = require('express');
 const cors = require('cors');
-const cookieParser = require('cookie-parser');
-
 const app = express();
 
-// mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true });
-// const db = mongoose.connection;
-// db.on("error", (err) => {
-//   console.error(err);
-// });
-
-// db.once("open", () => {
-//   console.log("Connected to DB");
-// });
-
 app.use(cors());
-app.use(cookieParser());
 app.use(express.json());
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
