@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
-import styles from '../styles/Article.module.css';
-import commentStyles from '../styles/Comment.module.css';
+import { useState, useEffect } from 'react';
+import styles from '../styles/Comment.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faChevronUp,
@@ -10,49 +9,67 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 const Comment = ({ title, link, username, hours, comments, upvotes, tabs }) => {
-    const width = 100 - tabs * 10;
+    // const [windowVar, setWindowVar] = useState(null);
+    const [tabsPercent, setTabsPercent] = useState(5);
+
+    // useEffect(() => {
+    //     console.log(window, !window);
+    //     setWindowVar(window);
+    // }, []);
+
+    // useEffect(() => {
+    //     if (!window) return;
+    //     if (windowVar.innerWidth <= 600) {
+    //         tabsPercent = 2;
+    //     }
+    // }, [windowVar]);
+
+    const width = 100 - tabs * tabsPercent;
 
     return (
-        <article
-            className={commentStyles.comment__regular}
-            style={{ width: width + '%' }}
-        >
-            <div className={styles.article__main}>
-                <h2 className={styles.article__title}>
-                    <a href={link}> {title}</a>
-                </h2>
-                <div className={styles.article__votes}>
-                    <FontAwesomeIcon
-                        className={styles.article__votes__icon}
-                        icon={faChevronUp}
-                    />
-                    {upvotes} гласа
+        <div className={styles.comment__border} style={{ width: width + '%' }}>
+            <div className={styles.comment__regular}>
+                <div className={styles.comment__main}>
+                    <p className={styles.comment__title}>
+                        <a href={link}> {title}</a>
+                    </p>
+                    <div
+                        className={`${styles.comment__votes} ${styles.comment__small__text}`}
+                    >
+                        <FontAwesomeIcon
+                            className={styles.comment__votes__icon}
+                            icon={faChevronUp}
+                        />
+                        {upvotes} гласа
+                    </div>
+                </div>
+                <div
+                    className={`${styles.comment__information} ${styles.comment__small__text}`}
+                >
+                    <div>
+                        <FontAwesomeIcon
+                            icon={faUser}
+                            className={styles.comment__information__icon}
+                        />
+                        от {username}
+                    </div>
+                    <div>
+                        <FontAwesomeIcon
+                            icon={faClock}
+                            className={styles.comment__information__icon}
+                        />
+                        преди {hours} часа
+                    </div>
+                    <div>
+                        <FontAwesomeIcon
+                            icon={faComment}
+                            className={styles.comment__information__icon}
+                        />
+                        {comments} коментара
+                    </div>
                 </div>
             </div>
-            <div className={styles.article__information}>
-                <div>
-                    <FontAwesomeIcon
-                        icon={faUser}
-                        className={styles.article__information__icon}
-                    />
-                    от {username}
-                </div>
-                <div>
-                    <FontAwesomeIcon
-                        icon={faClock}
-                        className={styles.article__information__icon}
-                    />
-                    преди {hours} часа
-                </div>
-                <div>
-                    <FontAwesomeIcon
-                        icon={faComment}
-                        className={styles.article__information__icon}
-                    />
-                    {comments} коментара
-                </div>
-            </div>
-        </article>
+        </div>
     );
 };
 

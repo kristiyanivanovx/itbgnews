@@ -12,7 +12,14 @@
     top: 6.15%;
     bottom: -6.15%;
 
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), linear-gradient(264.39deg, #BA2BAC -36.33%, #E655E8 20.2%, #6369FA 106.31%, rgba(255, 6, 230, 0) 130.66%);
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
+        linear-gradient(
+            264.39deg,
+            #ba2bac -36.33%,
+            #e655e8 20.2%,
+            #6369fa 106.31%,
+            rgba(255, 6, 230, 0) 130.66%
+        );
     border-radius: 10px;
 }
 
@@ -23,21 +30,41 @@
     top: 0;
     bottom: 0;
 
-    background: linear-gradient(264.39deg, #BA2BAC -36.33%, #E655E8 20.2%, #6369FA 106.31%, rgba(255, 6, 230, 0) 130.66%);
+    background: linear-gradient(
+        264.39deg,
+        #ba2bac -36.33%,
+        #e655e8 20.2%,
+        #6369fa 106.31%,
+        rgba(255, 6, 230, 0) 130.66%
+    );
     border-radius: 10px;
 }
 
-.btn__text{
+.btn__text {
     position: absolute;
     left: 0;
     right: 0;
     top: 16px;
     bottom: 0;
 
-
     font-weight: var(--fw-bold);
     font-size: 24px;
     text-align: center;
 
     color: var(--clr-white);
+}
+
+@media (max-width: 600px) {
+    .btn {
+        width: 296px;
+        height: 46px;
+    }
+
+    .btn__text {
+        left: 0;
+        right: 0;
+        top: 11px;
+        bottom: 0;
+        font-size: 18px;
+    }
 }

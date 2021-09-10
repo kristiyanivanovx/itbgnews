@@ -1,12 +1,9 @@
-import React, { useState } from 'react';
-import Brand from '../components/Brand';
-import SearchBar from '../components/SearchBar';
+import React from 'react';
+import Header from '../components/Header';
 import SideNav from '../components/SideNav';
 import Profile from '../components/Profile';
-import Footer from '../components/Footer';
-import Article from '../components/Article';
-import Articles from '../components/Articles';
 import HeadComponent from '../components/HeadComponent';
+import getDefaultLayout from '../utilities/getDefaultLayout';
 
 const MyProfile = () => {
     return (
@@ -14,8 +11,7 @@ const MyProfile = () => {
             <HeadComponent currentPageName={'My Profile'} />
             <div className={'container'}>
                 <div className={'col'}>
-                    <Brand />
-                    <SearchBar />
+                    <Header />
                 </div>
                 <div className={'col'}>
                     <SideNav />
@@ -26,5 +22,7 @@ const MyProfile = () => {
         </>
     );
 };
+
+MyProfile.getLayout = getDefaultLayout;
 
 export default MyProfile;

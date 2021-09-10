@@ -1,30 +1,33 @@
 import React, { useState } from 'react';
 import Input from '../components/Input';
 import Button from '../components/Button';
-import AuthTitle from '../components/AuthTitle';
+import FormTitle from '../components/FormTitle';
 import AuthLinks from '../components/AuthLinks';
-import AuthContainer from '../components/AuthContainer';
+import FormContainer from '../components/FormContainer';
 import Form from '../components/Form';
 import HeadComponent from '../components/HeadComponent';
+import getDefaultLayout from '../utilities/getDefaultLayout';
 
 const Login = () => {
     return (
         <>
-            <AuthContainer>
-                <HeadComponent currentPageName={'Login'} />
-                <AuthTitle text={'Вход'} />
+            <HeadComponent currentPageName={'Login'} />
+            <FormContainer>
+                <FormTitle text={'Вход'} />
                 <Form>
-                    <Input placeholder={'Е-мейл'} />
-                    <Input placeholder={'Парола'} />
+                    <Input placeholder={'Имейл'} />
+                    <Input placeholder={'Парола'} type={'password'} />
                     <Button text={'Влез'} />
                     <AuthLinks
                         firstText={'Нямаш профил?'}
                         secondText={'Забравена парола?'}
                     />
                 </Form>
-            </AuthContainer>
+            </FormContainer>
         </>
     );
 };
+
+Login.getLayout = getDefaultLayout;
 
 export default Login;

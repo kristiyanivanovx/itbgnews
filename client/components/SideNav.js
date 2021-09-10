@@ -13,7 +13,7 @@ const SideNav = () => {
                         className={styles.nav__icon}
                         icon={faNewspaper}
                     />
-                    <Link href="/">
+                    <Link href={'/'}>
                         <a>Всички Статии</a>
                     </Link>
                 </li>
@@ -22,7 +22,7 @@ const SideNav = () => {
                         className={styles.nav__icon}
                         icon={faPlus}
                     />
-                    <Link href="/create">
+                    <Link href={'/create'}>
                         <a>Създай Статия</a>
                     </Link>
                 </li>
@@ -31,7 +31,7 @@ const SideNav = () => {
                         className={styles.nav__icon}
                         icon={faUser}
                     />
-                    <Link href="/myProfile">
+                    <Link href={'/myProfile'}>
                         <a>Моят Профил</a>
                     </Link>
                 </li>
