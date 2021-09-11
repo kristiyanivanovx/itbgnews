@@ -69,8 +69,8 @@
 
 .exit__btn__confirm {
     position: relative;
-    width: 157px;
-    height: 53px;
+    /*width: 157px;*/
+    /*height: 53px;*/
     display: inline-block;
 
     border-radius: 10px;
