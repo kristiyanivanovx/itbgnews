@@ -44,28 +44,34 @@ function verifyRefreshToken(req, res, next) {
             }
 
             if (data === null) {
-                return res.status(401).json({
-                    status: false,
-                    message: 'Invalid request. Token is not in store.',
-                });
+                next(
+                    res.status(401).json({
+                        status: false,
+                        message: 'Invalid request. Token is not in store.',
+                    }),
+                );
             }
 
             if (JSON.parse(data).token !== token) {
-                return res.status(401).json({
-                    status: false,
-                    message: 'Invalid request. Token is not same in store.',
-                });
+                next(
+                    res.status(401).json({
+                        status: false,
+                        message: 'Invalid request. Token is not same in store.',
+                    }),
+                );
             }
-
-            next();
         });
     } catch (error) {
-        return res.status(401).json({
-            status: true,
-            message: 'Your session is not valid.',
-            data: error,
-        });
+        console.log(error);
+        next(
+            res.status(401).json({
+                status: true,
+                message: 'Your session is not valid.',
+                data: error,
+            }),
+        );
     }
+    next();
 }
 
 function validateEmail(email) {
