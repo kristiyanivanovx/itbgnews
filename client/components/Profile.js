@@ -3,26 +3,30 @@ import Image from 'next/image';
 import profile from '../public/profile.png';
 import styles from '../styles/Profile.module.css';
 import Article from './Article';
+import { useCookies } from 'react-cookie';
+import Router from 'next/router';
 
 const Profile = () => {
-    const [confirmation, setConfirmation] = useState(0);
+    const [confirmation, setConfirmation] = useState(1);
+    const [cookies, setCookie, removeCookie] = useCookies(["access_token", "refresh_token"]);
 
-    const triggerConfirmation = (e) => {
+    const triggerConfirmation = async (e) => {
         setConfirmation((confirmation) => confirmation + 1);
-        console.log(confirmation);
 
-        e.target.classList.add(styles.exit__btn__confirm)
+        // add confirmation class when clicked
+        e.target.classList.add(styles.exit__btn__confirm);
 
-        // if user has clicked more than one time
-        if (confirmation > 0) {
-
+        // if user has clicked more than one time, remove the cookies
+        if (confirmation > 1) {
+            removeCookie("access_token");
+            removeCookie("refresh_token");
+            await Router.push('/');
         }
     }
 
-    let key = 0;
     const items = [
         <Article
-            key={key}
+            key={0}
             title={'IT-BG News'}
             upvotes={9}
             username={'admin'}
@@ -33,11 +37,10 @@ const Profile = () => {
         />,
     ];
 
-    key++;
-    for (let i = key; i < 4; i++) {
+    for (let i = 1; i <= 4; i++) {
         items.push(
             <Article
-                key={key}
+                key={i}
                 title={'Binary Search'}
                 upvotes={9}
                 username={'admin'}
@@ -69,7 +72,7 @@ const Profile = () => {
                             </div>
                             <div className={styles.exit__btn__shadow}>{' '}</div>
                             <div
-                                onClick={(e) => triggerConfirmation(e)}
+                                onClick={async (e) => await triggerConfirmation(e)}
                                 className={styles.exit__btn__text}>Изход</div>
                         </button>
                     </div>

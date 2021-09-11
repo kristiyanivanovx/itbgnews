@@ -8,14 +8,13 @@ import Form from '../components/Form';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
 import {
-    EXISTING_USER_ERROR_CODE, getEnvironmentInfo,
+    getEnvironmentInfo,
     INCORRECT_PASSWORD_ERROR_MESSAGE,
-    SUCCESSFUL_REGISTRATION_MESSAGE,
     USER_NOT_FOUND_ERROR_MESSAGE,
 } from '../utilities/common';
 import Modal from '../components/Modal';
 import { useCookies } from "react-cookie";
-import Router  from 'next/router';
+import Router from 'next/router';
 
 const Login = () => {
     let [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
@@ -25,13 +24,15 @@ const Login = () => {
     const [errors, setErrors] = useState({});
     const [modalMessage, setModalMessage] = useState('');
     const [shouldDisplay, setShouldDisplay] = useState(false);
+
     const [cookies, setCookie] = useCookies(["access_token", "refresh_token"]);
 
     function toggleModal() {
         setShouldDisplay((shouldDisplay) => !shouldDisplay);
     }
 
-    function handleCookie(access_token, refresh_token) {
+    // todo: set cookies for a reasonable time
+    function handleTokens(access_token, refresh_token) {
         setCookie("access_token", access_token, { path: "/", maxAge: 60 * 60 * 24 }); // 1 day
         setCookie("refresh_token", refresh_token, { path: "/", maxAge: 60 * 60 * 24 * 30 }); // 30 days
     }
@@ -44,15 +45,15 @@ const Login = () => {
             setModalMessage(() => 'Грешна парола');
             toggleModal();
         } else {
-            let { access_token, refresh_token } = result.data;
-            handleCookie(access_token, refresh_token);
+            const { access_token, refresh_token } = result.data;
+            handleTokens(access_token, refresh_token);
 
-            setModalMessage(() => 'Влязохре успешно.');
+            setModalMessage(() => 'Влязохте успешно.');
             toggleModal();
 
             setTimeout(() => {
-                 Router.push('/');
-            }, 2500)
+                Router.push('/');
+            }, 1500)
         }
     };
 
@@ -68,10 +69,7 @@ const Login = () => {
         });
 
         let result = await response.json();
-        console.log('da' + result);
-
         setErrors(() => result.data);
-        console.log('posle' + result.data);
 
         await checkResult(result);
     };

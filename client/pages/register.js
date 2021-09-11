@@ -12,6 +12,7 @@ import {
     SUCCESSFUL_REGISTRATION_MESSAGE,
 } from '../utilities/common';
 import Router from 'next/router';
+import { useCookies } from "react-cookie";
 
 const Register = () => {
     let [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
@@ -23,9 +24,12 @@ const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    function handleCookie(access_token, refresh_token) {
-        setCookie("access_token", access_token, { path: "/" });
-        setCookie("refresh_token", refresh_token, { path: "/" });
+    const [cookies, setCookie] = useCookies(["access_token", "refresh_token"]);
+
+    // todo: set tokens for a reasonable time
+    function handleTokens(access_token, refresh_token) {
+        setCookie("access_token", access_token, { path: "/", maxAge: 60 * 60 * 24 }); // 1 day
+        setCookie("refresh_token", refresh_token, { path: "/", maxAge: 60 * 60 * 24 * 30 }); // 30 days
     }
 
     function toggleModal() {

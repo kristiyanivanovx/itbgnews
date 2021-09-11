@@ -14,8 +14,7 @@ const Forgotten = () => {
 
     const submitForm = async () => {
         let jsonData = JSON.stringify({ email });
-        let endpoint = process.env.REMOTE_BACKEND_HOST || process.env.LOCAL_BACKEND_HOST;
-        console.log(endpoint)
+
         const response = await fetch(ENDPOINT + '/forgotten', {
             method: 'POST',
             body: jsonData,
