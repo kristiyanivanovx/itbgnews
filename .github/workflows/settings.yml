@@ -1,0 +1,20 @@
+name: Repository settings
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/repo_settings.yml"
+
+jobs:
+  settings:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - uses: invakid404/github-repository-settings@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACTIONS_ACCESS_TOKEN }}
+          SETTINGS_PATH: .github/repo_settings.yml
