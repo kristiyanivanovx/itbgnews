@@ -1,11 +1,13 @@
-require("dotenv").config();
+require('dotenv').config();
 
+const BACKEND_PORT = process.env.BACKEND_PORT || 5000;
 const PORT = process.env.BACKEND_PORT || 5000;
 const ENV = process.env.NODE_ENV || 'development';
 
 //const mongoose = require("mongoose");
-const express = require("express");
-const cors = require("cors");
+const express = require('express');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
@@ -20,6 +22,7 @@ const app = express();
 // });
 
 app.use(cors());
+app.use(cookieParser());
 app.use(express.json());
 
 const resetRoutes = require('./routes/resetPassword');
@@ -28,11 +31,11 @@ const authRoutes = require('./routes/authRoute');
 app.use('', authRoutes);
 app.use('', resetRoutes);
 
-const articlesRouter = require("./Routes/posts");
-const commentRouter = require("./Routes/comments");
+const articlesRouter = require('./Routes/posts');
+const commentRouter = require('./Routes/comments');
 
-app.use("/posts", articlesRouter);
-app.use("/comments", commentRouter);
+app.use('/posts', articlesRouter);
+app.use('/comments', commentRouter);
 
 app.listen(PORT, () => {
     console.log(`Listening on port ${PORT} in ${ENV}...`);
@@ -50,7 +53,7 @@ DELETE   /posts/ => deletes a post post by id req.body must have (post_id && use
 PATCH    /posts/upvote => adds/removes an upvote req.body must have (post_id && user_id)
 
 --------------------------- Comments --------------------------
-POST     /comments => creating a comment to a post, req.body must have 
+POST     /comments => creating a comment to a post, req.body must have
                     (parent_post_id && author_id && (parent_comment_id || null) && text)
 PATCH    /comments => updating a comment req.body must have (comment_id && text)
 DELETE   /comments => deletes a comment by id req.body must have(comment_id) (does not remove it from the server)
@@ -67,4 +70,3 @@ PATCH    /comments/upvote => adds/removes an upvote req.body must have (comment_
 304 - Not Modified
 405 - Method not allowed
 */
-

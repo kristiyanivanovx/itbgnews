@@ -5,7 +5,7 @@ const { validatePassword, validateEmail } = require('../utilities/validation');
 function verifyToken(req, res, next) {
     try {
         // Bearer token string
-        const token = req.headers.authorization.split(' ')[1];
+        const token = req.cookies.accessToken;
         console.log(token);
         req.userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
     } catch (error) {
@@ -21,8 +21,7 @@ function verifyToken(req, res, next) {
 }
 
 function verifyRefreshToken(req, res, next) {
-    const token = req.body.token;
-    console.log(token);
+    const token = req.cookies.refreshToken;
     if (token === null)
         return res
             .status(401)
