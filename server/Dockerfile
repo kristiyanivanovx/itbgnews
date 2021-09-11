@@ -18,4 +18,5 @@ EXPOSE 5000
 ENV NODE_ENV=production
 
 # Run the app when the container launches
-CMD ["npm", "run", "start"]
+
+CMD ["npm", "run", "deploy"]

@@ -8,23 +8,32 @@ import Form from '../components/Form';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
 import {
-    EXISTING_USER_ERROR_CODE,
+    EXISTING_USER_ERROR_CODE, getEnvironmentInfo,
     INCORRECT_PASSWORD_ERROR_MESSAGE,
     SUCCESSFUL_REGISTRATION_MESSAGE,
     USER_NOT_FOUND_ERROR_MESSAGE,
 } from '../utilities/common';
-import Router from 'next/router';
 import Modal from '../components/Modal';
+import { useCookies } from "react-cookie";
+import Router  from 'next/router';
 
 const Login = () => {
+    let [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState({});
     const [modalMessage, setModalMessage] = useState('');
     const [shouldDisplay, setShouldDisplay] = useState(false);
+    const [cookies, setCookie] = useCookies(["access_token", "refresh_token"]);
 
     function toggleModal() {
         setShouldDisplay((shouldDisplay) => !shouldDisplay);
+    }
+
+    function handleCookie(access_token, refresh_token) {
+        setCookie("access_token", access_token, { path: "/", maxAge: 60 * 60 * 24 }); // 1 day
+        setCookie("refresh_token", refresh_token, { path: "/", maxAge: 60 * 60 * 24 * 30 }); // 30 days
     }
 
     const checkResult = async (result) => {
@@ -35,14 +44,22 @@ const Login = () => {
             setModalMessage(() => 'Грешна парола');
             toggleModal();
         } else {
-            // await Router.push('/');
+            let { access_token, refresh_token } = result.data;
+            handleCookie(access_token, refresh_token);
+
+            setModalMessage(() => 'Влязохре успешно.');
+            toggleModal();
+
+            setTimeout(() => {
+                 Router.push('/');
+            }, 2500)
         }
     };
 
     const submitForm = async () => {
         let jsonData = JSON.stringify({ email, password });
 
-        const response = await fetch('http://localhost:5000/login', {
+        const response = await fetch(ENDPOINT + '/login', {
             method: 'POST',
             body: jsonData,
             headers: {
@@ -51,15 +68,12 @@ const Login = () => {
         });
 
         let result = await response.json();
-        console.log(result);
+        console.log('da' + result);
 
         setErrors(() => result.data);
+        console.log('posle' + result.data);
 
-        let { access_token, refresh_token } = result.data;
-        console.log(access_token);
-        console.log(refresh_token);
-
-        // await checkResult(result);
+        await checkResult(result);
     };
 
     return (
@@ -79,13 +93,13 @@ const Login = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         type={'text'}
                         placeholder={'Имейл'}
-                        errorMessage={errors.errorEmail}
+                        // errorMessage={errors.errorEmail}
                     />
                     <Input
                         onChange={(e) => setPassword(e.target.value)}
                         type={'password'}
                         placeholder={'Парола'}
-                        errorMessage={errors.errorPassword}
+                        // errorMessage={errors.errorPassword}
                     />
                     <Button
                         text={'Влез'}

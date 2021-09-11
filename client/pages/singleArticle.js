@@ -6,7 +6,6 @@ import Brand from '../components/Brand';
 import SearchBar from '../components/SearchBar';
 import SideNav from '../components/SideNav';
 import HeadComponent from '../components/HeadComponent';
-import Footer from '../components/Footer';
 import getDefaultLayout from '../utilities/getDefaultLayout';
 
 const SingleArticle = () => {
