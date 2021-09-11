@@ -6,15 +6,16 @@ import FormContainer from '../components/FormContainer';
 import Form from '../components/Form';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
+import { getEnvironmentInfo } from '../utilities/common';
 
 const Forgotten = () => {
+    let [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
     const [email, setEmail] = useState('');
 
     const submitForm = async () => {
         let jsonData = JSON.stringify({ email });
-        // console.dir(JSON.parse(jsonData), { depth: null });
 
-        const response = await fetch('http://localhost:5000/forgotten', {
+        const response = await fetch(ENDPOINT + '/forgotten', {
             method: 'POST',
             body: jsonData,
             headers: {
