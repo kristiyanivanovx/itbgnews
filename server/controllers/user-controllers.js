@@ -72,7 +72,7 @@ async function Logout(req, res) {
    // blacklist current access token
    await redis_client.set('BL_' + user_id.toString(), token);
 
-   return res.json({ status: true, message: 'success.' });
+   res.json({ status: true, message: 'success.' });
 }
 
 function GetAccessToken(req, res) {
