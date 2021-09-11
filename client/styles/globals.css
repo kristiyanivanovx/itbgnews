@@ -1,65 +1,119 @@
-html,
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200;400;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --ff-primary: 'Nunito', sans-serif;
+
+    --fw-reg: 200;
+    --fw-bold: 700;
+
+    --clr-background: #302636;
+    --clr-main: #554360;
+    --clr-grey: #51515b;
+    --clr-red: #c10000;
+    --clr-purple: #d03ad2;
+    --clr-white: #ffffff;
+    --clr-comment: #755a85;
+
+    --fs-h2: 3rem;
+    --fs-h3: 2.5rem;
+    --fs-h4: 2rem;
+
+    --fs-body: 1.25rem;
+    --fs-small: 0.5rem;
+    --fs-footer: 1rem;
+}
+
 body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    background: var(--clr-background);
+    font-family: var(--ff-primary);
+    font-size: var(--fs-body);
+    color: var(--clr-white);
+
+    /* center content */
+    display: grid;
+    min-height: 100%;
+
+    /* sticky footer*/
+    grid-template-rows: 1fr auto;
+}
+
+html {
+    height: 100%;
+}
+
+button,
+input {
+    color: inherit;
+    background-color: inherit;
+    font-size: inherit;
+    font-family: inherit;
+    border: 0;
+    padding: 0;
+}
+
+h2,
+h3,
+h4 {
+    line-height: 1;
+    margin: 0;
+    font-weight: var(--fw-bold);
+}
+
+h2 {
+    font-size: var(--fs-h2);
+}
+
+h3 {
+    font-size: var(--fs-h3);
+}
+
+h4 {
+    font-size: var(--fs-h4);
+}
+
+image {
+    width: 0;
+    height: 0;
 }
 
 a {
-  color: inherit;
-  text-decoration: none;
+    color: #ffffff;
+    text-decoration: none;
 }
 
-* {
-  box-sizing: border-box;
+a:hover {
+    text-decoration: underline;
 }
 
-/* users  */
-ul {
-  padding:0;
-  list-style:none;
-  width: 30%;
-  margin:auto;
+.container {
+    width: 90%;
+    max-width: 1600px;
+    margin: 40px auto 0 auto;
 }
 
-li{
-  font-size:1.2rem;
-  line-height: 2rem;
-  border-bottom: 1px dotted #777;
+.col {
+    display: flex;
+    justify-content: space-between;
+
+    /*margin: 40px 0 40px 0;*/
+    margin-bottom: 40px;
 }
 
-/* Add a black background color to the top navigation */
-.topnav {
-  background-color: #fff;
-  color: #0070f3;
-  overflow: hidden;
+.articles {
+    width: 70%;
 }
 
-/* Style the links inside the navigation bar */
-.topnav a {
-  float: left;
-  display: block;
-  color: #0070f3;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  font-size: 17px;
+.svg-inline--fa :global {
+    font-size: unset;
 }
 
-/* Change the color of links on hover */
-.topnav a:hover {
-  color: black;
-  text-decoration: underline;
-}
-
-/* Add an active class to highlight the current page */
-.topnav a.active {
-  background-color: #0070f3;
-  color: white;
-}
-
-/* Hide the link that should open and close the topnav on small screens */
-.topnav .icon {
-  display: none;
-}
+/*#__next {*/
+/*    width: 100vw;*/
+/*    height: 100vh;*/
+/*}*/

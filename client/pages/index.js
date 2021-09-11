@@ -1,24 +1,57 @@
-import Landing from './landing'
-import Footer from "./footer";
-import Navbar from "./navbar";
-// import UsersList from './usersList'
+import React from 'react';
+import Article from '../components/Article';
+import SideNav from '../components/SideNav';
+import SearchBar from '../components/SearchBar';
+import Brand from '../components/Brand';
+import HeadComponent from '../components/HeadComponent';
+import getDefaultLayout from '../utilities/getDefaultLayout';
 
-export async function getStaticProps() {
-    const res = await fetch('http://localhost:5000/api/customers');
-    const users = await res.json();
+function Home() {
+    let key = 0;
+    const items = [
+        <Article
+            key={key}
+            title={'Binary Search. ' + key}
+            upvotes={9}
+            username={'admin'}
+            hours={5}
+            comments={103}
+            link={'https://it-bg.github.io/'}
+            isFirstArticle={true}
+        />,
+    ];
 
-    return {
-        props: { users }
+    for (let i = key + 1; i < 4; i++) {
+        items.push(
+            <Article
+                key={i}
+                title={'Merge Sort. ' + i}
+                upvotes={9 + i}
+                username={'admin'}
+                hours={5 + i}
+                comments={103 + i}
+                link={'https://it-bg.github.io/'}
+            />,
+        );
     }
+
+    return (
+        <>
+            <HeadComponent currentPageName={'All Articles'} />
+            <div className={'container'}>
+                <div className={'col'}>
+                    <Brand />
+                    <SearchBar />
+                </div>
+                <div className={'col'}>
+                    <SideNav />
+                    <main className={'articles'}>{items}</main>
+                </div>
+            </div>
+        </>
+    );
 }
 
-export default function Home({ users }) {
-  return (
-    <div>
-        <Navbar />
-        <Landing />
-        <Footer/>
-        //<UsersList users={users} />
-    </div>
-  )
-}
+Home.getLayout = getDefaultLayout;
+
+export default Home;

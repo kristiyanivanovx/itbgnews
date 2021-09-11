@@ -1,29 +1,41 @@
 require("dotenv").config();
+
+const ENV = process.env.NODE_ENV || 'development';
+const PORT = process.env.PORT || process.env.LOCALHOST_BACKEND_PORT;
+
+//const mongoose = require("mongoose");
 const express = require("express");
-const mongoose = require("mongoose");
 const cors = require("cors");
 
 const app = express();
 
-mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true });
-const db = mongoose.connection;
-db.on("error", (err) => {
-  console.error(err);
-});
+// mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true });
+// const db = mongoose.connection;
+// db.on("error", (err) => {
+//   console.error(err);
+// });
 
-db.once("open", () => {
-  console.log("Connected to DB");
-});
+// db.once("open", () => {
+//   console.log("Connected to DB");
+// });
+
 app.use(cors());
 app.use(express.json());
 
+const resetRoutes = require('./routes/resetPassword');
+const authRoutes = require('./routes/authRoute');
+
+app.use('', authRoutes);
+app.use('', resetRoutes);
+
 const articlesRouter = require("./Routes/posts");
 const commentRouter = require("./Routes/comments");
+
 app.use("/posts", articlesRouter);
 app.use("/comments", commentRouter);
 
-app.listen(process.env.PORT, () => {
-  console.log(`server has started on port: ${process.env.PORT}`);
+app.listen(PORT, () => {
+    console.log(`Listening on port ${PORT} in ${ENV}...`);
 });
 
 /*
@@ -55,3 +67,4 @@ PATCH    /comments/upvote => adds/removes an upvote req.body must have (comment_
 304 - Not Modified
 405 - Method not allowed
 */
+

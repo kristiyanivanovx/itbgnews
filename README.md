@@ -6,15 +6,26 @@ Used for a starting point - https://github.com/bradtraversy/react_express_starte
 ## How to start
 
 ```bash
-# Install dependencies for server (in /server)
-npm install
+# Install dependencies for server 
+npm run server-install
 
-# Run the Express server (in /server)
-npm run server
+# Install dependencies for Next
+npm run client-install
 
-# Install dependencies for Next (in /client)
-npm install
+# Run the Express server and Next server concurrently
+npm run dev
+```
 
-# Run the Next client
-npm run start (or npm run dev)
+## How to configure the Docker images
+
+```bash
+docker build -t "itbgnews-server" ./server/ --no-cache
+```
+
+```bash
+docker build -t "itbgnews-client" ./client/ --no-cache
+```
+
+```bash
+docker-compose up
 ```

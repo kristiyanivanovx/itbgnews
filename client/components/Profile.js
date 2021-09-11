@@ -1,0 +1,103 @@
+import React, { useState } from 'react';
+import Image from 'next/image';
+import profile from '../public/profile.png';
+import styles from '../styles/Profile.module.css';
+import Article from './Article';
+import { useCookies } from 'react-cookie';
+import Router from 'next/router';
+
+const Profile = () => {
+    const [confirmation, setConfirmation] = useState(1);
+    const [cookies, setCookie, removeCookie] = useCookies(["access_token", "refresh_token"]);
+
+    const triggerConfirmation = async (e) => {
+        setConfirmation((confirmation) => confirmation + 1);
+
+        // add confirmation class when clicked
+        e.target.classList.add(styles.exit__btn__confirm);
+
+        // if user has clicked more than one time, remove the cookies
+        if (confirmation > 1) {
+            removeCookie("access_token");
+            removeCookie("refresh_token");
+            await Router.push('/');
+        }
+    }
+
+    const items = [
+        <Article
+            key={0}
+            title={'IT-BG News'}
+            upvotes={9}
+            username={'admin'}
+            hours={5}
+            comments={103}
+            link={'https://it-bg.github.io/'}
+            isFirstArticle={true}
+        />,
+    ];
+
+    for (let i = 1; i <= 4; i++) {
+        items.push(
+            <Article
+                key={i}
+                title={'Binary Search'}
+                upvotes={9}
+                username={'admin'}
+                hours={5}
+                comments={103}
+                link={'https://it-bg.github.io/'}
+            />,
+        );
+    }
+
+    return (
+        <main className={styles.profile}>
+            <h2 className={styles.profile__title}>Моят Профил</h2>
+            <div className={styles.profile__information}>
+                <div className={styles.user__profile__pic}>
+                    <Image
+                        className={styles.profile__pic}
+                        src={profile}
+                        alt={'profile picture'}
+                    />
+                </div>
+                <div className={styles.user__information}>
+
+                    <div className={styles.profile__top}>
+                        <h3 className={styles.user__name}>Никола</h3>
+                        <button className={styles.exit__btn}>
+                            <div className={styles.exit__btn__background}>
+                                {' '}
+                            </div>
+                            <div className={styles.exit__btn__shadow}>{' '}</div>
+                            <div
+                                onClick={async (e) => await triggerConfirmation(e)}
+                                className={styles.exit__btn__text}>Изход</div>
+                        </button>
+                    </div>
+
+                    <div className={styles.user__bio}>Да жиевее българия.</div>
+                    <div className={styles.user__activities}>
+                        <div className={styles.user__activity}>
+                            <div>1942</div>
+                            <div>харесвания</div>
+                        </div>
+                        <div className={styles.user__activity}>
+                            <div>50</div>
+                            <div>коментари</div>
+                        </div>
+                        <div className={styles.user__activity}>
+                            <div>3</div>
+                            <div>статии</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div>{items}</div>
+        </main>
+    );
+};
+
+export default Profile;
