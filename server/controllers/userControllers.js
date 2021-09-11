@@ -64,7 +64,10 @@ async function login(req, res) {
         return res.json({
             status: true,
             message: 'login success',
-            data: { accessToken, refreshToken },
+            data: {
+                accessToken,
+                refreshToken,
+            },
         });
     } catch (error) {
         console.log(error);

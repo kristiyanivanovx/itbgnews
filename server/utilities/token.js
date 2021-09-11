@@ -2,6 +2,7 @@ require('dotenv').config();
 console.log(process.env.JWT_ACCESS_TIME);
 const jwt = require('jsonwebtoken');
 const redis_client = require('../config/redisConfig');
+const cookieParser = require('cookie-parser');
 
 function generateAccessToken(userId) {
     return jwt.sign({ sub: userId }, process.env.JWT_ACCESS_SECRET, {
