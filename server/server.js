@@ -1,6 +1,8 @@
-const PORT = process.env.PORT || 5000;
+require('dotenv').config();
 
-const path = require('path');
+const BACKEND_PORT = process.env.BACKEND_PORT || 5000;
+const ENV = process.env.NODE_ENV;
+
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -8,20 +10,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-require('dotenv').config();
-
 const resetRoutes = require('./routes/resetPassword');
 const authRoutes = require('./routes/authRoute');
 
 app.use('', authRoutes);
 app.use('', resetRoutes);
 
-app.use(express.static(path.join(__dirname, '../client/build')));
-
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname + '/../client/build/index.html'));
-});
-
-app.listen(PORT || 5000, () => {
-    console.log(`Listening on port ${PORT}...`);
+app.listen(BACKEND_PORT, () => {
+    console.log(`Listening on port ${BACKEND_PORT} in ${ENV}...`);
 });

@@ -5,15 +5,10 @@
     "client-install": "cd client && npm install",
     "server-install": "cd server && npm install",
     "dev": "concurrently \"npm run --prefix server dev\" \"npm run --prefix client dev\"",
-
-    "client": "cd client && npm start",
-    "server": "cd server && nodemon app.js",
-    "deploy": "concurrently --kill-others-on-fail \"npm run --prefix server start\" \"npm run --prefix client start\"",
-    "heroku-postbuild": "cd client && npm install && npm run build"
   },
   "dependencies": {
     "concurrently": "^6.2.1",
-    "cors": "^2.8.5"
+    "nodemon": "^2.0.12"
   },
   "devDependencies": {
     "jsonwebtoken": "^8.5.1",
