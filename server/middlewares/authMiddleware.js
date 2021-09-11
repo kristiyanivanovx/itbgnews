@@ -7,7 +7,6 @@ function verifyToken(req, res, next) {
     try {
         // Bearer token string
         const token = req.cookies.accessToken;
-
         console.log(token);
         console.log(req.cookies);
 
