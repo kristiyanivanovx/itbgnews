@@ -15,3 +15,17 @@ npm run client-install
 # Run the Express server and Next server concurrently
 npm run dev
 ```
+
+## How to configure the Docker images
+
+```bash
+docker build -t "itbgnews-server" ./server/ --no-cache
+```
+
+```bash
+docker build -t "itbgnews-client" ./client/ --no-cache
+```
+
+```bash
+docker-compose up
+```
