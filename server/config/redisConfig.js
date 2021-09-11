@@ -1,13 +1,23 @@
 const redis = require('redis');
+require('dotenv').config();
+
+let ENV = process.env.NODE_ENV || 'development';
+let isProduction = ENV === 'production';
+
+let host = isProduction ? process.env.REDIS_HOST : '127.0.0.1';
+let port = isProduction ? process.env.REDIS_PORT : 6379;
+let password = isProduction ? process.env.REDIS_PASSWORD : 'pass';
 
 const redis_client = redis.createClient({
-    host: process.env.REDIS_HOST || '127.0.0.1',
-    port: process.env.REDIS_PORT || 6379,
-    password: process.env.REDIS_PASSWORD || '',
+    host: host,
+    port: port,
+    password: password,
 });
 
 redis_client.on('connect', function () {
-    console.log('Connected to Redis...');
+    console.log(
+        `Connected to Redis in ${ENV} at ${host}:${port} with password ${password}`,
+    );
 });
 
 redis_client.on('error', function (error) {

@@ -2,7 +2,7 @@ const router = require('express').Router();
 const user_controller = require('../controllers/userControllers');
 const auth_middleware = require('../middlewares/authMiddleware');
 
-router.post('/', auth_middleware.verifyRefreshToken, (req, res) => {
+router.post('/', auth_middleware.verifyToken, (req, res) => {
     res.send('ok');
 });
 
@@ -17,9 +17,9 @@ router.post('/login', user_controller.Login);
 router.post(
     '/token',
     auth_middleware.verifyRefreshToken,
-    user_controller.GetAccessToken,
+    user_controller.GetAccess,
 );
 
-router.get('/logout', auth_middleware.verifyToken, user_controller.Logout);
+router.post('/logout', auth_middleware.verifyToken, user_controller.Logout);
 
 module.exports = router;

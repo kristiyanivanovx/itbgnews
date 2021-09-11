@@ -55,7 +55,7 @@ router.post('/forgotten', (req, res) => {
 
     let user = new verifySchema({
         token: code,
-        mail: req.body.mail,
+        email: req.body.mail,
         createdAt: Date(),
     });
 

@@ -6,7 +6,7 @@ function verifyToken(req, res, next) {
     try {
         // Bearer token string
         const token = req.headers.authorization.split(' ')[1];
-
+        console.log(token);
         const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
         req.userData = decoded;
 
@@ -16,24 +16,29 @@ function verifyToken(req, res, next) {
         redis_client.get('BL_' + decoded.sub.toString(), (err, data) => {
             if (err) throw err;
 
-            if (data === token)
-                return res
-                    .status(401)
-                    .json({ status: false, message: 'blacklisted token.' });
-            next();
+            if (data === token) {
+                next(
+                    res
+                        .status(401)
+                        .json({ status: false, message: 'blacklisted token.' }),
+                );
+            }
         });
     } catch (error) {
-        return res.status(401).json({
-            status: false,
-            message: 'Your session is not valid.',
-            data: error,
-        });
+        next(
+            res.status(401).json({
+                status: false,
+                message: 'Your session is not valid.',
+                data: error,
+            }),
+        );
     }
+    next();
 }
 
 function verifyRefreshToken(req, res, next) {
     const token = req.body.token;
-
+    console.log(token);
     if (token === null)
         return res
             .status(401)
@@ -49,28 +54,34 @@ function verifyRefreshToken(req, res, next) {
             }
 
             if (data === null) {
-                return res.status(401).json({
-                    status: false,
-                    message: 'Invalid request. Token is not in store.',
-                });
+                next(
+                    res.status(401).json({
+                        status: false,
+                        message: 'Invalid request. Token is not in store.',
+                    }),
+                );
             }
 
             if (JSON.parse(data).token !== token) {
-                return res.status(401).json({
-                    status: false,
-                    message: 'Invalid request. Token is not same in store.',
-                });
+                next(
+                    res.status(401).json({
+                        status: false,
+                        message: 'Invalid request. Token is not same in store.',
+                    }),
+                );
             }
-
-            next();
         });
     } catch (error) {
-        return res.status(401).json({
-            status: true,
-            message: 'Your session is not valid.',
-            data: error,
-        });
+        console.log(error);
+        next(
+            res.status(401).json({
+                status: true,
+                message: 'Your session is not valid.',
+                data: error,
+            }),
+        );
     }
+    next();
 }
 
 function validateEmail(email) {
