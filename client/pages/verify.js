@@ -7,18 +7,20 @@ import Form from '../components/Form';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
 import { useRouter } from 'next/router';
+import { getEnvironmentInfo } from '../utilities/common';
 
 const Verify = () => {
-    const router = useRouter();
-    const { token, email } = router.query;
+    const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
 
     const [password, setPassword] = useState('');
 
+    const router = useRouter();
+    const { token, email } = router.query;
+
     const submitForm = async () => {
         let jsonData = JSON.stringify({ token, email, password });
-        // console.log(jsonData);
 
-        const response = await fetch('http://localhost:5000/password-reset', {
+        const response = await fetch(ENDPOINT + '/password-reset', {
             method: 'POST',
             body: jsonData,
             headers: {

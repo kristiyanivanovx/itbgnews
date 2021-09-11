@@ -8,18 +8,25 @@ import HeadComponent from '../components/HeadComponent';
 import Modal from '../components/Modal';
 import getDefaultLayout from '../utilities/getDefaultLayout';
 import {
-    EXISTING_USER_ERROR_CODE,
+    EXISTING_USER_ERROR_CODE, getEnvironmentInfo,
     SUCCESSFUL_REGISTRATION_MESSAGE,
 } from '../utilities/common';
 import Router from 'next/router';
 
 const Register = () => {
+    let [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
+
     const [modalMessage, setModalMessage] = useState('');
     const [shouldDisplay, setShouldDisplay] = useState(false);
     const [errors, setErrors] = useState({});
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    function handleCookie(access_token, refresh_token) {
+        setCookie("access_token", access_token, { path: "/" });
+        setCookie("refresh_token", refresh_token, { path: "/" });
+    }
 
     function toggleModal() {
         setShouldDisplay((shouldDisplay) => !shouldDisplay);
@@ -41,7 +48,7 @@ const Register = () => {
     const submitForm = async () => {
         let jsonData = JSON.stringify({ username, email, password });
 
-        const response = await fetch('http://localhost:5000/register', {
+        const response = await fetch(ENDPOINT + '/register', {
             method: 'POST',
             body: jsonData,
             headers: {
@@ -51,6 +58,9 @@ const Register = () => {
 
         let result = await response.json();
         setErrors(() => result);
+
+        let { access_token, refresh_token } = result.data;
+        handleCookie(access_token, refresh_token);
 
         checkResponse(result);
     };

@@ -51,11 +51,12 @@ router.post('/forgotten', (req, res) => {
     let code = crypto.randomBytes(8).toString('hex');
 
     console.log(code);
+    
     console.log(req.body.email);
 
     let user = new verifySchema({
         token: code,
-        mail: req.body.mail,
+        email: req.body.mail,
         createdAt: Date(),
     });
 

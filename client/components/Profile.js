@@ -1,10 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import profile from '../public/profile.png';
 import styles from '../styles/Profile.module.css';
 import Article from './Article';
 
 const Profile = () => {
+    const [confirmation, setConfirmation] = useState(0);
+
+    const triggerConfirmation = (e) => {
+        setConfirmation((confirmation) => confirmation + 1);
+        console.log(confirmation);
+
+        e.target.classList.add(styles.exit__btn__confirm)
+
+        // if user has clicked more than one time
+        if (confirmation > 0) {
+
+        }
+    }
+
     let key = 0;
     const items = [
         <Article
@@ -46,16 +60,20 @@ const Profile = () => {
                     />
                 </div>
                 <div className={styles.user__information}>
+
                     <div className={styles.profile__top}>
                         <h3 className={styles.user__name}>Никола</h3>
                         <button className={styles.exit__btn}>
                             <div className={styles.exit__btn__background}>
                                 {' '}
                             </div>
-                            <div className={styles.exit__btn__shadow}> </div>
-                            <div className={styles.exit__btn__text}>Изход</div>
+                            <div className={styles.exit__btn__shadow}>{' '}</div>
+                            <div
+                                onClick={(e) => triggerConfirmation(e)}
+                                className={styles.exit__btn__text}>Изход</div>
                         </button>
                     </div>
+
                     <div className={styles.user__bio}>Да жиевее българия.</div>
                     <div className={styles.user__activities}>
                         <div className={styles.user__activity}>
@@ -71,6 +89,7 @@ const Profile = () => {
                             <div>статии</div>
                         </div>
                     </div>
+
                 </div>
             </div>
             <div>{items}</div>

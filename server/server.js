@@ -1,7 +1,7 @@
 require('dotenv').config();
 
-const BACKEND_PORT = process.env.BACKEND_PORT || 5000;
-const ENV = process.env.NODE_ENV;
+const ENV = process.env.NODE_ENV || 'development';
+const PORT = process.env.PORT || process.env.LOCALHOST_BACKEND_PORT;
 
 const express = require('express');
 const cors = require('cors');
@@ -16,6 +16,6 @@ const authRoutes = require('./routes/authRoute');
 app.use('', authRoutes);
 app.use('', resetRoutes);
 
-app.listen(BACKEND_PORT, () => {
-    console.log(`Listening on port ${BACKEND_PORT} in ${ENV}...`);
+app.listen(PORT, () => {
+    console.log(`Listening on port ${PORT} in ${ENV}...`);
 });

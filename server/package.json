@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",
-    "start": "nodemon server.js"
+    "deploy": "nodemon server.js -p $PORT"
   },
   "license": "MIT",
   "dependencies": {
