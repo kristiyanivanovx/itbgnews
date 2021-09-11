@@ -8,10 +8,7 @@ function verifyToken(req, res, next) {
         // Bearer token string
         const token = req.cookies.accessToken;
 
-        console.log('JWT Tuk? nqma token?');
         console.log(token);
-
-        console.log('cookies az na mene kak se parsva');
         console.log(req.cookies);
 
         req.userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
@@ -47,37 +44,38 @@ function verifyRefreshToken(req, res, next) {
             }
 
             if (data === null) {
-                next(
-                    res.status(401).json({
-                        status: false,
-                        message: 'Invalid request. Token is not in store.',
-                    }),
-                );
+                return res.status(401).json({
+                    status: false,
+                    message: 'Invalid request. Token is not in store.',
+                });
             }
 
             if (JSON.parse(data).token !== token) {
-                next(
-                    res.status(401).json({
-                        status: false,
-                        message: 'Invalid request. Token is not same in store.',
-                    }),
-                );
+                return res.status(401).json({
+                    status: false,
+                    message: 'Invalid request. Token is not same in store.',
+                });
             }
+
+            next();
         });
     } catch (error) {
-        console.log(error);
-        next(
-            res.status(401).json({
-                status: true,
-                message: 'Your session is not valid.',
-                data: error,
-            }),
-        );
+        return res.status(401).json({
+            status: true,
+            message: 'Your session is not valid.',
+            data: error,
+        });
     }
-    next();
+}
+
+function validateEmail(email) {
+    const re =
+        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email.toLowerCase());
 }
 
 function validateInputData(req, res, next) {
+    const re = /\d/;
     const { password, username, email } = req.body;
     let errors = {};
 

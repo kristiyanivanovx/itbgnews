@@ -9,8 +9,6 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-const cookieParser = require('cookie-parser');
-app.use(cookieParser());
 
 const resetRoutes = require('./routes/resetPassword');
 const authRoutes = require('./routes/authRoute');

@@ -79,7 +79,6 @@ const Profile = () => {
                     />
                 </div>
                 <div className={styles.user__information}>
-
                     <div className={styles.profile__top}>
                         <h3 className={styles.user__name}>Никола</h3>
                         <button className={styles.exit__btn}>
@@ -108,7 +107,6 @@ const Profile = () => {
                             <div>статии</div>
                         </div>
                     </div>
-
                 </div>
             </div>
             <div>{items}</div>

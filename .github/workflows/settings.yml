@@ -1,8 +1,6 @@
 name: Repository settings
 on:
   push:
-    branches:
-      - main
     paths:
       - ".github/repo_settings.yml"
 
