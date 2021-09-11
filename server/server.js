@@ -9,17 +9,13 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-const cookieParser = require('cookie-parser');
-app.use(cookieParser());
 
-const resetRoutes = require('./routes/resetPassword')
+const resetRoutes = require('./routes/resetPassword');
 const authRoutes = require('./routes/authRoute');
 
 app.use('', authRoutes);
 app.use('', resetRoutes);
 
-app.use('', authRoutes);
-
 app.listen(BACKEND_PORT, () => {
-    console.log(`Listening on port ${BACKEND_PORT}`)
-})
+    console.log(`Listening on port ${BACKEND_PORT} in ${ENV}...`);
+});
