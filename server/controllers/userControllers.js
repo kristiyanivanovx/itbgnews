@@ -1,10 +1,9 @@
 const User = require('../models/userSchema');
-const jwt = require('jsonwebtoken');
 const redis_client = require('../config/redisConfig');
 const bcrypt = require('bcrypt');
 const { makeRefresh } = require('../utilities/token');
 
-async function Register(req, res) {
+async function register(req, res) {
     const { username, password, email } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({
@@ -38,8 +37,9 @@ async function Register(req, res) {
     }
 }
 
-async function Login(req, res) {
+async function login(req, res) {
     const { password, email } = req.body;
+    console.log(req.body);
 
     try {
         const user = await User.findOne({
@@ -74,17 +74,16 @@ async function Login(req, res) {
     }
 }
 
-async function Logout(req, res) {
-    // frontend must remove access token here
+async function logout(req, res) {
+    // frontend must remove access token here [from cookie]
     const user_id = req.userData.sub;
-    const token = req.token;
 
     await redis_client.del(user_id.toString());
 
     return res.json({ status: true, message: 'success.' });
 }
 
-function GetAccess(req, res) {
+function getAccess(req, res) {
     const userId = req.userData.sub;
     const [accessToken, refreshToken] = makeRefresh(userId);
     res.status(200).json({
@@ -96,8 +95,8 @@ function GetAccess(req, res) {
 }
 
 module.exports = {
-    Register,
-    Login,
-    Logout,
-    GetAccess,
+    register,
+    logout,
+    login,
+    getAccess,
 };
