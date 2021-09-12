@@ -5,7 +5,6 @@ const { validatePassword, validateEmail } = require('../utilities/validation');
 
 function verifyToken(req, res, next) {
     try {
-        // Bearer token string
         const token = req.cookies.accessToken;
 
         console.log('JWT Tuk? nqma token?');
@@ -17,15 +16,12 @@ function verifyToken(req, res, next) {
         req.userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
     } catch (error) {
         console.log(error);
-        // next(
-            res.status(401).json({
-                status: false,
-                message: 'Your session is not valid.',
-                data: error,
-            })
-            return;
-
-        // );
+        res.status(401).json({
+            status: false,
+            message: 'Your session is not valid.',
+            data: error,
+        })
+        return;
 
     }
     next();
@@ -33,10 +29,10 @@ function verifyToken(req, res, next) {
 
 function verifyRefreshToken(req, res, next) {
     const token = req.cookies.refreshToken;
-    if (token === null)
-        return res
-            .status(401)
-            .json({ status: false, message: 'Invalid request.' });
+    if (token === null) {
+        res.status(401).json({ status: false, message: 'Invalid request.' });
+        return;
+    }
     try {
         const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
         req.userData = decoded;
@@ -48,32 +44,29 @@ function verifyRefreshToken(req, res, next) {
             }
 
             if (data === null) {
-                next(
-                    res.status(401).json({
-                        status: false,
-                        message: 'Invalid request. Token is not in store.',
-                    }),
-                );
+                res.status(401).json({
+                    status: false,
+                    message: 'Invalid request. Token is not in store.',
+                });
+                return;
             }
 
             if (JSON.parse(data).token !== token) {
-                next(
-                    res.status(401).json({
-                        status: false,
-                        message: 'Invalid request. Token is not same in store.',
-                    }),
-                );
+                res.status(401).json({
+                    status: false,
+                    message: 'Invalid request. Token is not same in store.',
+                });
+                return;
             }
         });
     } catch (error) {
         console.log(error);
-        next(
-            res.status(401).json({
-                status: true,
-                message: 'Your session is not valid.',
-                data: error,
-            }),
-        );
+        res.status(401).json({
+            status: true,
+            message: 'Your session is not valid.',
+            data: error,
+        });
+        return;
     }
     next();
 }
@@ -90,7 +83,6 @@ function validateInputData(req, res, next) {
         errors.errorEmail = 'The provided email is not valid.';
     }
     if (!validatePassword(password)) {
-
         errors.errorPassword =
             'The password must have one digit at least, and to be between 6 and 30 symbols';
     }
@@ -100,6 +92,7 @@ function validateInputData(req, res, next) {
     }
     else {
         res.json(errors);
+        return;
     }
 }
 
