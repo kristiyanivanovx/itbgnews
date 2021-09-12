@@ -50,21 +50,23 @@
 /* exit button in profile*/
 .exit__btn {
     position: relative;
-    width: 157px;
-    height: 53px;
-    display: inline-block;
-    /*margin: 1rem 0;*/
-}
+    font-weight: var(--fw-bold);
+    font-size: 24px;
+    text-align: center;
+    z-index: 3;
 
-.exit__btn__background {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 6.15%;
-    bottom: -6.15%;
-
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), linear-gradient(264.39deg, #BA2BAC -36.33%, #E655E8 20.2%, #6369FA 106.31%, rgba(255, 6, 230, 0) 130.66%);
+    color: var(--clr-white);
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
+        linear-gradient(
+            264.39deg,
+            #ba2bac -36.33%,
+            #e655e8 20.2%,
+            #6369fa 106.31%,
+            rgba(255, 6, 230, 0) 130.66%
+        );
     border-radius: 10px;
+
+    padding: 5px 1rem;
 }
 
 .exit__btn__confirm {
@@ -79,25 +81,21 @@
 
 .exit__btn__shadow {
     position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
+    left: 0%;
+    right: 0%;
+    top: -6.15%;
+    bottom: 6.15%;
 
-    background: linear-gradient(264.39deg, #BA2BAC -36.33%, #E655E8 20.2%, #6369FA 106.31%, rgba(255, 6, 230, 0) 130.66%);
+    background: linear-gradient(
+        264.39deg,
+        #ba2bac -36.33%,
+        #e655e8 20.2%,
+        #6369fa 106.31%,
+        rgba(255, 6, 230, 0) 130.66%
+    );
     border-radius: 10px;
 }
 
 .exit__btn__text {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 11px;
-    bottom: 0;
-
-    font-weight: var(--fw-bold);
-    font-size: 24px;
-    text-align: center;
-
-    color: var(--clr-white);
+    position: relative;
 }

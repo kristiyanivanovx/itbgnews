@@ -2,8 +2,7 @@ import React from 'react';
 import styles from '../styles/SingleArticle.module.css';
 import Article from '../components/Article';
 import Comment from '../components/Comment';
-import Brand from '../components/Brand';
-import SearchBar from '../components/SearchBar';
+import Header from '../components/Header';
 import SideNav from '../components/SideNav';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
@@ -14,8 +13,7 @@ const SingleArticle = () => {
             <HeadComponent currentPageName={'Article #ID'} />
             <div className={'container'}>
                 <div className={'col'}>
-                    <Brand />
-                    <SearchBar />
+                    <Header />
                 </div>
                 <div className={'col'}>
                     <SideNav />
