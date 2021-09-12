@@ -8,10 +8,10 @@ function verifyToken(req, res, next) {
         // Bearer token string
         const token = req.cookies.accessToken;
 
-        console.log('JWT Tuk? nqma token?');
+        console.log('JWT');
         console.log(token);
 
-        console.log('cookies az na mene kak se parsva');
+        console.log('cookies');
         console.log(req.cookies);
 
         req.userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET);

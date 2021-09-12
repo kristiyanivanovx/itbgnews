@@ -28,8 +28,6 @@ const Register = () => {
 
     // todo: set tokens for a reasonable time
     function handleTokens(accessToken, refreshToken) {
-
-
         setCookie("accessToken", accessToken, { path: "/", maxAge: 60 * 60 * 24 }); // 1 day
         setCookie("refreshToken", refreshToken, { path: "/", maxAge: 60 * 60 * 24 * 30 }); // 30 days
 
