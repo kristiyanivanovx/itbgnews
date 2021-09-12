@@ -14,6 +14,9 @@ function verifyToken(req, res, next) {
         console.log('cookies');
         console.log(req.cookies);
 
+        console.log('signed cookies');
+        console.log(req.cookies);
+
         req.userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
     } catch (error) {
         console.log(error);

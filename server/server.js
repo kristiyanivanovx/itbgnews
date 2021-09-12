@@ -1,7 +1,10 @@
 require('dotenv').config();
 
-const PORT = process.env.PORT || process.env.BACKEND_PORT;
 const ENV = process.env.NODE_ENV || 'development';
+const isProduction = ENV === 'production';
+const PORT = isProduction ? process.env.PORT : process.env.BACKEND_PORT;
+
+console.log(`Starting API server on ${ENV} at ${PORT}.`)
 
 const express = require('express');
 const cors = require('cors');

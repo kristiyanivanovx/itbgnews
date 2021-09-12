@@ -18,7 +18,7 @@ const Create = () => {
     const [cookies, setCookie, removeCookie] = useCookies(["accessToken", "refreshToken"]);
 
     const handleNotValidTokens = () => {
-        router.push('/login')
+        //router.push('/login')
     }
 
     // todo: improve checks

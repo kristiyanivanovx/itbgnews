@@ -47,7 +47,9 @@ const Register = () => {
             handleTokens(accessToken, refreshToken);
 
             toggleModal();
-            setTimeout(() => Router.push('/login'), 2000);
+            // setTimeout(() =>
+                //Router.push('/login'),
+            // 2000);
         } else if (result.data?.code === EXISTING_USER_ERROR_CODE) {
             setModalMessage(
                 () => 'Потребител с това име или имейл вече съществува.',
