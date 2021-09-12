@@ -93,22 +93,10 @@ const Login = () => {
                 />
                 <FormTitle text={'Вход'} />
                 <Form>
-                    <Input
-                        onChange={(e) => setEmail(e.target.value)}
-                        type={'text'}
-                        placeholder={'Имейл'}
-                        // errorMessage={errors.errorEmail}
-                    />
-                    <Input
-                        onChange={(e) => setPassword(e.target.value)}
-                        type={'password'}
-                        placeholder={'Парола'}
-                        // errorMessage={errors.errorPassword}
-                    />
-                    <Button
-                        text={'Влез'}
-                        onClick={async () => await submitForm()}
-                    />
+                    <Input onChange={(e) => setEmail(e.target.value)} placeholder={'Имейл'} type={'text'} />
+                    <Input onChange={(e) => setPassword(e.target.value)} placeholder={'Парола'} type={'password'} />
+                    <Button onClick={async () => await submitForm()} text={'Влез'} />
+
                     <AuthLinks
                         firstText={'Нямаш профил?'}
                         secondText={'Забравена парола?'}

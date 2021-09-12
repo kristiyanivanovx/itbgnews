@@ -1,8 +1,8 @@
 import React from 'react';
 import Article from '../components/Article';
 import SideNav from '../components/SideNav';
-import SearchBar from '../components/SearchBar';
-import Brand from '../components/Brand';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
 
@@ -34,14 +34,12 @@ function Home() {
             />,
         );
     }
-
     return (
         <>
             <HeadComponent currentPageName={'All Articles'} />
             <div className={'container'}>
                 <div className={'col'}>
-                    <Brand />
-                    <SearchBar />
+                    <Header />
                 </div>
                 <div className={'col'}>
                     <SideNav />

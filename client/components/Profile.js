@@ -68,6 +68,7 @@ const Profile = () => {
         );
     }
 
+    //       onClick={async (e) => await triggerConfirmation(e)}
     return (
         <main className={styles.profile}>
             <h2 className={styles.profile__title}>Моят Профил</h2>
@@ -83,13 +84,11 @@ const Profile = () => {
                     <div className={styles.profile__top}>
                         <h3 className={styles.user__name}>Никола</h3>
                         <button className={styles.exit__btn}>
-                            <div className={styles.exit__btn__background}>
-                                {' '}
-                            </div>
-                            <div className={styles.exit__btn__shadow}>{' '}</div>
-                            <div
-                                onClick={async (e) => await triggerConfirmation(e)}
-                                className={styles.exit__btn__text}>Изход</div>
+                        <div className={styles.exit__btn__shadow}> </div>
+                            <span className={styles.exit__btn__text}>
+                                Изход
+                            </span>
+
                         </button>
                     </div>
 

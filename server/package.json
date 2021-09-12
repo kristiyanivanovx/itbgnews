@@ -1,7 +1,7 @@
 {
   "name": "itbgnews",
   "version": "1.0.0",
-  "description": "Starter kit for creating React and Express apps",
+  "description": "IT-BG News Server",
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",
