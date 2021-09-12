@@ -31,8 +31,8 @@ const authRoutes = require('./routes/authRoute');
 app.use('', authRoutes);
 app.use('', resetRoutes);
 
-const articlesRouter = require('./Routes/posts');
-const commentRouter = require('./Routes/comments');
+const articlesRouter = require('./routes/posts');
+const commentRouter = require('./routes/comments');
 
 app.use('/posts', articlesRouter);
 app.use('/comments', commentRouter);

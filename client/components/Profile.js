@@ -31,6 +31,7 @@ const Profile = () => {
     const submitForm = async () => {
         const response = await fetch(ENDPOINT + '/logout', {
             method: 'POST',
+            cookies: document.cookie
         });
 
         let result = await response.json();
