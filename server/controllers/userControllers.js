@@ -6,6 +6,7 @@ const { makeRefresh } = require('../utilities/token');
 async function register(req, res) {
     const { username, password, email } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
+
     const user = new User({
         username,
         email,

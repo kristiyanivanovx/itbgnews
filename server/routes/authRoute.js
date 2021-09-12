@@ -20,6 +20,10 @@ router.post(
     user_controller.getAccess,
 );
 
-router.post('/logout', auth_middleware.verifyToken, user_controller.logout);
+router.post('/logout',
+    auth_middleware.verifyToken,
+    user_controller.logout
+);
+
 
 module.exports = router;

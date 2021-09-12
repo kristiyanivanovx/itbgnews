@@ -6,16 +6,18 @@ import Profile from '../components/Profile';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
 import { useCookies } from 'react-cookie';
-import Router from 'next/router';
+import Router, {useRouter} from 'next/router';
 
 const MyProfile =  () => {
-    const [cookies, setCookie, removeCookie] = useCookies(["access_token", "refresh_token"]);
+    const [cookies, setCookie, removeCookie] = useCookies(["accessToken", "accessToken"]);
+    const router = useRouter();
 
     // todo: improve checks
     // if user doesnt have cookies, make him login
-    if (cookies.access_token === undefined || cookies.refresh_token === undefined) {
-        Router.push('/login').then();
-    }
+    const { refreshToken, accessToken } = cookies;
+    // if (refreshToken === undefined || accessToken === undefined) {
+    //     React.push('/login');
+    // }
 
     return (
         <>
