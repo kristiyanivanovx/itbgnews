@@ -75,6 +75,10 @@ const Register = () => {
         checkResponse(result);
     };
 
+    function toggleModal() {
+        setShouldDisplay((shouldDisplay) => !shouldDisplay);
+    }
+
     return (
         <>
             <HeadComponent currentPageName={'Register'} />

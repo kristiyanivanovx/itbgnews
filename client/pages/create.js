@@ -1,3 +1,5 @@
+import styles from '../styles/Header.module.css';
+import Header from '../components/Header';
 import React, { useEffect } from 'react';
 import Input from '../components/Input';
 import Button from '../components/Button';
@@ -5,7 +7,10 @@ import FormTitle from '../components/FormTitle';
 import Form from '../components/Form';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
-import AuthContainer from '../components/AuthContainer';
+
+import FormContainer from '../components/FormContainer';
+import SideNav from '../components/SideNav';
+
 import { getEnvironmentInfo } from '../utilities/common';
 import { useCookies } from 'react-cookie';
 import { useRouter } from 'next/router';
@@ -29,17 +34,21 @@ const Create = () => {
     }
 
     return (
-        <>
-            <HeadComponent currentPageName={'Създай Статия'} />
-            <AuthContainer>
-                <FormTitle text={'Създай Статия'} />
-                <Form>
-                    <Input placeholder={'Заглавие'} />
-                    <Input placeholder={'Линк'} />
-                    <Button text={'Създай'} />
-                </Form>
-            </AuthContainer>
-        </>
+        <div className="container">
+            <Header />
+            <div className={'col'}>
+                <SideNav />
+                <HeadComponent currentPageName={'Създай Статия'} />
+                <FormContainer>
+                    <FormTitle text={'Създай Статия'} />
+                    <Form>
+                        <Input placeholder={'Заглавие'} />
+                        <Input placeholder={'Линк'} />
+                        <Button text={'Създай'} />
+                    </Form>
+                </FormContainer>
+            </div>
+        </div>
     );
 };
 
