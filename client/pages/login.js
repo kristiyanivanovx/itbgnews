@@ -25,16 +25,22 @@ const Login = () => {
     const [modalMessage, setModalMessage] = useState('');
     const [shouldDisplay, setShouldDisplay] = useState(false);
 
-    const [cookies, setCookie] = useCookies(["access_token", "refresh_token"]);
+    const [cookies, setCookie] = useCookies(['accessToken', 'refreshToken']);
 
     function toggleModal() {
         setShouldDisplay((shouldDisplay) => !shouldDisplay);
     }
 
     // todo: set cookies for a reasonable time
-    function handleTokens(access_token, refresh_token) {
-        setCookie("access_token", access_token, { path: "/", maxAge: 60 * 60 * 24 }); // 1 day
-        setCookie("refresh_token", refresh_token, { path: "/", maxAge: 60 * 60 * 24 * 30 }); // 30 days
+    function handleTokens(accessToken, refreshToken) {
+        console.log('accessToken >>>')
+        console.log(accessToken)
+
+        console.log('refreshToken >>>')
+        console.log(refreshToken)
+
+        setCookie('accessToken', accessToken, { path: '/', maxAge: 60 * 60 * 24 }); // 1 day
+        setCookie('refreshToken', refreshToken, { path: '/', maxAge: 60 * 60 * 24 * 30 }); // 30 days
     }
 
     const checkResult = async (result) => {
@@ -45,8 +51,8 @@ const Login = () => {
             setModalMessage(() => 'Грешна парола');
             toggleModal();
         } else {
-            const { access_token, refresh_token } = result.data;
-            handleTokens(access_token, refresh_token);
+            const { accessToken, refreshToken } = result.data;
+            handleTokens(accessToken, refreshToken);
 
             setModalMessage(() => 'Влязохте успешно.');
             toggleModal();

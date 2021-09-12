@@ -12,13 +12,14 @@ import { useRouter } from 'next/router';
 
 const Create = () => {
     const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
-    const [cookies, setCookie, removeCookie] = useCookies(["access_token", "refresh_token"]);
+    const [cookies, setCookie, removeCookie] = useCookies(["accessToken", "refreshToken"]);
 
     const router = useRouter();
 
     // todo: improve checks
     // if user doesnt have cookies, make him login
-    if (cookies.access_token === undefined || cookies.refresh_token === undefined) {
+    const { refreshToken, accessToken } = cookies;
+    if (refreshToken === undefined || accessToken === undefined) {
         router.push('/login').then();
     }
 

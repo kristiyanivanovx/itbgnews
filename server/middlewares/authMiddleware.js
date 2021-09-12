@@ -2,20 +2,30 @@ const jwt = require('jsonwebtoken');
 const redis_client = require('../config/redisConfig');
 const { isEmpty } = require('../utilities/common');
 const { validatePassword, validateEmail } = require('../utilities/validation');
+
 function verifyToken(req, res, next) {
     try {
         // Bearer token string
         const token = req.cookies.accessToken;
+
+        console.log('JWT Tuk? nqma token?');
         console.log(token);
+
+        console.log('cookies az na mene kak se parsva');
+        console.log(req.cookies);
+
         req.userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
     } catch (error) {
-        next(
+        console.log(error);
+        // next(
             res.status(401).json({
                 status: false,
                 message: 'Your session is not valid.',
                 data: error,
-            }),
-        );
+            })
+            return;
+
+        // );
     }
     next();
 }
@@ -78,16 +88,17 @@ function validateInputData(req, res, next) {
     if (!validateEmail(email)) {
         errors.errorEmail = 'The provided email is not valid.';
     }
-    if (validatePassword(password)) {
+    if (!validatePassword(password)) {
         errors.errorPassword =
             'The password must have one digit at least, and to be between 6 and 30 symbols';
     }
 
-    if (!isEmpty(errors)) {
+    if (isEmpty(errors)) {
+        next();
+    }
+    else {
         res.json(errors);
     }
-
-    next();
 }
 
 module.exports = {

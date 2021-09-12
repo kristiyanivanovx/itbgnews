@@ -5,10 +5,12 @@ import styles from '../styles/Profile.module.css';
 import Article from './Article';
 import { useCookies } from 'react-cookie';
 import Router from 'next/router';
+import { getEnvironmentInfo } from '../utilities/common';
 
 const Profile = () => {
+    const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
     const [confirmation, setConfirmation] = useState(1);
-    const [cookies, setCookie, removeCookie] = useCookies(["access_token", "refresh_token"]);
+    const [cookies, setCookie, removeCookie] = useCookies(["accessToken", "refreshToken"]);
 
     const triggerConfirmation = async (e) => {
         setConfirmation((confirmation) => confirmation + 1);
@@ -18,11 +20,25 @@ const Profile = () => {
 
         // if user has clicked more than one time, remove the cookies
         if (confirmation > 1) {
-            removeCookie("access_token");
-            removeCookie("refresh_token");
+
+            // removeCookie("access_token");
+            // removeCookie("refresh_token");
+            await submitForm();
             await Router.push('/');
         }
     }
+
+    const submitForm = async () => {
+        const response = await fetch(ENDPOINT + '/logout', {
+            method: 'POST',
+        });
+
+        let result = await response.json();
+        console.log(result);
+
+        // setErrors(() => result.data);
+        // await checkResult(result);
+    };
 
     const items = [
         <Article

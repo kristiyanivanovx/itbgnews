@@ -24,12 +24,17 @@ const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const [cookies, setCookie] = useCookies(["access_token", "refresh_token"]);
+    const [cookies, setCookie] = useCookies(['accessToken', 'refreshToken']);
 
     // todo: set tokens for a reasonable time
-    function handleTokens(access_token, refresh_token) {
-        setCookie("access_token", access_token, { path: "/", maxAge: 60 * 60 * 24 }); // 1 day
-        setCookie("refresh_token", refresh_token, { path: "/", maxAge: 60 * 60 * 24 * 30 }); // 30 days
+    function handleTokens(accessToken, refreshToken) {
+
+
+        setCookie("accessToken", accessToken, { path: "/", maxAge: 60 * 60 * 24 }); // 1 day
+        setCookie("refreshToken", refreshToken, { path: "/", maxAge: 60 * 60 * 24 * 30 }); // 30 days
+
+        console.log(cookies.accessToken);
+        console.log(cookies.refreshToken);
     }
 
     function toggleModal() {
@@ -39,6 +44,10 @@ const Register = () => {
     const checkResponse = (result) => {
         if (result.message === SUCCESSFUL_REGISTRATION_MESSAGE) {
             setModalMessage(() => 'Регистрирахте се успешно!');
+
+            let { accessToken, refreshToken } = result.data;
+            handleTokens(accessToken, refreshToken);
+
             toggleModal();
             setTimeout(() => Router.push('/login'), 2000);
         } else if (result.data?.code === EXISTING_USER_ERROR_CODE) {
@@ -62,9 +71,6 @@ const Register = () => {
 
         let result = await response.json();
         setErrors(() => result);
-
-        let { access_token, refresh_token } = result.data;
-        handleCookie(access_token, refresh_token);
 
         checkResponse(result);
     };
