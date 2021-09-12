@@ -1,3 +1,6 @@
+const dotenv = require('dotenv');
+dotenv.config();
+
 const app = require('express');
 const router = app.Router();
 
@@ -5,9 +8,6 @@ const {
     passwordReset,
     forgottenPassword,
 } = require('../controllers/sendEmailControllers');
-const dotenv = require('dotenv');
-
-dotenv.config();
 
 router.use(app.json());
 
