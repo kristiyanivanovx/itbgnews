@@ -1,4 +1,3 @@
-
 require('dotenv').config();
 
 const ENV = process.env.NODE_ENV || 'development';
@@ -14,9 +13,8 @@ const cookieParser = require('cookie-parser');
 
 const app = express();
 
-const resetRoutes = require('./routes/resetPassword');
 const authRoutes = require('./routes/authRoute');
-
+const resetRoutes = require('./routes/resetPassword');
 const articlesRouter = require('./routes/posts');
 const commentRouter = require('./routes/comments');
 

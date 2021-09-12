@@ -58,8 +58,8 @@ const Login = () => {
             toggleModal();
 
             setTimeout(() => {
-                //Router.push('/');
-            }, 1500)
+                Router.push('/');
+            }, 2000)
         }
     };
 

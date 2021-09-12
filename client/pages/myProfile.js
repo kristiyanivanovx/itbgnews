@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Header from '../components/Header';
 import SideNav from '../components/SideNav';
 import Profile from '../components/Profile';
@@ -11,26 +11,33 @@ const MyProfile =  () => {
     const [cookies, setCookie, removeCookie] = useCookies(["accessToken", "accessToken"]);
     const router = useRouter();
 
-    // todo: improve checks
     // if user doesnt have cookies, make him login
-    const { refreshToken, accessToken } = cookies;
-    // if (refreshToken === undefined || accessToken === undefined) {
-    //     React.push('/login');
-    // }
+    // todo: improve checks
+    // todo: use getServerSideProps / hoc
+    useEffect(() => {
+        if(!cookies || !router) {
+            return;
+        }
+
+        const { refreshToken, accessToken } = cookies;
+        if (refreshToken === undefined || accessToken === undefined) {
+            router.push('/login');
+        }
+
+    }, [cookies, router])
 
     return (
         <>
-            <HeadComponent currentPageName={'My Profile'} />
+            <HeadComponent currentPageName={'My Profile'}/>
             <div className={'container'}>
                 <div className={'col'}>
-                    <Header />
+                    <Header/>
                 </div>
                 <div className={'col'}>
-                    <SideNav />
-                    <Profile />
+                    <SideNav/>
+                    <Profile/>
                 </div>
             </div>
-            <Footer />
         </>
     );
 };

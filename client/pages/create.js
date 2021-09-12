@@ -7,31 +7,32 @@ import FormTitle from '../components/FormTitle';
 import Form from '../components/Form';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
-
 import FormContainer from '../components/FormContainer';
 import SideNav from '../components/SideNav';
-
 import { getEnvironmentInfo } from '../utilities/common';
 import { useCookies } from 'react-cookie';
 import { useRouter } from 'next/router';
 
 const Create = () => {
     const router = useRouter();
-    // useEffect();
 
     const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
     const [cookies, setCookie, removeCookie] = useCookies(["accessToken", "refreshToken"]);
 
-    const handleNotValidTokens = () => {
-        //router.push('/login')
-    }
-
+    // todo: use getServerSideProps / hoc
     // todo: improve checks
     // if user doesnt have cookies, make him login
-    const { refreshToken, accessToken } = cookies;
-    if (refreshToken === undefined || accessToken === undefined) {
-        handleNotValidTokens();
-    }
+    useEffect(() => {
+        if(!cookies || !router) {
+            return;
+        }
+
+        const { refreshToken, accessToken } = cookies;
+        if (refreshToken === undefined || accessToken === undefined) {
+            router.push('/login');
+        }
+
+    }, [cookies, router])
 
     return (
         <div className="container">
