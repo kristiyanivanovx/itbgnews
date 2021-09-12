@@ -25,4 +25,5 @@ router.post('/logout',
     user_controller.logout
 );
 
+
 module.exports = router;
