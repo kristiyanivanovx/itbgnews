@@ -1,30 +1,29 @@
 require('dotenv').config();
-const cookieParser = require('cookie-parser');
-const BACKEND_PORT = process.env.BACKEND_PORT || 5000;
+
+const PORT = process.env.PORT || process.env.BACKEND_PORT;
+const ENV = process.env.NODE_ENV || 'development';
 
 const express = require('express');
 const cors = require('cors');
 const app = express();
 
-app.use(cors());
-app.use(cookieParser());
-app.use(express.json());
-
 const resetRoutes = require('./routes/resetPassword');
 const authRoutes = require('./routes/authRoute');
-
-app.use('', authRoutes);
-app.use('', resetRoutes);
 
 const articlesRouter = require('./routes/posts');
 const commentRouter = require('./routes/comments');
 
-app.use('/posts', articlesRouter);
-app.use('/comments', commentRouter);
-
-app.listen(PORT, () => {
-    console.log(`Listening on port ${PORT} in ${ENV}...`);
-});
+app
+    .use(cors())
+    .use(cookieParser())
+    .use(express.json())
+    .use('', authRoutes)
+    .use('', resetRoutes)
+    .use('/posts', articlesRouter)
+    .use('/comments', commentRouter)
+    .listen(PORT, () => {
+        console.log(`Listening on port ${PORT} in ${ENV}...`);
+    });
 
 /*
 ############################ Routes ############################
