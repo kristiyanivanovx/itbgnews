@@ -1,8 +1,11 @@
 # example deployment script, modify to suit your needs
 
-heroku container:login
 cd "D:\Projects\GitHub repos\hackernews-clone" || exit
 echo "$PWD"
+
+heroku container:login
+heroku container:push web api --recursive
+heroku container:release web api
 
 # build images
 #docker build -t "itbgnews-server" ./server/ --no-cache
@@ -18,11 +21,4 @@ echo "$PWD"
 #heroku container:release web --app itbgnews-api
 #heroku container:release web --app itbgnews
 
-
-heroku container:push --recursive
-
-
 $SHELL
-
-
-

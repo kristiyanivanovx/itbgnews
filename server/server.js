@@ -1,4 +1,3 @@
-
 require('dotenv').config();
 
 const ENV = process.env.NODE_ENV || 'development';
@@ -11,9 +10,8 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 
-const resetRoutes = require('./routes/resetPassword');
 const authRoutes = require('./routes/authRoute');
-
+const resetRoutes = require('./routes/resetPassword');
 const articlesRouter = require('./routes/posts');
 const commentRouter = require('./routes/comments');
 
