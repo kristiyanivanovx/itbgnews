@@ -24,7 +24,7 @@ const Profile = () => {
             // removeCookie("access_token");
             // removeCookie("refresh_token");
             await submitForm();
-            await Router.push('/');
+            //await Router.push('/');
         }
     }
 
