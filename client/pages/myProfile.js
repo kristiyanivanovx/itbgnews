@@ -4,6 +4,7 @@ import SideNav from '../components/SideNav';
 import Profile from '../components/Profile';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
+import Footer from "../components/Footer";
 
 const MyProfile = () => {
     return (

@@ -45,6 +45,7 @@
 
 .user__activity {
     text-align: center;
+    font-size: clamp(18px, 2vw, 1.3rem);
 }
 
 /* exit button in profile*/
@@ -88,4 +89,10 @@
 
 .exit__btn__text {
     position: relative;
+}
+
+@media (max-width: 600px) {
+    .profile {
+        width: 100%;
+    }
 }

@@ -72,7 +72,7 @@ const Profile = () => {
                     </div>
                 </div>
             </div>
-            <div>{items}</div>
+            <div className={'articles'}>{items}</div>
         </main>
     );
 };
