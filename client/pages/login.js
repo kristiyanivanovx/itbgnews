@@ -7,17 +7,14 @@ import FormContainer from '../components/FormContainer';
 import Form from '../components/Form';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
-<<<<<<< HEAD
-=======
 import {
     getEnvironmentInfo,
     INCORRECT_PASSWORD_ERROR_MESSAGE,
     USER_NOT_FOUND_ERROR_MESSAGE,
 } from '../utilities/common';
 import Modal from '../components/Modal';
-import { useCookies } from "react-cookie";
+import { useCookies } from 'react-cookie';
 import Router from 'next/router';
->>>>>>> chris
 
 const Login = () => {
     let [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
@@ -36,14 +33,20 @@ const Login = () => {
 
     // todo: set cookies for a reasonable time
     function handleTokens(accessToken, refreshToken) {
-        console.log('accessToken >>>')
-        console.log(accessToken)
+        console.log('accessToken >>>');
+        console.log(accessToken);
 
-        console.log('refreshToken >>>')
-        console.log(refreshToken)
+        console.log('refreshToken >>>');
+        console.log(refreshToken);
 
-        setCookie('accessToken', accessToken, { path: '/', maxAge: 60 * 60 * 24 }); // 1 day
-        setCookie('refreshToken', refreshToken, { path: '/', maxAge: 60 * 60 * 24 * 30 }); // 30 days
+        setCookie('accessToken', accessToken, {
+            path: '/',
+            maxAge: 60 * 60 * 24,
+        }); // 1 day
+        setCookie('refreshToken', refreshToken, {
+            path: '/',
+            maxAge: 60 * 60 * 24 * 30,
+        }); // 30 days
     }
 
     const checkResult = async (result) => {
@@ -62,7 +65,7 @@ const Login = () => {
 
             setTimeout(() => {
                 Router.push('/');
-            }, 2000)
+            }, 2000);
         }
     };
 
@@ -96,16 +99,21 @@ const Login = () => {
                 />
                 <FormTitle text={'Вход'} />
                 <Form>
-<<<<<<< HEAD
-                    <Input placeholder={'Имейл'} />
-                    <Input placeholder={'Парола'} type={'password'} />
-                    <Button text={'Влез'} />
-=======
-                    <Input onChange={(e) => setEmail(e.target.value)} placeholder={'Имейл'} type={'text'} />
-                    <Input onChange={(e) => setPassword(e.target.value)} placeholder={'Парола'} type={'password'} />
-                    <Button onClick={async () => await submitForm()} text={'Влез'} />
+                    <Input
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder={'Имейл'}
+                        type={'text'}
+                    />
+                    <Input
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder={'Парола'}
+                        type={'password'}
+                    />
+                    <Button
+                        onClick={async () => await submitForm()}
+                        text={'Влез'}
+                    />
 
->>>>>>> chris
                     <AuthLinks
                         firstText={'Нямаш профил?'}
                         secondText={'Забравена парола?'}
