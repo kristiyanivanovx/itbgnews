@@ -20,9 +20,11 @@
 .search__bar__input:focus {
     outline: none;
 }
-
 .search__icon {
     display: block;
     font-size: xx-large;
 }
 
+/* {
+
+} */

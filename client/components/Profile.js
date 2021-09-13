@@ -10,10 +10,7 @@ import { getEnvironmentInfo } from '../utilities/common';
 const Profile = () => {
     const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
     const [confirmation, setConfirmation] = useState(1);
-    const [cookies, setCookie, removeCookie] = useCookies([
-        'accessToken',
-        'refreshToken',
-    ]);
+    const [cookies, setCookie, removeCookie] = useCookies(["accessToken", "refreshToken"]);
 
     const triggerConfirmation = async (e) => {
         setConfirmation((confirmation) => confirmation + 1);
@@ -23,23 +20,24 @@ const Profile = () => {
 
         // if user has clicked more than one time, remove the cookies
         if (confirmation > 1) {
+
             await submitForm();
 
             // todo: delete this later
             if (confirmation % 2 === 0) {
                 e.target.classList.remove(styles.exit__btn__confirm);
             }
-
+            
             // removeCookie("access_token");
             // removeCookie("refresh_token");
             //await Router.push('/');
         }
-    };
+    }
 
     const submitForm = async () => {
         const response = await fetch(ENDPOINT + '/logout', {
             method: 'POST',
-            cookies: document.cookie,
+            cookies: document.cookie
         });
 
         let result = await response.json();
@@ -49,12 +47,22 @@ const Profile = () => {
         // await checkResult(result);
     };
 
-    const items = [];
+    const items = [
+        <Article
+            key={0}
+            title={'IT-BG News'}
+            upvotes={9}
+            username={'admin'}
+            hours={5}
+            comments={103}
+            link={'https://it-bg.github.io/'}
+            isFirstArticle={true}
+        />,
+    ];
 
-    for (let i = 0; i <= 4; i++) {
+    for (let i = 1; i <= 4; i++) {
         items.push(
             <Article
-                isFirstArticle={i === 0}
                 key={i}
                 title={'Binary Search'}
                 upvotes={9}
@@ -79,16 +87,20 @@ const Profile = () => {
                     />
                 </div>
                 <div className={styles.user__information}>
+
                     <div className={styles.profile__top}>
                         <h3 className={styles.user__name}>Никола</h3>
                         <button
                             onClick={async (e) => await triggerConfirmation(e)}
-                            className={styles.exit__btn}
-                        >
-                            <div className={styles.exit__btn__shadow}> </div>
-                            <span className={styles.exit__btn__text}>
+                            className={styles.exit__btn}>
+                        <div
+                            className={styles.exit__btn__shadow}> </div>
+                            <span
+
+                                className={styles.exit__btn__text}>
                                 Изход
                             </span>
+
                         </button>
                     </div>
 
@@ -107,6 +119,7 @@ const Profile = () => {
                             <div>статии</div>
                         </div>
                     </div>
+
                 </div>
             </div>
             <div>{items}</div>
