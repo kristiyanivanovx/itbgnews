@@ -8,12 +8,14 @@
 }
 
 .profile__pic {
-    width: 200px !important;
+    /* width: 200px !important;
     height: 200px !important;
     min-width: 200px !important;
     max-width: 200px !important;
     min-height: 200px !important;
-    max-height: 200px !important;
+    max-height: 200px !important; */
+    width: 100% !important;
+    height: 100% !important;
     margin: 0 !important;
     border-radius: 50%;
     object-fit: cover;
@@ -54,21 +56,6 @@
     font-size: 24px;
     text-align: center;
     z-index: 3;
-<<<<<<< HEAD
-
-    color: var(--clr-white);
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
-        linear-gradient(
-            264.39deg,
-            #ba2bac -36.33%,
-            #e655e8 20.2%,
-            #6369fa 106.31%,
-            rgba(255, 6, 230, 0) 130.66%
-        );
-    border-radius: 10px;
-
-    padding: 5px 1rem;
-=======
 
     color: var(--clr-white);
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
@@ -91,8 +78,13 @@
     display: inline-block;
 
     border-radius: 10px;
-    background: linear-gradient(264.39deg, #b11515 -36.33%, rgba(213, 2, 2, 0.98) 20.2%, rgba(241, 12, 39, 0.87) 106.31%, rgba(255, 6, 230, 0) 130.66%);
->>>>>>> chris
+    background: linear-gradient(
+        264.39deg,
+        #b11515 -36.33%,
+        rgba(213, 2, 2, 0.98) 20.2%,
+        rgba(241, 12, 39, 0.87) 106.31%,
+        rgba(255, 6, 230, 0) 130.66%
+    );
 }
 
 .exit__btn__shadow {
