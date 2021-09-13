@@ -101,7 +101,6 @@ function validateInputData(req, res, next) {
     }
     else {
         res.json(errors);
-        return;
     }
 }
 

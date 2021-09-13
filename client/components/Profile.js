@@ -21,15 +21,9 @@ const Profile = () => {
         // if user has clicked more than one time, remove the cookies
         if (confirmation > 1) {
 
-            await submitForm();
-
-            // todo: delete this later
-            if (confirmation % 2 === 0) {
-                e.target.classList.remove(styles.exit__btn__confirm);
-            }
-            
             // removeCookie("access_token");
             // removeCookie("refresh_token");
+            await submitForm();
             //await Router.push('/');
         }
     }
@@ -90,14 +84,9 @@ const Profile = () => {
 
                     <div className={styles.profile__top}>
                         <h3 className={styles.user__name}>Никола</h3>
-                        <button
-                            onClick={async (e) => await triggerConfirmation(e)}
-                            className={styles.exit__btn}>
-                        <div
-                            className={styles.exit__btn__shadow}> </div>
-                            <span
-
-                                className={styles.exit__btn__text}>
+                        <button className={styles.exit__btn}>
+                        <div className={styles.exit__btn__shadow}> </div>
+                            <span className={styles.exit__btn__text}>
                                 Изход
                             </span>
 

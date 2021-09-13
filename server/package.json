@@ -5,8 +5,7 @@
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",
-    "pm2-deploy": "pm2 start server.js --watch --port $PORT",
-    "nodemon-deploy": "nodemon server.js -p $PORT"
+    "deploy": "nodemon server.js -p $PORT"
   },
   "license": "MIT",
   "devDependencies": {
@@ -23,7 +22,6 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.0.3",
     "nodemon": "^1.14.6",
-    "pm2": "^5.1.1",
     "redis": "^3.1.2"
   }
 }
