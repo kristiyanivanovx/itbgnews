@@ -9,20 +9,65 @@ import Modal from '../components/Modal';
 import getDefaultLayout from '../utilities/getDefaultLayout';
 import {
     EXISTING_USER_ERROR_CODE,
+    getEnvironmentInfo,
     SUCCESSFUL_REGISTRATION_MESSAGE,
 } from '../utilities/common';
+import Router from 'next/router';
+import { useCookies } from 'react-cookie';
 
 const Register = () => {
+    let [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
+
+    const [modalMessage, setModalMessage] = useState('');
     const [shouldDisplay, setShouldDisplay] = useState(false);
     const [errors, setErrors] = useState({});
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    const [cookies, setCookie] = useCookies(['accessToken', 'refreshToken']);
+
+    // todo: set tokens for a reasonable time
+    function handleTokens(accessToken, refreshToken) {
+        setCookie('accessToken', accessToken, {
+            path: '/',
+            maxAge: 60 * 60 * 24,
+        }); // 1 day
+        setCookie('refreshToken', refreshToken, {
+            path: '/',
+            maxAge: 60 * 60 * 24 * 30,
+        }); // 30 days
+
+        console.log(cookies.accessToken);
+        console.log(cookies.refreshToken);
+    }
+
+    function toggleModal() {
+        setShouldDisplay((shouldDisplay) => !shouldDisplay);
+    }
+
+    const checkResponse = (result) => {
+        if (result.message === SUCCESSFUL_REGISTRATION_MESSAGE) {
+            setModalMessage(() => 'Регистрирахте се успешно!');
+
+            let { accessToken, refreshToken } = result.data;
+            handleTokens(accessToken, refreshToken);
+
+            toggleModal();
+            setTimeout(() => Router.push('/login'), 2000);
+        } else if (result.data?.code === EXISTING_USER_ERROR_CODE) {
+            setModalMessage(
+                () => 'Потребител с това име или имейл вече съществува.',
+            );
+
+            toggleModal();
+        }
+    };
+
     const submitForm = async () => {
         let jsonData = JSON.stringify({ username, email, password });
 
-        const response = await fetch('http://localhost:5000/register', {
+        const response = await fetch(ENDPOINT + '/register', {
             method: 'POST',
             body: jsonData,
             headers: {
@@ -33,11 +78,7 @@ const Register = () => {
         let result = await response.json();
         setErrors(() => result);
 
-        if (result.message === SUCCESSFUL_REGISTRATION_MESSAGE) {
-            toggleModal();
-        } else if (result.data?.code === EXISTING_USER_ERROR_CODE) {
-            console.log('User with that username or password already exists.');
-        }
+        checkResponse(result);
     };
 
     function toggleModal() {
@@ -49,8 +90,7 @@ const Register = () => {
             <HeadComponent currentPageName={'Register'} />
             <FormContainer>
                 <Modal
-                    text={'Регистрирахте се успешно!'}
-                    message={'Влезте от тук.'}
+                    text={modalMessage}
                     shouldDisplay={shouldDisplay}
                     toggleModal={(shouldDisplay) =>
                         setShouldDisplay(!shouldDisplay)

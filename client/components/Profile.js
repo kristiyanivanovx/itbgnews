@@ -1,14 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import profile from '../public/profile.png';
 import styles from '../styles/Profile.module.css';
 import Article from './Article';
+<<<<<<< HEAD
+=======
+import { useCookies } from 'react-cookie';
+import Router from 'next/router';
+import { getEnvironmentInfo } from '../utilities/common';
 
 const Profile = () => {
-    let key = 0;
+    const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
+    const [confirmation, setConfirmation] = useState(1);
+    const [cookies, setCookie, removeCookie] = useCookies(["accessToken", "refreshToken"]);
+
+    const triggerConfirmation = async (e) => {
+        setConfirmation((confirmation) => confirmation + 1);
+
+        // add confirmation class when clicked
+        e.target.classList.add(styles.exit__btn__confirm);
+
+        // if user has clicked more than one time, remove the cookies
+        if (confirmation > 1) {
+
+            // removeCookie("access_token");
+            // removeCookie("refresh_token");
+            await submitForm();
+            //await Router.push('/');
+        }
+    }
+
+    const submitForm = async () => {
+        const response = await fetch(ENDPOINT + '/logout', {
+            method: 'POST',
+            cookies: document.cookie
+        });
+
+        let result = await response.json();
+        console.log(result);
+
+        // setErrors(() => result.data);
+        // await checkResult(result);
+    };
+>>>>>>> chris
+
     const items = [
         <Article
-            key={key}
+            key={0}
             title={'IT-BG News'}
             upvotes={9}
             username={'admin'}
@@ -19,11 +57,10 @@ const Profile = () => {
         />,
     ];
 
-    key++;
-    for (let i = key; i < 4; i++) {
+    for (let i = 1; i <= 4; i++) {
         items.push(
             <Article
-                key={key}
+                key={i}
                 title={'Binary Search'}
                 upvotes={9}
                 username={'admin'}
@@ -34,6 +71,10 @@ const Profile = () => {
         );
     }
 
+<<<<<<< HEAD
+=======
+    //       onClick={async (e) => await triggerConfirmation(e)}
+>>>>>>> chris
     return (
         <main className={styles.profile}>
             <h2 className={styles.profile__title}>Моят Профил</h2>
@@ -46,15 +87,25 @@ const Profile = () => {
                     />
                 </div>
                 <div className={styles.user__information}>
+
                     <div className={styles.profile__top}>
                         <h3 className={styles.user__name}>Никола</h3>
                         <button className={styles.exit__btn}>
+<<<<<<< HEAD
                             <div className={styles.exit__btn__shadow}> </div>
                             <span className={styles.exit__btn__text}>
                                 Изход
                             </span>
+=======
+                        <div className={styles.exit__btn__shadow}> </div>
+                            <span className={styles.exit__btn__text}>
+                                Изход
+                            </span>
+
+>>>>>>> chris
                         </button>
                     </div>
+
                     <div className={styles.user__bio}>Да жиевее българия.</div>
                     <div className={styles.user__activities}>
                         <div className={styles.user__activity}>
@@ -70,6 +121,7 @@ const Profile = () => {
                             <div>статии</div>
                         </div>
                     </div>
+
                 </div>
             </div>
             <div>{items}</div>

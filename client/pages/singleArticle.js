@@ -5,7 +5,6 @@ import Comment from '../components/Comment';
 import Header from '../components/Header';
 import SideNav from '../components/SideNav';
 import HeadComponent from '../components/HeadComponent';
-import Footer from '../components/Footer';
 import getDefaultLayout from '../utilities/getDefaultLayout';
 
 const SingleArticle = () => {
