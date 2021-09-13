@@ -9,15 +9,17 @@ router.get("/", async (req, res) => {
   const limit = req.query.limit;
 
   const startIndex = (page - 1) * limit;
-  const endIndex = page * limit;
+  const endIndex = page * limit
+
   try {
     const Posts = await Post.find({ textContent: true });
-    const posts_page = Posts.slice(startIndex, endIndex);
-    res.json(posts_page);
+    const postsPaginated = Posts.slice(startIndex, endIndex);
+    res.json(postsPaginated);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
+
 //Getting comments and post by post id ✔
 router.get("/comments", getPost, async (req, res) => {
   try {

@@ -9,6 +9,5 @@ module.exports = {
 
     REMOTE_FRONTEND_HOST: 'https://itbgnews.herokuapp.com',
     REMOTE_BACKEND_HOST: 'https://itbgnews-api.herokuapp.com',
-
   },
 }
