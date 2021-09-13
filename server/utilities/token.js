@@ -1,5 +1,4 @@
 require('dotenv').config();
-console.log(process.env.JWT_ACCESS_TIME);
 const jwt = require('jsonwebtoken');
 const redis_client = require('../config/redisConfig');
 const cookieParser = require('cookie-parser');
@@ -35,6 +34,7 @@ function cashAndReturnRefreshToken(userId) {
 function makeRefresh(userId) {
     const accessToken = generateAccessToken(userId);
     const refreshToken = cashAndReturnRefreshToken(userId);
+    console.log(1)
     return [accessToken, refreshToken];
 }
 

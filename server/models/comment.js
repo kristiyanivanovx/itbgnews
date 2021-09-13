@@ -2,16 +2,16 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const commentSchema = new mongoose.Schema({
-  parent_post_id: {
+  parentPostId: {
     type: Schema.Types.ObjectId,
     ref: "Article",
     required: true,
   },
-  author_id: {
+  authorId: {
     type: Schema.Types.ObjectId,
     ref: "User",
   },
-  parent_comment_id: {
+  parentCommentId: {
     type: Schema.Types.ObjectId,
     ref: "Comment",
   },
@@ -20,7 +20,7 @@ const commentSchema = new mongoose.Schema({
   },
   upvoters: [
     {
-      user_id: {
+      userId: {
         type: Schema.Types.ObjectId,
       },
     },
@@ -31,10 +31,10 @@ const commentSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
-  last_edit_date: {
+  lastEditDate: {
     type: Date,
   },
-  creation_date: {
+  creationDate: {
     type: Date,
   },
 });

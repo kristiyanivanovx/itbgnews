@@ -49,9 +49,9 @@ module.exports = {
         res.comment = comment;
         next();
     },
-    getComments: async function (res) {
+    getComments: async function (req) {
         const comment = await Comment.find({
-            parent_post_id: res.post._id,
+            parent_post_id: req.post._id,
             textContent: true,
         });
         return comment;

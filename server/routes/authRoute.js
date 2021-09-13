@@ -2,10 +2,6 @@ const router = require('express').Router();
 const user_controller = require('../controllers/userControllers');
 const auth_middleware = require('../middlewares/authMiddleware');
 
-router.post('/', auth_middleware.verifyToken, (req, res) => {
-    res.send('ok');
-});
-
 router.post(
     '/register',
     auth_middleware.validateInputData,

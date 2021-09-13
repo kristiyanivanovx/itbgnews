@@ -25,6 +25,7 @@ async function register(req, res) {
             },
         });
     } catch (error) {
+        console.log(error)
         if (error.code === 1100) {
             res.status(409).json({
                 DuplicatedValue: 'The username or email is already user',

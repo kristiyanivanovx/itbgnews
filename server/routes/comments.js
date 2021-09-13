@@ -5,28 +5,30 @@ const { getComment, getUser } = require('../functions/getters');
 
 //Create a comment ✔
 router.post('/', async (req, res) => {
+    const {parentPostId , autorId , parentCommentId, text} = req.body
     const comment = new Comment({
-        parent_post_id: req.body.parent_post_id,
-        author_id: req.body.author_id,
-        parent_comment_id: req.body.parent_comment_id,
-        text: req.body.text,
-        creation_date: Date.now(),
-        last_edit_date: Date.now(),
+        parentCommentId,
+        autorId,
+        parentCommentId,
+        text,
+        creationDate: Date.now(),
+        lastEditDate: Date.now(),
     });
 
     try {
         const newComment = await comment.save();
         res.status(201).json(newComment);
     } catch (err) {
+        console.log(err)
         res.status(400).json({ message: err.message });
     }
 });
 //Adding/removing an upvote ✔
 router.patch('/upvote', getComment, getUser, async (req, res) => {
-    const comment = res.comment;
-    const user = res.user;
+    const comment = req.comment;
+    const user = req.user;
 
-    if (String(comment.author_id) === String(user._id)) {
+    if (String(comment.authorId) === String(user._id)) {
         res.status(405).json({
             message: "You can't vote on your own comment!",
         });
@@ -34,14 +36,14 @@ router.patch('/upvote', getComment, getUser, async (req, res) => {
     //check if upvote exists
     const upvoteExists = !!(await Comment.findOne({
         comment,
-        upvoters: { $elemMatch: { user_id: res.user._id } },
+        upvoters: { $elemMatch: { userId: res.user._id } },
     }));
 
     try {
         if (upvoteExists) {
             //remove the upvote
             await Comment.updateOne(comment, {
-                $pull: { upvoters: { user_id: res.user._id } },
+                $pull: { upvoters: { userId: res.user._id } },
             });
 
             res.status(200).json({
@@ -50,7 +52,7 @@ router.patch('/upvote', getComment, getUser, async (req, res) => {
             });
         } else {
             //Add the upvote
-            comment.upvoters.push({ user_id: user._id });
+            comment.upvoters.push({ userId: user._id });
             await comment.save();
             res.status(201).json({
                 count: comment.upvoters.length,
@@ -64,16 +66,20 @@ router.patch('/upvote', getComment, getUser, async (req, res) => {
 
 //Updateting a comment ✔
 router.patch('/', getComment, async (req, res) => {
+    const text = req.body.text
     let hasChanged = false;
-    if (req.body.text) {
-        res.comment.text = req.body.text;
+    if (text) {
+        req.comment.text = text
         hasChanged = true;
     }
-    if (hasChanged) res.comment.last_edit_date = Date.now();
+    if (hasChanged) {
+        req.comment.lastEditDate = Date.now();
+    }
 
     try {
-        if (!hasChanged)
+        if (!hasChanged){
             res.status(304).json({ message: 'Nothing was changed.' });
+        }
         const updated = await res.comment.save();
         res.status(200).json(updated);
     } catch (err) {
@@ -82,8 +88,8 @@ router.patch('/', getComment, async (req, res) => {
 });
 //'Deletes' a comment (does not remove it from the database) ✔
 router.delete('/', getComment, getUser, async (req, res) => {
-    const comment = res.comment;
-    const user = res.user;
+    const comment = req.comment;
+    const user = req.user;
 
     if (String(comment.author_id) === String(user._id)) {
         try {

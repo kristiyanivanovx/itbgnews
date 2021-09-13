@@ -8,12 +8,11 @@ import HeadComponent from '../components/HeadComponent';
 import Modal from '../components/Modal';
 import getDefaultLayout from '../utilities/getDefaultLayout';
 import {
-    EXISTING_USER_ERROR_CODE,
-    getEnvironmentInfo,
+    EXISTING_USER_ERROR_CODE, getEnvironmentInfo,
     SUCCESSFUL_REGISTRATION_MESSAGE,
 } from '../utilities/common';
 import Router from 'next/router';
-import { useCookies } from 'react-cookie';
+import { useCookies } from "react-cookie";
 
 const Register = () => {
     let [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
@@ -27,7 +26,6 @@ const Register = () => {
 
     const [cookies, setCookie] = useCookies(['accessToken', 'refreshToken']);
 
-    // todo: set tokens for a reasonable time
     function handleTokens(accessToken, refreshToken) {
 
 
@@ -36,19 +34,6 @@ const Register = () => {
 
         console.log(cookies.accessToken);
         console.log(cookies.refreshToken);
-
-    const [cookies, setCookie] = useCookies(['access_token', 'refresh_token']);
-
-    // todo: set tokens for a reasonable time
-    function handleTokens(access_token, refresh_token) {
-        setCookie('access_token', access_token, {
-            path: '/',
-            maxAge: 60 * 60 * 24,
-        }); // 1 day
-        setCookie('refresh_token', refresh_token, {
-            path: '/',
-            maxAge: 60 * 60 * 24 * 30,
-        }); // 30 days
     }
 
     function toggleModal() {
@@ -61,7 +46,6 @@ const Register = () => {
 
             let { accessToken, refreshToken } = result.data;
             handleTokens(accessToken, refreshToken);
-
             toggleModal();
             setTimeout(() => Router.push('/login'), 2000);
         } else if (result.data?.code === EXISTING_USER_ERROR_CODE) {
@@ -85,6 +69,7 @@ const Register = () => {
 
         let result = await response.json();
         setErrors(() => result);
+
         checkResponse(result);
     };
 
@@ -128,6 +113,7 @@ const Register = () => {
         </>
     );
 };
+
 
 Register.getLayout = getDefaultLayout;
 

@@ -2,7 +2,6 @@ require("dotenv").config()
 const BACKEND_PORT = process.env.BACKEND_PORT || 5000;
 const PORT = process.env.BACKEND_PORT || 5000;
 const ENV = process.env.NODE_ENV || 'development';
-
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
@@ -19,8 +18,8 @@ const authRoutes = require('./routes/authRoute');
 app.use('', authRoutes);
 app.use('', resetRoutes);
 
-const articlesRouter = require('./Routes/posts');
-const commentRouter = require('./Routes/comments');
+const articlesRouter = require('./routes/posts');
+const commentRouter = require('./routes/comments');
 
 app.use('/posts', articlesRouter);
 app.use('/comments', commentRouter);
