@@ -1,7 +1,7 @@
 const { validatePassword } = require('../utilities/validation');
 const { hash } = require('bcrypt');
 const verifySchema = require('../models/verifySchema');
-const userSchema = require('../models/userSchema');
+const userSchema = require('../models/user');
 const crypto = require('crypto');
 const { createMessage, mail } = require('../models/mailMessage');
 

@@ -6,11 +6,12 @@ module.exports = {
     getPost: async function (req, res, next) {
         let post;
         try {
-            post = await Post.findById(req.body.post_id);
-            if (!post || !post.textContent)
+            post = await Post.findById(req.body.postId);
+            if (!post || !post.textContent) {
                 return await res.status(404).json({
-                    message: `Cannot find post with id: ${req.body.post_id}`,
+                    message: `Cannot find post with id: ${req.body.postId}`,
                 });
+            }
         } catch (err) {
             return res.status(500).json({ message: err.message });
         }
@@ -21,11 +22,12 @@ module.exports = {
     getUser: async function (req, res, next) {
         let user;
         try {
-            user = await User.findById(req.body.user_id);
-            if (!user)
+            user = await User.findById(req.body.userId);
+            if (!user){
                 return res.status(404).json({
-                    message: `Cannot find user with id: ${req.body.post_id}`,
+                    message: `Cannot find user with id: ${req.body.postId}`,
                 });
+            }
         } catch (err) {
             return res.status(500).json({ message: err.message });
         }
@@ -37,11 +39,12 @@ module.exports = {
     getComment: async function (req, res, next) {
         let comment;
         try {
-            comment = await Comment.findById(req.body.comment_id);
-            if (!comment || !comment.textContent)
+            comment = await Comment.findById(req.body.commentId);
+            if (!comment || !comment.textContent){
                 return res.status(404).json({
-                    message: `Cannot find comment with id: ${req.body.comment_id}`,
+                    message: `Cannot find comment with id: ${req.body.commentId}`,
                 });
+            }
         } catch (err) {
             return res.status(500).json({ message: err.message });
         }
@@ -51,7 +54,7 @@ module.exports = {
     },
     getComments: async function (req) {
         const comment = await Comment.find({
-            parent_post_id: req.post._id,
+            parentPostId: req.postId,
             textContent: true,
         });
         return comment;

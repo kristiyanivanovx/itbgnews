@@ -6,14 +6,16 @@ const { getComment, getUser } = require('../functions/getters');
 //Create a comment ✔
 router.post('/', async (req, res) => {
     const {parentPostId , autorId , parentCommentId, text} = req.body
+    console.log({parentPostId , autorId , parentCommentId, text})
     const comment = new Comment({
         parentCommentId,
         autorId,
-        parentCommentId,
+        parentPostId,
         text,
         creationDate: Date.now(),
         lastEditDate: Date.now(),
-    });
+    })
+
 
     try {
         const newComment = await comment.save();

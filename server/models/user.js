@@ -1,11 +1,28 @@
-const mongoose = require("mongoose");
+const mongoose = require('../config/mongooseConfig');
 const Schema = mongoose.Schema;
 
-const userSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    unique: true,
-  },
+const userSchema = new Schema({
+  email: String,
+  username: String,
+  password: String,
+  date: Date,
 });
 
-module.exports = mongoose.model("User", userSchema);
+userSchema.index(
+    {
+      email: 1,
+    },
+    {
+      unique: true,
+    },
+);
+userSchema.index(
+    {
+      username: 1,
+    },
+    {
+      unique: true,
+    },
+);
+
+module.exports = mongoose.model('user', userSchema);

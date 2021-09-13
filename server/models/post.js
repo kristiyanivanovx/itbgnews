@@ -14,7 +14,7 @@ const postSchema = new mongoose.Schema({
   },
   upvoters: [
     {
-      user_id: {
+      userId: {
         type: Schema.Types.ObjectId,
         ref: "User",
       },

@@ -12,7 +12,7 @@ const commentSchema = new mongoose.Schema({
     ref: "User",
   },
   parentCommentId: {
-    type: Schema.Types.ObjectId,
+    type: String,
     ref: "Comment",
   },
   text: {

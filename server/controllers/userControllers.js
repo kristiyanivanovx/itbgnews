@@ -1,4 +1,4 @@
-const User = require('../models/userSchema');
+const User = require('../models/user');
 const redis_client = require('../config/redisConfig');
 const bcrypt = require('bcrypt');
 const { makeRefresh } = require('../utilities/token');
@@ -14,8 +14,9 @@ async function register(req, res) {
     });
 
     try {
+
+        const [accessToken, refreshToken] = makeRefresh(user._id);
         const saved_user = await user.save();
-        const [accessToken, refreshToken] = makeRefresh(saved_user._id);
         res.json({
             status: true,
             message: 'Registered successfully.',
