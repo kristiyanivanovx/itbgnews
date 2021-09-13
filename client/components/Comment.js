@@ -9,21 +9,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 const Comment = ({ title, link, username, hours, comments, upvotes, tabs }) => {
-    // const [windowVar, setWindowVar] = useState(null);
     const [tabsPercent, setTabsPercent] = useState(5);
-
-    // useEffect(() => {
-    //     console.log(window, !window);
-    //     setWindowVar(window);
-    // }, []);
-
-    // useEffect(() => {
-    //     if (!window) return;
-    //     if (windowVar.innerWidth <= 600) {
-    //         tabsPercent = 2;
-    //     }
-    // }, [windowVar]);
-
     const width = 100 - tabs * tabsPercent;
 
     return (
@@ -33,13 +19,9 @@ const Comment = ({ title, link, username, hours, comments, upvotes, tabs }) => {
                     <p className={styles.comment__title}>
                         <a href={link}> {title}</a>
                     </p>
-<<<<<<< HEAD
                     <div
                         className={`${styles.comment__votes} ${styles.comment__small__text}`}
                     >
-=======
-                    <div className={`${styles.comment__votes} ${styles.comment__small__text}`}>
->>>>>>> chris
                         <FontAwesomeIcon
                             className={styles.comment__votes__icon}
                             icon={faChevronUp}
@@ -50,10 +32,6 @@ const Comment = ({ title, link, username, hours, comments, upvotes, tabs }) => {
                 <div
                     className={`${styles.comment__information} ${styles.comment__small__text}`}
                 >
-<<<<<<< HEAD
-=======
-
->>>>>>> chris
                     <div>
                         <FontAwesomeIcon
                             icon={faUser}
