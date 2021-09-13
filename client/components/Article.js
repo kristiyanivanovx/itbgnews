@@ -13,7 +13,7 @@ const Article = ({
     title,
     link,
     username,
-    hours,
+    date,
     comments,
     upvotes,
     isFirstArticle,
@@ -58,7 +58,8 @@ const Article = ({
                         className={styles.article__information__icon}
                     />
                     <Link href={'/singleArticle'}>
-                        <a>преди {hours} часа</a>
+                        <a>{date}</a>
+                        {/*<a>преди {hours} часа</a>*/}
                     </Link>
                 </div>
                 <div>

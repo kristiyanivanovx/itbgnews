@@ -19,4 +19,4 @@ ENV NODE_ENV=production
 
 # Run the app when the container launches
 
-CMD ["npm", "run", "deploy"]
+CMD ["npm", "run", "nodemon-deploy"]
