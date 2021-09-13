@@ -8,10 +8,10 @@
 }
 
 :root {
-  --ff-primary: 'Nunito', sans-serif;
-
-  --fw-reg: 200;
-  --fw-bold: 700;
+    --ff-primary: 'Nunito', sans-serif;
+    
+    --fw-reg: 200;
+    --fw-bold: 700;
 
     --clr-background: #302636;
     --clr-main: #554360;
@@ -21,9 +21,9 @@
     --clr-white: #ffffff;
     --clr-comment: #755a85;
 
-  --fs-h2: 3rem;
-  --fs-h3: 2.5rem;
-  --fs-h4: 2rem;
+    --fs-h2: 3rem;
+    --fs-h3: 2.5rem;
+    --fs-h4: 2rem;
 
     --fs-body: 1.25rem;
     --fs-small: 0.5rem;
@@ -71,9 +71,9 @@ a:hover {
 h2,
 h3,
 h4 {
-  line-height: 1;
-  margin: 0;
-  font-weight: var(--fw-bold);
+    line-height: 1;
+    margin: 0;
+    font-weight: var(--fw-bold);
 }
 
 h2 {
@@ -85,7 +85,7 @@ h3 {
 }
 
 h4 {
-  font-size: var(--fs-h4);
+    font-size: var(--fs-h4);
 }
 
 image {

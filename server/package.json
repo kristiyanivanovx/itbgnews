@@ -8,9 +8,6 @@
     "deploy": "nodemon server.js -p $PORT"
   },
   "license": "MIT",
-  "devDependencies": {
-    "nodemon": "^2.0.12"
-  },
   "dependencies": {
     "@sendgrid/mail": "^7.4.6",
     "bcrypt": "^5.0.1",

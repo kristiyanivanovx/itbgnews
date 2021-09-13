@@ -6,8 +6,11 @@ const PORT = isProduction ? process.env.PORT : process.env.BACKEND_PORT;
 
 console.log(`Starting API server on ${ENV} at ${PORT}.`)
 
+//const mongoose = require("mongoose");
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
+
 const app = express();
 
 const authRoutes = require('./routes/authRoute');
