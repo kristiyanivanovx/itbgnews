@@ -4,7 +4,7 @@ const ENV = process.env.NODE_ENV || 'development';
 const isProduction = ENV === 'production';
 const PORT = isProduction ? process.env.PORT : process.env.BACKEND_PORT;
 
-console.log(`Starting API server on ${ENV} at ${PORT}.`)
+console.log(`Starting API server on ${ENV} at ${PORT}.`);
 
 //const mongoose = require("mongoose");
 const express = require('express');
@@ -18,8 +18,7 @@ const resetRoutes = require('./routes/resetPassword');
 const articlesRouter = require('./routes/posts');
 const commentRouter = require('./routes/comments');
 
-app
-    .use(cors())
+app.use(cors())
     .use(cookieParser())
     .use(express.json())
     .use('', authRoutes)
