@@ -7,7 +7,7 @@ const HeadComponent = ({ currentPageName }) => {
             <title>IT-BG News • {currentPageName || ''}</title>
             <meta
                 name="description"
-                content="IT Bulgaria News Website, get information about the latest technology trends and innovations"
+                content="Hacker News Clone, IT News, get information about the latest technology trends"
             />
             <link rel="icon" href={'/favicon.ico'} />
         </Head>

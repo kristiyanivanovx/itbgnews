@@ -90,7 +90,6 @@ async function logout(req, res) {
 function getAccess(req, res) {
     const userId = req.userData.sub;
     const [accessToken, refreshToken] = makeRefresh(userId);
-
     res.status(200).json({
         data: {
             accessToken,
