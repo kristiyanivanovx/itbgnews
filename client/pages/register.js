@@ -8,11 +8,12 @@ import HeadComponent from '../components/HeadComponent';
 import Modal from '../components/Modal';
 import getDefaultLayout from '../utilities/getDefaultLayout';
 import {
-    EXISTING_USER_ERROR_CODE, getEnvironmentInfo,
+    EXISTING_USER_ERROR_CODE,
+    getEnvironmentInfo,
     SUCCESSFUL_REGISTRATION_MESSAGE,
 } from '../utilities/common';
 import Router from 'next/router';
-import { useCookies } from "react-cookie";
+import { useCookies } from 'react-cookie';
 
 const Register = () => {
     let [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
@@ -69,7 +70,6 @@ const Register = () => {
 
         let result = await response.json();
         setErrors(() => result);
-
         checkResponse(result);
     };
 
