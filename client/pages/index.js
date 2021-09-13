@@ -16,13 +16,13 @@ export async function getStaticProps(context) {
     if (!data) {
         return {
             notFound: true,
-        }
+        };
     }
 
     // todo: check for error (data.message != null)
     return {
         props: { data },
-    }
+    };
 }
 
 function Home({ data }) {
@@ -37,7 +37,6 @@ function Home({ data }) {
     //     isFirstArticle={true}
     // />,
 
-
     if (!data) {
         return;
     }
@@ -46,12 +45,22 @@ function Home({ data }) {
     const articles = [];
 
     for (let i = 0; i < data.length; i++) {
-        let { _id, text, author_id, url, textContent, last_edit_date, creation_date, upvoters } = data[i];
+        let {
+            _id,
+            text,
+            author_id,
+            url,
+            textContent,
+            last_edit_date,
+            creation_date,
+            upvoters,
+        } = data[i];
         // let [month, day, year] = [creation_date.toUTCString().getMonth(), creation_date.getDate(), creation_date.getFullYear()];
         // let fullDate = `${day} ${month} ${year}`;
 
         articles.push(
             <Article
+                isFirstArticle={i === 0}
                 key={_id}
                 title={text}
                 upvotes={upvoters.length}
