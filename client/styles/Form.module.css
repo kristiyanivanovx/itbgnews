@@ -32,6 +32,7 @@
 }
 
 .user__input__error__text {
+    max-width: 400px;
     /*color: var(--clr-red);*/
 }
 
@@ -39,6 +40,8 @@
     font-size: 24px;
     color: var(--clr-white);
 }
+
+
 
 @media (max-width: 600px) {
     .form__title {
@@ -52,5 +55,11 @@
     }
     .user__input::placeholder {
         font-size: 16px;
+    }
+    .user__input__error__text {
+        max-width: 290px;
+    }
+    .forgotten__text {
+        max-width: 290px ;
     }
 }

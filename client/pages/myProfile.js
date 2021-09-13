@@ -7,6 +7,7 @@ import getDefaultLayout from '../utilities/getDefaultLayout';
 import { useCookies } from 'react-cookie';
 import Router, { useRouter } from 'next/router';
 
+
 const MyProfile = () => {
     const [cookies, setCookie, removeCookie] = useCookies([
         'accessToken',

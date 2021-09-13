@@ -7,6 +7,7 @@ import Form from '../components/Form';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
 import { getEnvironmentInfo } from '../utilities/common';
+import styles from '../styles/Form.module.css';
 
 const Forgotten = () => {
     let [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
@@ -36,7 +37,7 @@ const Forgotten = () => {
             <FormContainer>
                 <FormTitle text={'Забравена Парола'} />
                 <Form>
-                    <p>Въведете имейлa, свързан с акаунтът ви.</p>
+                    <p className={styles.forgotten__text}>Въведете имейлa, свързан с акаунта ви.</p>
                     <Input
                         onChange={(e) => setEmail(e.target.value)}
                         type={'text'}
