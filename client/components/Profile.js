@@ -73,7 +73,14 @@ const Profile = () => {
     //       onClick={async (e) => await triggerConfirmation(e)}
     return (
         <main className={styles.profile}>
-            <h2 className={styles.profile__title}>Моят Профил</h2>
+            <div className={styles.top__info}>
+                <h2 className={styles.profile__title}>Моят Профил</h2>
+                <button className={styles.exit__btn}>
+                    <div className={styles.exit__btn__shadow}> </div>
+                    <span className={styles.exit__btn__text}>Изход</span>
+                </button>
+            </div>
+
             <div className={styles.profile__information}>
                 <div className={styles.user__profile__pic}>
                     <Image
@@ -85,12 +92,6 @@ const Profile = () => {
                 <div className={styles.user__information}>
                     <div className={styles.profile__top}>
                         <h3 className={styles.user__name}>Никола</h3>
-                        <button className={styles.exit__btn}>
-                            <div className={styles.exit__btn__shadow}> </div>
-                            <span className={styles.exit__btn__text}>
-                                Изход
-                            </span>
-                        </button>
                     </div>
 
                     <div className={styles.user__bio}>Да жиевее българия.</div>
