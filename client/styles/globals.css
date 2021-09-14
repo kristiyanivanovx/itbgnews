@@ -9,13 +9,14 @@
 
 :root {
     --ff-primary: 'Nunito', sans-serif;
-
+    
     --fw-reg: 200;
     --fw-bold: 700;
 
     --clr-background: #302636;
     --clr-main: #554360;
     --clr-grey: #51515b;
+    --clr-red: #c10000;
     --clr-purple: #d03ad2;
     --clr-white: #ffffff;
     --clr-comment: #755a85;

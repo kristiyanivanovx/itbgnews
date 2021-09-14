@@ -25,6 +25,10 @@
     width: unset !important;
 }
 
+.active {
+    color: red;
+}
+
 /* for active links */
 .active {
     color: pink;

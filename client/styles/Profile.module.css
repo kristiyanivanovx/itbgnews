@@ -7,18 +7,20 @@
     margin: 3rem 0;
 }
 
-.profile__pic {
+/* .profile__pic {
     width: 200px !important;
     height: 200px !important;
     min-width: 200px !important;
     max-width: 200px !important;
     min-height: 200px !important;
     max-height: 200px !important;
+    width: 100% !important;
+    height: 100% !important;
     margin: 0 !important;
     border-radius: 50%;
     object-fit: cover;
-    /*border: 1px solid red;*/
-}
+    border: 1px solid red;
+} */
 
 .profile__top {
     display: flex;
@@ -30,29 +32,37 @@
 }
 
 .user__profile__pic {
-    /*width: 25%;*/
     margin: 0 2rem;
 }
 
 .user__bio {
     margin: 1.5rem 5rem 3rem 0;
+
+    width: 100%;
 }
 
 .user__activities {
     display: flex;
     justify-content: space-around;
+    margin-left: -60px;
 }
 
 .user__activity {
     text-align: center;
     font-size: clamp(18px, 2vw, 1.3rem);
+    margin-left: 20px;
+}
+
+.top__info {
+    display: flex;
+    justify-content: space-between;
 }
 
 /* exit button in profile*/
 .exit__btn {
     position: relative;
     font-weight: var(--fw-bold);
-    font-size: 24px;
+    font-size: clamp(15px, 3vw, 24px);
     text-align: center;
     z-index: 3;
 
@@ -68,6 +78,22 @@
     border-radius: 10px;
 
     padding: 5px 1rem;
+}
+
+.exit__btn__confirm {
+    position: relative;
+    /*width: 157px;*/
+    /*height: 53px;*/
+    display: inline-block;
+
+    border-radius: 10px;
+    background: linear-gradient(
+        264.39deg,
+        #b11515 -36.33%,
+        rgba(213, 2, 2, 0.98) 20.2%,
+        rgba(241, 12, 39, 0.87) 106.31%,
+        rgba(255, 6, 230, 0) 130.66%
+    );
 }
 
 .exit__btn__shadow {
@@ -91,8 +117,44 @@
     position: relative;
 }
 
+@media (max-width: 760px) {
+    .profile__information {
+        flex-direction: column;
+    }
+
+    .user__profile__pic {
+        margin: 0 auto;
+        width: 150px;
+    }
+
+    .user__information {
+        width: 100%;
+    }
+
+    .profile__top h3 {
+        width: 100%;
+        text-align: center;
+    }
+
+    .user__bio {
+        text-align: center;
+    }
+
+    .user__activities {
+        margin: 0;
+    }
+}
+
+
 @media (max-width: 600px) {
     .profile {
         width: 100%;
     }
 }
+
+@media (max-width: 400px) {
+    .user__activity {
+        font-size: 14px;
+    }
+}
+

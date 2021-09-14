@@ -9,21 +9,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 const Comment = ({ title, link, username, hours, comments, upvotes, tabs }) => {
-    // const [windowVar, setWindowVar] = useState(null);
     const [tabsPercent, setTabsPercent] = useState(5);
-
-    // useEffect(() => {
-    //     console.log(window, !window);
-    //     setWindowVar(window);
-    // }, []);
-
-    // useEffect(() => {
-    //     if (!window) return;
-    //     if (windowVar.innerWidth <= 600) {
-    //         tabsPercent = 2;
-    //     }
-    // }, [windowVar]);
-
     const width = 100 - tabs * tabsPercent;
 
     return (

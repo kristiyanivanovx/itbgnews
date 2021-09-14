@@ -1,15 +1,16 @@
 {
-    "name": "itbgnews",
-    "main": "./server/server.js",
-    "scripts": {
-        "client-install": "cd client && npm install",
-        "server-install": "cd server && npm install",
-        "dev": "concurrently \"npm run --prefix server dev\" \"npm run --prefix client dev\""
-    },
-    "dependencies": {
-        "concurrently": "^6.2.1"
-    },
-    "devDependencies": {
-        "prettier": "^2.3.2"
-    }
+  "name": "itbgnews",
+  "main": "./server/server.js",
+  "scripts": {
+    "client-install": "cd client && npm install",
+    "server-install": "cd server && npm install",
+    "dev": "concurrently \"npm run --prefix server dev\" \"npm run --prefix client dev\""
+  },
+  "dependencies": {
+    "concurrently": "^6.2.1",
+    "nodemon": "^2.0.12"
+  },
+  "devDependencies": {
+    "prettier": "^2.3.2"
+  }
 }
