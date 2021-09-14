@@ -6,7 +6,6 @@ const PORT = isProduction ? process.env.PORT : process.env.BACKEND_PORT;
 
 console.log(`Starting API server on ${ENV} at ${PORT}.`);
 
-//const mongoose = require("mongoose");
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
@@ -18,16 +17,17 @@ const resetRoutes = require('./routes/resetPassword');
 const articlesRouter = require('./routes/posts');
 const commentRouter = require('./routes/comments');
 
-app.use(cors())
-    .use(cookieParser())
-    .use(express.json())
-    .use('', authRoutes)
-    .use('', resetRoutes)
-    .use('/posts', articlesRouter)
-    .use('/comments', commentRouter)
-    .listen(PORT, () => {
-        console.log(`Listening on port ${PORT} in ${ENV}...`);
-    });
+app
+  .use(cors())
+  .use(cookieParser())
+  .use(express.json())
+  .use('', authRoutes)
+  .use('', resetRoutes)
+  .use('/posts', articlesRouter)
+  .use('/comments', commentRouter)
+  .listen(PORT, () => {
+    console.log(`Listening on port ${PORT} in ${ENV}...`);
+  });
 
 /*
 ############################ Routes ############################
