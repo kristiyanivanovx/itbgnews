@@ -10,9 +10,11 @@ router.get('/', async (req, res) => {
 
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
+
   try {
-    const Posts = await Post.find({ textContent: true });
-    const posts_page = Posts.slice(startIndex, endIndex);
+    // const Posts = await Post.find({ textContent: true });
+    const posts = await Post.find({});
+    const posts_page = posts.slice(startIndex, endIndex);
     res.json(posts_page);
   } catch (err) {
     res.status(500).json({ message: err.message });

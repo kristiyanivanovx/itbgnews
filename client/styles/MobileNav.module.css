@@ -1,0 +1,39 @@
+.mobile__nav {
+    margin-top: 1rem;
+    font-size: clamp(17px, 2.5vw, 30px);
+    text-align: center;
+}
+
+.mobile__nav__item:hover,
+.mobile__nav__item a:hover {
+    color: var(--clr-white);
+    cursor: pointer;
+}
+
+.mobile__nav__list {
+    list-style: none;
+    color: var(--clr-grey);
+}
+
+.mobile__nav__item,
+.mobile__nav__item a {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    color: var(--clr-grey);
+}
+
+.mobile__nav__icon {
+    padding-right: 0.5rem;
+    width: unset !important;
+}
+
+/* for active links */
+.mobile__active {
+    color: pink;
+}
+
+/*@media (max-width: 600px) {*/
+/*    .nav {*/
+/*        display: none;*/
+/*    }*/
+/*}*/
