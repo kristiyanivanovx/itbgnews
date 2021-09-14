@@ -7,7 +7,7 @@ module.exports = {
         let post;
         try {
             post = await Post.findById(req.body.postId);
-            if (!post || !post.textContent) {
+            if (!post) {
                 return await res.status(404).json({
                     message: `Cannot find post with id: ${req.body.postId}`,
                 });
@@ -16,7 +16,7 @@ module.exports = {
             return res.status(500).json({ message: err.message });
         }
 
-        res.post = post;
+        req.post = post;
         next();
     },
     getUser: async function (req, res, next) {
@@ -32,7 +32,7 @@ module.exports = {
             return res.status(500).json({ message: err.message });
         }
 
-        res.user = user;
+        req.user = user;
         next();
     },
 
@@ -40,7 +40,7 @@ module.exports = {
         let comment;
         try {
             comment = await Comment.findById(req.body.commentId);
-            if (!comment || !comment.textContent){
+            if (!comment){
                 return res.status(404).json({
                     message: `Cannot find comment with id: ${req.body.commentId}`,
                 });
@@ -49,7 +49,7 @@ module.exports = {
             return res.status(500).json({ message: err.message });
         }
 
-        res.comment = comment;
+        req.comment = comment;
         next();
     },
     getComments: async function (req) {

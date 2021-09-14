@@ -27,10 +27,11 @@ const commentSchema = new mongoose.Schema({
   ],
   //if textContent is true then the file is available.
   //False => it has been deleted
-  textContent: {
-    type: Boolean,
-    default: true,
-  },
+  // Todo this will be discused
+  // textContent: {
+  //   type: Boolean,
+  //   default: true,
+  // },
   lastEditDate: {
     type: Date,
   },

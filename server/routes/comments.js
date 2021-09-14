@@ -1,15 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const Comment = require('../models/comment');
-const { getComment, getUser } = require('../functions/getters');
+const {getComment, getUser} = require('../functions/getters');
 
 //Create a comment ✔
 router.post('/', async (req, res) => {
-    const {parentPostId , autorId , parentCommentId, text} = req.body
-    console.log({parentPostId , autorId , parentCommentId, text})
+    console.log(req.body)
+    const {parentPostId, authorId, parentCommentId, text} = req.body
     const comment = new Comment({
         parentCommentId,
-        autorId,
+        authorId,
         parentPostId,
         text,
         creationDate: Date.now(),
@@ -22,7 +22,7 @@ router.post('/', async (req, res) => {
         res.status(201).json(newComment);
     } catch (err) {
         console.log(err)
-        res.status(400).json({ message: err.message });
+        res.status(400).json({message: err.message});
     }
 });
 //Adding/removing an upvote ✔
@@ -38,14 +38,14 @@ router.patch('/upvote', getComment, getUser, async (req, res) => {
     //check if upvote exists
     const upvoteExists = !!(await Comment.findOne({
         comment,
-        upvoters: { $elemMatch: { userId: res.user._id } },
+        upvoters: {$elemMatch: {userId: res.user._id}},
     }));
 
     try {
         if (upvoteExists) {
             //remove the upvote
             await Comment.updateOne(comment, {
-                $pull: { upvoters: { userId: res.user._id } },
+                $pull: {upvoters: {userId: res.user._id}},
             });
 
             res.status(200).json({
@@ -54,7 +54,7 @@ router.patch('/upvote', getComment, getUser, async (req, res) => {
             });
         } else {
             //Add the upvote
-            comment.upvoters.push({ userId: user._id });
+            comment.upvoters.push({userId: user._id});
             await comment.save();
             res.status(201).json({
                 count: comment.upvoters.length,
@@ -62,48 +62,52 @@ router.patch('/upvote', getComment, getUser, async (req, res) => {
             });
         }
     } catch (err) {
-        res.status(304).json({ message: err.message });
+        res.status(304).json({message: err.message});
     }
 });
 
 //Updateting a comment ✔
 router.patch('/', getComment, async (req, res) => {
-    const text = req.body.text
+    const {text} = req.body
     let hasChanged = false;
-    if (text) {
-        req.comment.text = text
+    if (text !== req.comment.text) {
         hasChanged = true;
-    }
-    if (hasChanged) {
+        req.comment.text = text
         req.comment.lastEditDate = Date.now();
     }
-
     try {
-        if (!hasChanged){
-            res.status(304).json({ message: 'Nothing was changed.' });
+        if (!hasChanged) {
+            console.log(1)
+            res.status(200).json({
+                message : "Nothing was changed"
+            })
+            return
         }
-        const updated = await res.comment.save();
+        const updated = await req.comment.save();
         res.status(200).json(updated);
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        res.status(400).json({message: err.message});
     }
 });
 //'Deletes' a comment (does not remove it from the database) ✔
 router.delete('/', getComment, getUser, async (req, res) => {
     const comment = req.comment;
     const user = req.user;
+    console.log(user)
+    console.log("space")
+    console.log(comment)
 
-    if (String(comment.author_id) === String(user._id)) {
+    if (String(comment.authorId) === String(user._id)) {
         try {
-            comment.textContent = false;
+            comment.text = "Deleted";
             await comment.save();
-            res.status(200).json({ message: 'comment deleted!' });
+            res.status(200).json({message: 'comment deleted!'});
         } catch (err) {
-            res.status(500).json({ message: err.message });
+            res.status(500).json({message: err.message});
         }
         return;
     }
-    res.status(401).json({ message: 'The user does not own the comment!' });
+    res.status(401).json({message: 'The user does not own the comment!'});
 });
 
 module.exports = router;
