@@ -13,7 +13,7 @@ import {
     USER_NOT_FOUND_ERROR_MESSAGE,
 } from '../utilities/common';
 import Modal from '../components/Modal';
-import { useCookies } from "react-cookie";
+import { useCookies } from 'react-cookie';
 import Router from 'next/router';
 
 const Login = () => {
@@ -33,14 +33,20 @@ const Login = () => {
 
     // todo: set cookies for a reasonable time
     function handleTokens(accessToken, refreshToken) {
-        console.log('accessToken >>>')
-        console.log(accessToken)
+        console.log('accessToken >>>');
+        console.log(accessToken);
 
-        console.log('refreshToken >>>')
-        console.log(refreshToken)
+        console.log('refreshToken >>>');
+        console.log(refreshToken);
 
-        setCookie('accessToken', accessToken, { path: '/', maxAge: 60 * 60 * 24 }); // 1 day
-        setCookie('refreshToken', refreshToken, { path: '/', maxAge: 60 * 60 * 24 * 30 }); // 30 days
+        setCookie('accessToken', accessToken, {
+            path: '/',
+            maxAge: 60 * 60 * 24,
+        }); // 1 day
+        setCookie('refreshToken', refreshToken, {
+            path: '/',
+            maxAge: 60 * 60 * 24 * 30,
+        }); // 30 days
     }
 
     const checkResult = async (result) => {
@@ -59,7 +65,7 @@ const Login = () => {
 
             setTimeout(() => {
                 Router.push('/');
-            }, 2000)
+            }, 2000);
         }
     };
 
@@ -93,9 +99,20 @@ const Login = () => {
                 />
                 <FormTitle text={'Вход'} />
                 <Form>
-                    <Input onChange={(e) => setEmail(e.target.value)} placeholder={'Имейл'} type={'text'} />
-                    <Input onChange={(e) => setPassword(e.target.value)} placeholder={'Парола'} type={'password'} />
-                    <Button onClick={async () => await submitForm()} text={'Влез'} />
+                    <Input
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder={'Имейл'}
+                        type={'text'}
+                    />
+                    <Input
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder={'Парола'}
+                        type={'password'}
+                    />
+                    <Button
+                        onClick={async () => await submitForm()}
+                        text={'Влез'}
+                    />
 
                     <AuthLinks
                         firstText={'Нямаш профил?'}

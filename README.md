@@ -1,4 +1,5 @@
 # itbgnews
+
 Project of the web development study group in IT Bulgaria
 
 Used for a starting point - https://github.com/bradtraversy/react_express_starter
@@ -6,7 +7,7 @@ Used for a starting point - https://github.com/bradtraversy/react_express_starte
 ## How to start (React + Express)
 
 ```bash
-# Install dependencies for server 
+# Install dependencies for server
 npm run server-install
 
 # Install dependencies for Next

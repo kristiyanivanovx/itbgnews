@@ -1,7 +1,13 @@
 import styles from '../styles/Form.module.css';
 import React from 'react';
 
-export default function Input({ type, name, placeholder, onChange, errorMessage }) {
+export default function Input({
+    type,
+    name,
+    placeholder,
+    onChange,
+    errorMessage,
+}) {
     let hasError = errorMessage != null;
 
     let errorMessageBorder = hasError
@@ -12,7 +18,6 @@ export default function Input({ type, name, placeholder, onChange, errorMessage 
         <span className={styles.user__input__error__text}>{errorMessage}</span>
     ) : null;
 
-            
     // className={styles.user__input}
     return (
         <>

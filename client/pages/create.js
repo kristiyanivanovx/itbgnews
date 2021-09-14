@@ -17,13 +17,16 @@ const Create = () => {
     const router = useRouter();
 
     const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
-    const [cookies, setCookie, removeCookie] = useCookies(["accessToken", "refreshToken"]);
+    const [cookies, setCookie, removeCookie] = useCookies([
+        'accessToken',
+        'refreshToken',
+    ]);
 
     // todo: use getServerSideProps / hoc
     // todo: improve checks
     // if user doesnt have cookies, make him login
     useEffect(() => {
-        if(!cookies || !router) {
+        if (!cookies || !router) {
             return;
         }
 
@@ -31,8 +34,7 @@ const Create = () => {
         if (refreshToken === undefined || accessToken === undefined) {
             router.push('/login');
         }
-
-    }, [cookies, router])
+    }, [cookies, router]);
 
     return (
         <div className="container">
