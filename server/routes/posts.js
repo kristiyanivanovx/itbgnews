@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Post = require("../models/post");
+const ConvertToTree = require("../functions/commentTree");
 const { getPost, getUser, getComments } = require("../functions/getters");
 
 //Getting all Posts by page ✔
@@ -22,7 +23,8 @@ router.get("/", async (req, res) => {
 router.get("/comments", getPost, async (req, res) => {
   try {
     let comments = await getComments(res);
-    res.status(200).json({ post: res.post, comments });
+    const commentTree = ConvertToTree(comments);
+    res.status(200).json({ post: res.post, commentTree });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
