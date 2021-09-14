@@ -29,8 +29,8 @@ function verifyToken(req, res, next) {
             return;
 
         // );
-
     }
+    
     next();
 }
 
@@ -93,7 +93,6 @@ function validateInputData(req, res, next) {
         errors.errorEmail = 'The provided email is not valid.';
     }
     if (!validatePassword(password)) {
-
         errors.errorPassword =
             'The password must have one digit at least, and to be between 6 and 30 symbols';
     }

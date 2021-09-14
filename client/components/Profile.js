@@ -8,71 +8,60 @@ import Router from 'next/router';
 import { getEnvironmentInfo } from '../utilities/common';
 
 const Profile = () => {
-    const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
-    const [confirmation, setConfirmation] = useState(1);
-    const [cookies, setCookie, removeCookie] = useCookies([
-        'accessToken',
-        'refreshToken',
-    ]);
 
-    const triggerConfirmation = async (e) => {
-        setConfirmation((confirmation) => confirmation + 1);
+  const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
+  const [confirmation, setConfirmation] = useState(1);
+  const [cookies, setCookie, removeCookie] = useCookies([
+    'accessToken',
+    'refreshToken',
+  ]);
 
-        // add confirmation class when clicked
-        e.target.classList.add(styles.exit__btn__confirm);
+  const triggerConfirmation = async (e) => {
+    setConfirmation((confirmation) => confirmation + 1);
 
-        // if user has clicked more than one time, remove the cookies
-        if (confirmation > 1) {
-            // removeCookie("access_token");
-            // removeCookie("refresh_token");
-            await submitForm();
-            //await Router.push('/');
-        }
-    };
+    // add confirmation class when clicked
+    e.target.classList.add(styles.exit__btn__confirm);
 
-    const submitForm = async () => {
-        const response = await fetch(ENDPOINT + '/logout', {
-            method: 'POST',
-            cookies: document.cookie,
-        });
-
-        let result = await response.json();
-        console.log(result);
-
-        // setErrors(() => result.data);
-        // await checkResult(result);
-    };
-
-    const items = [
-        <Article
-            key={0}
-            title={'IT-BG News'}
-            upvotes={9}
-            username={'admin'}
-            hours={5}
-            comments={103}
-            link={'https://it-bg.github.io/'}
-            isFirstArticle={true}
-        />,
-    ];
-
-    for (let i = 1; i <= 4; i++) {
-        items.push(
-            <Article
-                key={i}
-                title={'Binary Search'}
-                upvotes={9}
-                username={'admin'}
-                hours={5}
-                comments={103}
-                link={'https://it-bg.github.io/'}
-            />,
-        );
+    // if user has clicked more than one time, remove the cookies
+    if (confirmation > 1) {
+      // removeCookie("access_token");
+      // removeCookie("refresh_token");
+      await submitForm();
+      //await Router.push('/');
     }
+  };
 
-    //       onClick={async (e) => await triggerConfirmation(e)}
-    return (
-        <main className={styles.profile}>
+  const submitForm = async () => {
+    const response = await fetch(ENDPOINT + '/logout', {
+      method: 'POST',
+      cookies: document.cookie,
+    });
+
+    let result = await response.json();
+    console.log(result);
+
+    // setErrors(() => result.data);
+    // await checkResult(result);
+  };
+
+  const articles = [];
+  for (let i = 0; i <= 4; i++) {
+    articles.push(
+      <Article
+        isFirstArticle={i === 0}
+        key={i}
+        title={'Binary Search'}
+        upvotes={9}
+        username={'admin'}
+        hours={5}
+        comments={103}
+        link={'https://it-bg.github.io/'}
+      />,
+    );
+  }
+
+  return (
+    <main className={styles.profile}>
             <div className={styles.top__info}>
                 <h2 className={styles.profile__title}>Моят Профил</h2>
                 <button className={styles.exit__btn}>
@@ -111,9 +100,9 @@ const Profile = () => {
                     </div>
                 </div>
             </div>
-            <div>{items}</div>
+            <div>{articles}</div>
         </main>
-    );
+  );
 };
 
 export default Profile;
