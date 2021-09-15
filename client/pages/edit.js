@@ -86,7 +86,7 @@ const Edit = () => {
             shouldDisplay={shouldDisplay}
             toggleModal={(shouldDisplay) => setShouldDisplay(!shouldDisplay)}
           />
-          <FormTitle text={'Създай Статия'} />
+          <FormTitle text={'Редактирай Статия'} />
           <Form>
             <Input
               onChange={(e) => setText(e.target.value)}

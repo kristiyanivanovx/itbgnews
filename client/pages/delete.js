@@ -36,11 +36,11 @@ const Delete = () => {
 
   // todo: delete the specific post, then redirect
   const submitForm = async (ENDPOINT) => {
-    const jsonData = JSON.stringify({ text, url, user_id });
+    const jsonData = JSON.stringify({ post_id, user_id });
     console.log(jsonData);
 
     // /posts/comments
-    const response = await fetch(ENDPOINT + '/posts', {
+    const response = await fetch(ENDPOINT + '/posts?post_id=123', {
       method: 'POST',
       body: jsonData,
       headers: {
