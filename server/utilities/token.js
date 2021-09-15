@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 const redis_client = require('../config/redisConfig');
 const cookieParser = require('cookie-parser');
 function generateAccessToken(userId) {
-    console.log(1)
     return jwt.sign({ sub: userId }, process.env.JWT_ACCESS_SECRET, {
         expiresIn: process.env.JWT_ACCESS_TIME,
     });
