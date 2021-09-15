@@ -6,13 +6,14 @@ function makeTree(flatArrayOfComments){
         }),
         {},
     );
-    const commentTree = comments.reduce((state, comment) => {
-        if (comment.parentId) {
-            const parentComment = commentMap[comment.parentId];
+    const commentTree = flatArrayOfComments.reduce((state, comment) => {
+        if (comment.parentCommentId !== "false") {
+            const parentComment = commentMap[comment.parentCommentId];
 
             const oldChildren = parentComment.children ?? [];
+            console.log(oldChildren || 1)
             parentComment.children = [...oldChildren, comment];
-
+            console.log(parentComment)
             return state;
         }
 
@@ -22,6 +23,6 @@ function makeTree(flatArrayOfComments){
 }
 
 
-module.export = {
+module.exports = {
     makeTree
 }

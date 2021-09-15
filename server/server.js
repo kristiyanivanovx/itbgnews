@@ -20,10 +20,11 @@ app.use('', resetRoutes);
 
 const articlesRouter = require('./routes/posts');
 const commentRouter = require('./routes/comments');
-
+const indexPage = require("./routes/index")
 
 app.use('/posts', articlesRouter);
 app.use('/comments', commentRouter);
+app.use('', indexPage)
 
 app.listen(PORT, () => {
     console.log(`Listening on port ${PORT} in ${ENV}...`);

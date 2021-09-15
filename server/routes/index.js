@@ -4,11 +4,12 @@ const redisClient = require("../config/redisConfig")
 const comments = require("../models/comment")
 router.get("/" , cache, async (req , res) => {
     const alldata = await comments.find({})
-    redisClient.set("tree" , alldata)
+    redisClient.set("tree" , JSON.stringify(makeTree(alldata)))
     res.json({
         "tree" : alldata
     })
 })
+
 
 // this is for caching tree
 async function cache(req , res , next){
@@ -16,8 +17,8 @@ async function cache(req , res , next){
         if (err) {
             throw err
         }else if(data !== null){
-            req.json({
-                "tree" : data
+            res.json({
+                "tree" : JSON.parse(data)
             })
             return
         }else{
@@ -25,3 +26,6 @@ async function cache(req , res , next){
         }
     })
 }
+
+
+module.exports = router
