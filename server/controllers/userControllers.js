@@ -82,9 +82,9 @@ async function login(req, res) {
 
 async function logout(req, res) {
     // frontend must remove access token here [from cookie]
-    const user_id = req.userData.sub;
+    const userId = req.userData.sub;
 
-    await redis_client.del(user_id.toString());
+    await redis_client.del(userId.toString());
 
     return res.json({ status: true, message: 'success.' });
 }

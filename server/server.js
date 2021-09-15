@@ -21,6 +21,7 @@ app.use('', resetRoutes);
 const articlesRouter = require('./routes/posts');
 const commentRouter = require('./routes/comments');
 
+
 app.use('/posts', articlesRouter);
 app.use('/comments', commentRouter);
 
