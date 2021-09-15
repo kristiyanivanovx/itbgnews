@@ -14,8 +14,9 @@ import { useCookies } from 'react-cookie';
 import { useRouter } from 'next/router';
 import Modal from '../components/Modal';
 
-const Create = () => {
+const Delete = () => {
   const router = useRouter();
+  const { post_id } = router.query;
 
   const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
   const [cookies, setCookie, removeCookie] = useCookies([
@@ -31,39 +32,14 @@ const Create = () => {
   // todo: critical - do not use hardcoded value
   const user_id = '613fc9389fa3734feef85202';
 
-  // todo: use getServerSideProps / hoc
-  // if user doesnt have cookies, make him login
-  useEffect(() => {
-    if (!cookies || !router) {
-      return;
-    }
+  // todo: maybe check cookies?
 
-    const { refreshToken, accessToken } = cookies;
-    if (refreshToken === undefined || accessToken === undefined) {
-      router.push('/login');
-    }
-  }, [cookies, router]);
-
-  // todo: add checks and error validation
-  const checkResponse = (response) => {
-    console.log(response.status, CREATED_RESPONSE_CODE);
-    if (response.status === CREATED_RESPONSE_CODE) {
-      setModalMessage(() => 'Новината беше успешно създадена!');
-      toggleModal();
-
-      setTimeout(async () => await router.push('/'), 1000);
-    }
-  };
-
-  function toggleModal() {
-    setShouldDisplay((shouldDisplay) => !shouldDisplay);
-    console.log(shouldDisplay);
-  }
-
-  const submitForm = async () => {
-    let jsonData = JSON.stringify({ text, url, user_id });
+  // todo: delete the specific post, then redirect
+  const submitForm = async (ENDPOINT) => {
+    const jsonData = JSON.stringify({ text, url, user_id });
     console.log(jsonData);
 
+    // /posts/comments
     const response = await fetch(ENDPOINT + '/posts', {
       method: 'POST',
       body: jsonData,
@@ -76,34 +52,33 @@ const Create = () => {
     console.log(response.status);
 
     // setErrors(() => result);
-    checkResponse(response);
+    // checkResponse(response);
   };
 
   return (
     <div className="container">
-      <HeadComponent currentPageName={'Създай Статия'} />
+      <HeadComponent currentPageName={'Изтриване на Статия'} />
       <Header />
       <div className={'col'}>
         <SideNav />
         <FormContainer>
-          <Modal
-            text={modalMessage}
-            shouldDisplay={shouldDisplay}
-            toggleModal={(shouldDisplay) => setShouldDisplay(!shouldDisplay)}
-          />
-          <FormTitle text={'Създай Статия'} />
+          <FormTitle text={'Изтриване на Статия'} />
           <Form>
-            <Input
-              onChange={(e) => setText(e.target.value)}
-              type={'text'}
-              placeholder={'Заглавие'}
+            <h5 className="center">
+              Сигурни ли сте, че искате да изтриете тази статия?
+            </h5>
+            <hr />
+
+            <h4 className="center">{'title'}</h4>
+
+            <h4 className="center">
+              <a href={url}>{url}</a>
+            </h4>
+
+            <Button
+              onClick={async (ENDPOINT) => await submitForm(ENDPOINT)}
+              text={'Изтриване'}
             />
-            <Input
-              onChange={(e) => setUrl(e.target.value)}
-              type={'url'}
-              placeholder={'Линк'}
-            />
-            <Button onClick={async () => await submitForm()} text={'Създай'} />
           </Form>
         </FormContainer>
       </div>
@@ -111,6 +86,6 @@ const Create = () => {
   );
 };
 
-Create.getLayout = getDefaultLayout;
+Delete.getLayout = getDefaultLayout;
 
-export default Create;
+export default Delete;

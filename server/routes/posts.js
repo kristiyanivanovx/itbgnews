@@ -20,6 +20,7 @@ router.get('/', async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
 //Getting comments and post by post id ✔
 router.get('/comments', getPost, async (req, res) => {
   try {
@@ -29,6 +30,7 @@ router.get('/comments', getPost, async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
 //Creating a Post ✔
 router.post('/', async (req, res) => {
   const post = new Post({
@@ -45,7 +47,8 @@ router.post('/', async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
-//Updateting a Post ✔
+
+//Updating a Post ✔
 router.patch('/', getPost, async (req, res) => {
   let hasChanged = false;
   if (req.body.text) {

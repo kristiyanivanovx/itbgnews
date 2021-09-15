@@ -1,15 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from '../styles/Article.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Link from 'next/link';
 import {
   faChevronUp,
   faClock,
   faComment,
   faUser,
+  faEdit,
+  faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons';
-import Link from 'next/link';
+import Modal from './Modal';
 
 const Article = ({
+  id,
   title,
   link,
   username,
@@ -17,14 +21,20 @@ const Article = ({
   comments,
   upvotes,
   isFirstArticle,
+  shouldDisplayEditAndDeleteButtons,
 }) => {
-  let articleClasses = '';
+  const [deleteConfirmation, setDeleteConfirmation] = useState(1);
+  const [shouldDisplay, setShouldDisplay] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
 
-  if (isFirstArticle) {
-    articleClasses = `${styles.article__regular} ${styles.article__rounded}`;
-  } else {
-    articleClasses = `${styles.article__regular}`;
+  function toggleModal() {
+    setModalMessage(() => 'Новината беше успешно създадена!');
+    setShouldDisplay((shouldDisplay) => !shouldDisplay);
   }
+
+  let articleClasses = isFirstArticle
+    ? `${styles.article__regular} ${styles.article__rounded}`
+    : `${styles.article__regular}`;
 
   return (
     <article className={articleClasses}>
@@ -32,6 +42,34 @@ const Article = ({
         <h2 className={styles.article__title}>
           <a href={link}>{title}</a>
         </h2>
+
+        <Modal
+          text={modalMessage}
+          shouldDisplay={shouldDisplay}
+          toggleModal={(shouldDisplay) => setShouldDisplay(!shouldDisplay)}
+        />
+
+        {/* todo: implement functionality */}
+        {/* todo: only show to user who created the current item */}
+        {!shouldDisplayEditAndDeleteButtons ? (
+          <>
+            <div className={styles.article__edit}>
+              <Link href={'/edit'}>
+                <a>
+                  <FontAwesomeIcon icon={faEdit} />
+                </a>
+              </Link>
+            </div>
+            <div className={styles.article__delete}>
+              <Link href={{ pathname: '/delete', query: { id: id } }}>
+                <a>
+                  <FontAwesomeIcon icon={faTrashAlt} />
+                </a>
+              </Link>
+            </div>
+          </>
+        ) : null}
+
         <div
           className={`${styles.article__votes} ${styles.article__small__text}`}
         >
@@ -57,8 +95,7 @@ const Article = ({
             icon={faClock}
             className={styles.article__information__icon}
           />
-          <Link href={'/view'}>
-            {/*<a>преди {hours} часа</a>*/}
+          <Link href={{ pathname: '/view', query: { post_id: id } }}>
             <a>{date}</a>
           </Link>
         </div>
