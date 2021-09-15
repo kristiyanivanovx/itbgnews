@@ -20,6 +20,27 @@
     width: 2em !important;
 }
 
+.article__edit svg,
+.article__delete svg {
+    margin: 10px;
+    /*margin-bottom: 5px;*/
+    /*width: 2em !important;*/
+}
+
+.article__delete svg:hover {
+    margin: 10px;
+    color: var(--clr-red);
+    /*margin-bottom: 5px;*/
+    /*width: 2em !important;*/
+}
+
+.article__edit svg:hover {
+    margin: 10px;
+    color: var(--clr-green);
+    /*margin-bottom: 5px;*/
+    /*width: 2em !important;*/
+}
+
 .article__rounded {
     border-top-right-radius: 15px;
     border-top-left-radius: 15px;

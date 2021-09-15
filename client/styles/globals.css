@@ -9,7 +9,7 @@
 
 :root {
     --ff-primary: 'Nunito', sans-serif;
-    
+
     --fw-reg: 200;
     --fw-bold: 700;
 
@@ -17,6 +17,7 @@
     --clr-main: #554360;
     --clr-grey: #51515b;
     --clr-red: #c10000;
+    --clr-green: #13c100;
     --clr-purple: #d03ad2;
     --clr-white: #ffffff;
     --clr-comment: #755a85;
@@ -140,6 +141,11 @@ a:hover {
     .search__bar {
         margin-top: 10px;
     }
+}
+
+
+.center {
+    text-align: center;
 }
 
 /*#__next {*/

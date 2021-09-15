@@ -42,8 +42,9 @@ function Home({ data }) {
 
     articles.push(
       <Article
-        isFirstArticle={i === 0}
         key={_id}
+        id={_id}
+        isFirstArticle={i === 0}
         title={text}
         upvotes={upvoters.length}
         // todo: use username instead of author id
@@ -58,7 +59,7 @@ function Home({ data }) {
   }
   return (
     <>
-      <HeadComponent currentPageName={'All Articles'} />
+      <HeadComponent currentPageName={'Всички Статии'} />
       <div className={'container'}>
         <div className={'col'}>
           <Header />
