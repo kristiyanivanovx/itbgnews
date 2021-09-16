@@ -42,7 +42,7 @@ app.listen(PORT, () => {
 ############################ Routes ############################
 
 --------------------------- Posts -----------------------------
-GET      /posts => returns posts post by page and limit
+GET      /posts/?page=1&limit=5 => returns posts post by page and limit
 GET      /posts/comments => returns the post and comments of post with id req.body must have (post_id)
 POST     /posts => creating a post req.body must have (text && url)
 PATCH    /posts => updating a post req.body must have (post_id && (text || url))

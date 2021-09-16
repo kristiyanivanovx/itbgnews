@@ -1,5 +1,4 @@
 module.exports = function(comments) {
-    comments = JSON.parse(JSON.stringify(comments));
       const commentMap = comments.reduce(
         (state, comment) => ({
           ...state,
@@ -17,7 +16,5 @@ module.exports = function(comments) {
         }
         return [...state, comment];
       }, []);
-      //console.log(commentTree)
-      //console.dir(commentTree, { depth: null });
       return commentTree;
 }
