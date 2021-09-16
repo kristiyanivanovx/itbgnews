@@ -22,21 +22,21 @@
 
 .article__edit svg,
 .article__delete svg {
-    margin: 10px;
+    margin: 0 .5rem;
     /*margin-bottom: 5px;*/
     /*width: 2em !important;*/
 }
 
 .article__delete svg:hover {
-    margin: 10px;
-    color: var(--clr-red);
+    color: var(--clr-background);
+    /*color: #a59d9d;*/
     /*margin-bottom: 5px;*/
     /*width: 2em !important;*/
 }
 
 .article__edit svg:hover {
-    margin: 10px;
-    color: var(--clr-green);
+    /*color: #3BA55D;*/
+    color: var(--clr-background);
     /*margin-bottom: 5px;*/
     /*width: 2em !important;*/
 }
