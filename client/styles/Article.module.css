@@ -20,23 +20,15 @@
     width: 2em !important;
 }
 
-.article__edit svg,
-.article__delete svg {
+.article__modify svg {
     margin: 10px;
     /*margin-bottom: 5px;*/
     /*width: 2em !important;*/
 }
 
-.article__delete svg:hover {
+.article__modify svg:hover {
     margin: 10px;
-    color: var(--clr-red);
-    /*margin-bottom: 5px;*/
-    /*width: 2em !important;*/
-}
-
-.article__edit svg:hover {
-    margin: 10px;
-    color: var(--clr-green);
+    color: var(--clr-background);
     /*margin-bottom: 5px;*/
     /*width: 2em !important;*/
 }

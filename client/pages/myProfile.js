@@ -10,7 +10,26 @@ import { getEnvironmentInfo } from '../utilities/common';
 import styles from '../styles/Profile.module.css';
 import Article from '../components/Article';
 
-const MyProfile = () => {
+export async function getServerSideProps(context) {
+  const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
+
+  // todo: get page and limit dynamically - /posts?page=1&limit=10
+  const response = await fetch(ENDPOINT + '/posts?page=1&limit=10');
+  const data = await response.json();
+
+  if (!data) {
+    return {
+      notFound: true,
+    };
+  }
+
+  // todo: check for error (data.message != null)
+  return {
+    props: { data },
+  };
+}
+
+const MyProfile = ({ data }) => {
   const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
   const [confirmation, setConfirmation] = useState(1);
   const [cookies, setCookie, removeCookie] = useCookies([
@@ -20,18 +39,17 @@ const MyProfile = () => {
 
   const triggerConfirmation = async (e) => {
     setConfirmation((confirmation) => confirmation + 1);
+    await submitForm();
 
     // add confirmation class when clicked
-    e.target.classList.add(styles.exit__btn__confirm);
+    //e.target.classList.add(styles.exit__btn__confirm);
 
     // todo: improve logout
     // if user has clicked more than one time, remove the cookies
-    if (confirmation > 1) {
-      // removeCookie("access_token");
-      // removeCookie("refresh_token");
-      await submitForm();
-      //await Router.push('/');
-    }
+    // if (confirmation > 1) {
+    //   await submitForm();
+    //   //await Router.push('/');
+    // }
   };
 
   // todo: improve cookie sending

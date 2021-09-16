@@ -25,7 +25,7 @@ module.exports = {
       user = await User.findById(req.body.user_id);
       if (!user) {
         return res.status(404).json({
-          message: `Cannot find user with id: ${req.body.post_id}`,
+          message: `Cannot find user with id: ${req.body.user_id}`,
         });
       }
     } catch (err) {

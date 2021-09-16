@@ -11,10 +11,14 @@ const Header = () => {
   const [shouldDisplay, setShouldDisplay] = useState(false);
   let icon = shouldDisplay ? faTimes : faBars;
 
+  const toggleNavigation = () => {
+    setShouldDisplay((shouldDisplay) => !shouldDisplay);
+  };
+
   return (
     <header className={`${styles.site__header} col`}>
       <FontAwesomeIcon
-        onClick={() => setShouldDisplay((shouldDisplay) => !shouldDisplay)}
+        onClick={() => toggleNavigation()}
         className={styles.icon__burger}
         icon={icon}
       />

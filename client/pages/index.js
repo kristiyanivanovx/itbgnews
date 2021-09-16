@@ -6,8 +6,9 @@ import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
 import { getEnvironmentInfo } from '../utilities/common';
 
-export async function getStaticProps(context) {
-  let [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
+// todo: when a posts is deleted, update articles to exclude it
+export async function getServerSideProps(context) {
+  const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
 
   // todo: get page and limit dynamically - /posts?page=1&limit=10
   const response = await fetch(ENDPOINT + '/posts?page=1&limit=10');

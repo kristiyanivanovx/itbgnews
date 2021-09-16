@@ -12,8 +12,7 @@ router.get('/', async (req, res) => {
   const endIndex = page * limit;
 
   try {
-    // const Posts = await Post.find({ textContent: true });
-    const posts = await Post.find({});
+    const posts = await Post.find({ textContent: true });
     const posts_page = posts.slice(startIndex, endIndex);
     res.json(posts_page);
   } catch (err) {
@@ -49,7 +48,7 @@ router.post('/', async (req, res) => {
 });
 
 //Updating a Post ✔
-router.patch('/', getPost, async (req, res) => {
+router.patch('/:post_id', getPost, async (req, res) => {
   let hasChanged = false;
   if (req.body.text) {
     res.post.text = req.body.text;
@@ -71,13 +70,9 @@ router.patch('/', getPost, async (req, res) => {
 });
 
 //Voting on a post ✔
-router.patch('/upvote', getPost, getUser, async (req, res) => {
+router.patch('/upvote/:post_id', getPost, getUser, async (req, res) => {
   const post = res.post;
   const user = res.user;
-
-  if (String(post.author_id) === String(user._id)) {
-    res.status(405).json({ message: "You can't vote on your own post!" });
-  }
 
   //check if upvote exists
   const upvoteExists = !!(await Post.findOne({
@@ -111,7 +106,7 @@ router.patch('/upvote', getPost, getUser, async (req, res) => {
 });
 
 //'Deletes' a Post (does not remove it from the database) ✔
-router.delete('/', getPost, getUser, async (req, res) => {
+router.delete('/:post_id', getPost, getUser, async (req, res) => {
   const post = res.post;
   const user = res.user;
 

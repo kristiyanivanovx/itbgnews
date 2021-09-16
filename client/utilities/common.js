@@ -6,6 +6,9 @@ module.exports = {
   INCORRECT_PASSWORD_ERROR_MESSAGE: 'Incorrect password',
   EXISTING_USER_ERROR_CODE: 11000,
   CREATED_RESPONSE_CODE: 201,
+  DELETED_RESPONSE_CODE: 200,
+  EDITED_RESPONSE_CODE: 200,
+  REMOVED_RESPONSE_CODE: 200,
 
   getEnvironmentInfo: () => {
     const ENV = process.env.NODE_ENV || 'development';
