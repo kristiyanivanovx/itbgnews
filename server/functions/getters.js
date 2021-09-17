@@ -61,7 +61,6 @@ async function commentsGetter(req) {
         parentPostId: req.postId,
         textContent: true,
     });
-    console.log(comment)
     return comment;
 }
 

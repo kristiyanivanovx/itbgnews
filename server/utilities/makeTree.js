@@ -1,4 +1,5 @@
 function makeTree(flatArrayOfComments){
+    console.log(flatArrayOfComments)
     const commentMap = flatArrayOfComments.reduce(
         (state, comment) => ({
             ...state,
@@ -6,14 +7,12 @@ function makeTree(flatArrayOfComments){
         }),
         {},
     );
+    console.log()
     const commentTree = flatArrayOfComments.reduce((state, comment) => {
         if (comment.parentCommentId !== "false") {
             const parentComment = commentMap[comment.parentCommentId];
-
             const oldChildren = parentComment.children ?? [];
-            console.log(oldChildren || 1)
             parentComment.children = [...oldChildren, comment];
-            console.log(parentComment)
             return state;
         }
 
@@ -21,6 +20,8 @@ function makeTree(flatArrayOfComments){
     }, []);
     return commentTree
 }
+
+
 
 
 module.exports = {

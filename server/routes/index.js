@@ -1,12 +1,14 @@
 const router = require("express").Router()
-const {makeTree} = require("../utilities/makeTree")
 const redisClient = require("../config/redisConfig")
 const comments = require("../models/comment")
+const {makeTree} =  require("../utilities/makeTree")
+
 router.get("/" , cache, async (req , res) => {
-    const alldata = await comments.find({})
-    redisClient.set("tree" , JSON.stringify(makeTree(alldata)))
+    const allData = await comments.find({}).lean()
+    const treeData = makeTree(allData)
+    redisClient.set("tree" , JSON.stringify(allData))
     res.json({
-        "tree" : alldata
+        "tree" : treeData
     })
 })
 

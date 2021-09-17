@@ -81,7 +81,6 @@ async function vote(req, res) {
         upvoters: {$elemMatch: {userId: user._id}},
     }));
     try {
-        // Here is checked if a vote is deleted but is not actually deleted from database
         if (upvoteExists) {
             //remove the upvote
             Post.updateOne(post, {
