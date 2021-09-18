@@ -20,7 +20,8 @@ module.exports = {
         next();
     },
     getUser: async function (req, res, next) {
-        const user_id = req.params.user_id || req.body.user_id;
+        const user_id =
+            req.params.user_id || req.body.user_id || req.body.author_id;
         let user;
         try {
             user = await User.findById(user_id);

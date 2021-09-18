@@ -2,10 +2,9 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const postSchema = new mongoose.Schema({
-   /* owner_username: {
+    authorUsername: {
         type: String,
-        unique: true,
-    },*/
+    },
     text: {
         type: String,
     },

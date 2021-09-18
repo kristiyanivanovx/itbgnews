@@ -3,12 +3,7 @@ const router = express.Router();
 const Post = require('../models/post');
 const User = require('../models/user');
 const ConvertToTree = require('../functions/commentTree');
-const {
-    getPost,
-    getUser,
-    getComments,
-    getComment_owner_relations,
-} = require('../functions/getters');
+const { getPost, getUser, getComments } = require('../functions/getters');
 
 //Getting all Posts by page ✔
 router.get('/', async (req, res) => {
@@ -29,12 +24,14 @@ router.get('/', async (req, res) => {
     }
 });
 //Getting comments and post by post id ✔
-router.get('/:post_id/comments', getPost, async (req, res) => {
+router.get('/:post_id', getPost, async (req, res) => {
     try {
         let comments = await getComments(res);
 
         let commentTree = ConvertToTree(comments);
-        commentTree = await getComment_owner_relations(commentTree);
+        //Seems too slow (sending req for each comment to determine its author username)
+        //Replaced it with just storing autohrUsername on each comment
+        //commentTree = await getComment_owner_relations(commentTree);
 
         res.status(200).json({ post: res.post, commentTree });
     } catch (err) {
@@ -42,11 +39,12 @@ router.get('/:post_id/comments', getPost, async (req, res) => {
     }
 });
 //Creating a Post ✔
-router.post('/', async (req, res) => {
+router.post('/', getUser, async (req, res) => {
     const post = new Post({
         text: req.body.text,
         url: req.body.url,
         author_id: req.body.user_id,
+        authorUsername: res.user.username,
         last_edit_date: Date.now(),
         creation_date: Date.now(),
     });
@@ -63,9 +61,13 @@ router.post('/', async (req, res) => {
             });
             return;
         }
-        const s = await User.findById(post.author_id);
-        console.log(s); //onst newPost = await post.save();
-        res.status(201).json(post);
+
+        res.user.postCount += 1;
+
+        await post.save();
+        await res.user.save();
+
+        res.status(201).json({ message: 'New post created!' });
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
@@ -139,7 +141,9 @@ router.delete('/:user_id/:post_id', getPost, getUser, async (req, res) => {
     if (String(post.author_id) === String(user._id)) {
         try {
             post.textContent = false;
+            user.postCount -= 1;
             await post.save();
+            await user.save();
             res.status(200).json({ message: 'post deleted!' });
         } catch (err) {
             res.status(500).json({ message: err.message });

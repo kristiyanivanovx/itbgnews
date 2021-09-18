@@ -4,10 +4,11 @@ const Comment = require('../models/comment');
 const { getComment, getUser } = require('../functions/getters');
 
 //Create a comment ✔
-router.post('/', async (req, res) => {
+router.post('/', getUser, async (req, res) => {
     const comment = new Comment({
         parent_post_id: req.body.parent_post_id,
         author_id: req.body.author_id,
+        authorUsername: res.user.username,
         parent_comment_id: req.body.parent_comment_id || null,
         text: req.body.text,
         creation_date: Date.now(),
@@ -15,26 +16,31 @@ router.post('/', async (req, res) => {
     });
 
     try {
-        if (comment.text) {
+        if (!comment.text) {
             res.status(400).json({
                 message: 'Recieved empty on attribute on text!',
             });
             return;
         }
-        if (comment.author_id) {
+        if (!comment.author_id) {
             res.status(400).json({
                 message: 'Recieved empty on attribute on author_id!',
             });
             return;
         }
-        if (comment.parent_post_id) {
+        if (!comment.parent_post_id) {
             res.status(400).json({
                 message: 'Recieved empty on attribute on parent_post_id!',
             });
             return;
         }
-        const newComment = await comment.save();
-        res.status(201).json(newComment);
+
+        res.user.commentCount += 1;
+
+        await comment.save();
+        await res.user.save();
+
+        res.status(201).json({ message: 'New comment created!' });
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
@@ -107,7 +113,9 @@ router.delete(
         if (String(comment.author_id) === String(user._id)) {
             try {
                 comment.textContent = false;
+                user.commentCount -= 1;
                 await comment.save();
+                await user.save();
                 res.status(200).json({ message: 'comment deleted!' });
             } catch (err) {
                 res.status(500).json({ message: err.message });

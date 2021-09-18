@@ -2,7 +2,7 @@ const app = require('express');
 const router = app.Router();
 
 const verifySchema = require('../models/verifySchema');
-const userSchema = require('../models/userSchema');
+const user = require('../models/user');
 
 const { mail } = require('../models/mailMessage');
 const crypto = require('crypto');
@@ -23,7 +23,7 @@ router.post('/password-reset', async (req, res) => {
 
     let dbToken = await verifySchema.findOne({ token: token });
     if (dbToken != null) {
-        await userSchema
+        await user
             .updateOne({ email }, { password: encryptedPassword })
             .then((res) => {
                 console.log(res);
