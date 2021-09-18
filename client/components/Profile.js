@@ -1,16 +1,16 @@
 import React from 'react';
 import Image from 'next/image';
-import profile from '../public/profile.png';
 import styles from '../styles/Profile.module.css';
 
 const Profile = ({
+  image,
   username,
   bio,
-  articles,
   commentsCount,
   likesCount,
   articlesCount,
   triggerConfirmation,
+  children,
 }) => {
   return (
     <main className={styles.profile}>
@@ -29,7 +29,11 @@ const Profile = ({
         <div className={styles.user__profile__pic}>
           <Image
             className={styles.profile__pic}
-            src={profile}
+            // src={profile}
+            // src={img}
+            width={100}
+            height={100}
+            src={image}
             alt={'profile picture'}
           />
         </div>
@@ -54,7 +58,7 @@ const Profile = ({
           </div>
         </div>
       </div>
-      <div>{articles}</div>
+      <div>{children}</div>
     </main>
   );
 };

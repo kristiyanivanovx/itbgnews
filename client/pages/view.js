@@ -13,6 +13,10 @@ import { getEnvironmentInfo } from '../utilities/common';
 export async function getServerSideProps({ query }) {
   const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
   // const post_id = query.post_id;
+
+  const { id } = query;
+  console.log(id);
+  console.log(id);
   const post_id = '613e45bcc7c51d3a984a682d';
 
   // todo: get page and limit dynamically - /posts?page=1&limit=10

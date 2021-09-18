@@ -74,6 +74,18 @@
     width: 2em !important;
 }
 
+.article__inputs__wrapper
+{
+    height: 100%;
+    flex: 1 1 auto;
+    margin: 0 auto;
+    display: block;
+}
+
+.article__inputs__wrapper input{
+    display: block;
+}
+
 @media (max-width: 600px) {
     .article__small__text {
         font-size: clamp(12px, 1vw, 1rem);

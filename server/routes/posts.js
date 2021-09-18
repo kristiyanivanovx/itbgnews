@@ -5,26 +5,34 @@ const { getPost, getUser, getComments } = require('../functions/getters');
 
 //Getting all Posts by page ✔
 router.get('/', async (req, res) => {
-  const page = req.query.page;
-  const limit = req.query.limit;
-
-  const startIndex = (page - 1) * limit;
-  const endIndex = page * limit;
+  const { skip, limit } = req.query;
 
   try {
-    const posts = await Post.find({ textContent: true });
-    const posts_page = posts.slice(startIndex, endIndex);
-    res.json(posts_page);
+    const posts = await Post.find({ textContent: true })
+      .sort({ upvoters: -1, creation_date: -1 })
+      .skip(Number(skip))
+      .limit(Number(limit));
+
+    const count = await Post.find({ textContent: true }).count();
+
+    res.json({
+      posts: posts,
+      postsCount: count,
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
 //Getting comments and post by post id ✔
-router.get('/comments', getPost, async (req, res) => {
+router.get('/:post_id/comments', getPost, async (req, res) => {
   try {
     let comments = await getComments(res);
-    res.status(200).json({ post: res.post, comments });
+
+    let commentTree = ConvertToTree(comments);
+    commentTree = await getComment_owner_relations(commentTree);
+
+    res.status(200).json({ post: res.post, commentTree });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -76,9 +84,12 @@ router.patch('/upvote/:post_id', getPost, getUser, async (req, res) => {
 
   //check if upvote exists
   const upvoteExists = !!(await Post.findOne({
-    post,
-    upvoters: { $elemMatch: { user_id: res.user._id } },
+    _id: post._id,
+    upvoters: { $elemMatch: { user_id: user._id } },
   }));
+
+  console.log('upvote exists?');
+  console.log(upvoteExists);
 
   try {
     if (upvoteExists) {
@@ -86,6 +97,11 @@ router.patch('/upvote/:post_id', getPost, getUser, async (req, res) => {
       await Post.updateOne(post, {
         $pull: { upvoters: { user_id: res.user._id } },
       });
+
+      // post.update({
+      //   $pull: { upvoters: { user_id: res.user._id } },
+      // });
+      // await post.save();
 
       res.status(200).json({
         count: post.upvoters.length - 1,
@@ -95,6 +111,7 @@ router.patch('/upvote/:post_id', getPost, getUser, async (req, res) => {
       //Add the upvote
       post.upvoters.push({ user_id: user._id });
       post.save();
+
       res.status(201).json({
         count: post.upvoters.length,
         message: `added ${user.username}`,
@@ -106,7 +123,7 @@ router.patch('/upvote/:post_id', getPost, getUser, async (req, res) => {
 });
 
 //'Deletes' a Post (does not remove it from the database) ✔
-router.delete('/:post_id', getPost, getUser, async (req, res) => {
+router.delete('/:user_id/:post_id', getPost, getUser, async (req, res) => {
   const post = res.post;
   const user = res.user;
 

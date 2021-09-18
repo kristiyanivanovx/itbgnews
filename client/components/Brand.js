@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import logo from '../public/it-bg-logo.png';
+import logo from '../public/logo.png';
 import styles from '../styles/Brand.module.css';
 import React from 'react';
 

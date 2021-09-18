@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import logo from '../public/it-bg-logo.png';
+import logo from '../public/logo.png';
 import styles from '../styles/Header.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';

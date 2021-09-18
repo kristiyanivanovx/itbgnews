@@ -12,7 +12,7 @@ import {
   faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import Modal from './Modal';
-import Router from 'next/router';
+import Router, { useRouter } from 'next/router';
 import {
   REMOVED_RESPONSE_CODE,
   CREATED_RESPONSE_CODE,
@@ -33,6 +33,7 @@ const Article = ({
   upvotes,
   isFirstArticle,
   shouldDisplayEditAndDeleteButtons,
+  redirectUrl,
 }) => {
   const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
   // const [deleteConfirmation, setDeleteConfirmation] = useState(1);
@@ -50,9 +51,11 @@ const Article = ({
     'refreshToken',
   ]);
 
+  const { asPath } = useRouter();
+
   // todo: critical - do not use hardcoded value
   // todo: maybe check cookies?
-  const user_id = '613fc9389fa3734feef85202';
+  const user_id = '61456ecfddea6520db1c8a7c';
 
   const toggleModalDelete = (message) => {
     setHasDeleteOption(() => true);
@@ -84,7 +87,7 @@ const Article = ({
     if (response.status === DELETED_RESPONSE_CODE) {
       setHasDeleteOption((hasDeleteOption) => !hasDeleteOption);
       setModalMessage(() => 'Новината беше успешно изтрита.');
-      setTimeout(() => Router.push('/'), 2000);
+      setTimeout(() => Router.push(redirectUrl), 2000);
     }
   };
 
@@ -113,7 +116,7 @@ const Article = ({
 
   const checkResponseEdit = (response) => {
     if (response.status === EDITED_RESPONSE_CODE) {
-      setTimeout(() => Router.push('/'));
+      setTimeout(() => Router.push(redirectUrl));
     }
   };
 
@@ -136,16 +139,15 @@ const Article = ({
   };
 
   const checkResponseVote = async (response) => {
+    const data = await response.json();
+    const { count } = data;
+    console.log(response);
+    console.log(data);
+
     if (
       response.status === CREATED_RESPONSE_CODE ||
       response.status === REMOVED_RESPONSE_CODE
     ) {
-      const data = await response.json();
-      const { count } = data;
-
-      console.log(response);
-      console.log(data);
-
       setUpvotesCount(() => count);
     }
   };
@@ -160,14 +162,16 @@ const Article = ({
       <div className={styles.article__main}>
         {shouldDisplayEditInputs ? (
           <>
-            <Input
-              defaultValue={title}
-              onChange={(e) => setText(e.target.value)}
-            />
-            <Input
-              defaultValue={link}
-              onChange={(e) => setUrl(e.target.value)}
-            />
+            <div className={styles.article__inputs__wrapper}>
+              <Input
+                defaultValue={title}
+                onChange={(e) => setText(e.target.value)}
+              />
+              <Input
+                defaultValue={link}
+                onChange={(e) => setUrl(e.target.value)}
+              />
+            </div>
             <div
               className={styles.article__modify}
               onClick={() => toggleEditInputs()}
