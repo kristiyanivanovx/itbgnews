@@ -1,10 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styles from '../styles/Articles.module.css';
 
-class Articles extends Component {
-    render() {
-        return <main className={styles.articles}>{this.props.children}</main>;
-    }
-}
+const Articles = ({ children }) => {
+  return <main className={styles.articles}>{children}</main>;
+};
 
 export default Articles;

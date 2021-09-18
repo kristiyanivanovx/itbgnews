@@ -1,7 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const Post = require('../models/post');
-const { getPost, getUser, getComments } = require('../functions/getters');
+const ConvertToTree = require('../functions/commentTree');
+const {
+  getPost,
+  getUser,
+  getComments,
+  getComment_owner_relations,
+} = require('../functions/getters');
 
 //Getting all Posts by page ✔
 router.get('/', async (req, res) => {

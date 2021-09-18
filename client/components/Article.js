@@ -69,7 +69,7 @@ const Article = ({
     const jsonData = JSON.stringify({ user_id });
 
     // /posts/comments
-    const response = await fetch(ENDPOINT + '/posts/' + id, {
+    const response = await fetch(ENDPOINT + '/posts/' + user_id + '/' + id, {
       method: 'DELETE',
       body: jsonData,
       headers: {
