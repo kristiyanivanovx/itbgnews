@@ -2,15 +2,14 @@ const Post = require('../models/post');
 const Comment = require('../models/comment');
 const User = require('../models/user');
 
-
-
 async function postGetter(req, res, next) {
-    let post;
+  const postId = req.params.post_id || req.body.post_id;
+  let post;
     try {
-        post = await Post.findById(req.body.postId);
+        post = await Post.findById(postId);
         if (!post) {
             return await res.status(404).json({
-                message: `Cannot find post with id: ${req.body.postId}`,
+                message: `Cannot find post with id: ${postId}`,
             });
         }
     } catch (err) {

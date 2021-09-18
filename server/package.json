@@ -1,17 +1,17 @@
 {
   "name": "itbgnews",
   "version": "1.0.0",
-  "description": "Starter kit for creating React and Express apps",
+  "description": "IT-BG News Server",
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",
-    "deploy": "nodemon server.js -p $PORT"
+    "nodemon-deploy": "nodemon server.js -p $PORT",
+    "pm2-deploy": "pm2 start server.js --port $PORT --watch"
   },
   "license": "MIT",
   "dependencies": {
     "@sendgrid/mail": "^7.4.6",
     "bcrypt": "^5.0.1",
-    "concurrently": "^3.5.1",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
@@ -20,6 +20,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.0.3",
     "nodemon": "^1.14.6",
+    "pm2": "^5.1.1",
     "redis": "^3.1.2"
   }
 }

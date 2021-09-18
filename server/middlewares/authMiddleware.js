@@ -7,10 +7,13 @@ function verifyToken(req, res, next) {
     try {
         const token = req.cookies.accessToken;
 
-        console.log('JWT Tuk? nqma token?');
+        console.log('JWT');
         console.log(token);
 
-        console.log('cookies az na mene kak se parsva');
+        console.log('cookies');
+        console.log(req.cookies);
+
+        console.log('signed cookies');
         console.log(req.cookies);
 
         req.userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
@@ -21,9 +24,10 @@ function verifyToken(req, res, next) {
             message: 'Your session is not valid.',
             data: error,
         })
+        
         return;
-
     }
+    
     next();
 }
 

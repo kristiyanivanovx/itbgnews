@@ -1,4 +1,3 @@
-import styles from '../styles/Header.module.css';
 import Header from '../components/Header';
 import React, { useEffect, useState } from 'react';
 import Input from '../components/Input';
@@ -14,7 +13,7 @@ import { useCookies } from 'react-cookie';
 import { useRouter } from 'next/router';
 import Modal from '../components/Modal';
 
-const Create = () => {
+const Edit = () => {
   const router = useRouter();
 
   const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
@@ -29,7 +28,7 @@ const Create = () => {
   const [url, setUrl] = useState('');
 
   // todo: critical - do not use hardcoded value
-  const user_id = '61456ecfddea6520db1c8a7c';
+  const user_id = '6145698390a1897378449cd5';
 
   // todo: use getServerSideProps / hoc
   // if user doesnt have cookies, make him login
@@ -39,6 +38,7 @@ const Create = () => {
     }
 
     const { refreshToken, accessToken } = cookies;
+
     if (refreshToken === undefined || accessToken === undefined) {
       router.push('/login');
     }
@@ -54,11 +54,6 @@ const Create = () => {
       setTimeout(async () => await router.push('/'), 1000);
     }
   };
-
-  function toggleModal() {
-    setShouldDisplay((shouldDisplay) => !shouldDisplay);
-    console.log(shouldDisplay);
-  }
 
   const submitForm = async () => {
     let jsonData = JSON.stringify({ text, url, user_id });
@@ -81,7 +76,7 @@ const Create = () => {
 
   return (
     <div className="container">
-      <HeadComponent currentPageName={'Създай Статия'} />
+      <HeadComponent currentPageName={'Редактирай Статия'} />
       <Header />
       <div className={'col'}>
         <SideNav />
@@ -103,7 +98,10 @@ const Create = () => {
               type={'url'}
               placeholder={'Линк'}
             />
-            <Button onClick={async () => await submitForm()} text={'Създай'} />
+            <Button
+              onClick={async () => await submitForm()}
+              text={'Редактирай'}
+            />
           </Form>
         </FormContainer>
       </div>
@@ -111,6 +109,6 @@ const Create = () => {
   );
 };
 
-Create.getLayout = getDefaultLayout;
+Edit.getLayout = getDefaultLayout;
 
-export default Create;
+export default Edit;

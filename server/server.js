@@ -1,40 +1,45 @@
-require("dotenv").config()
-const BACKEND_PORT = process.env.BACKEND_PORT || 5000;
-const PORT = process.env.BACKEND_PORT || 5000;
+require('dotenv').config();
+
 const ENV = process.env.NODE_ENV || 'development';
+const isProduction = ENV === 'production';
+const PORT = isProduction ? process.env.PORT : process.env.BACKEND_PORT;
+
+console.log(`Starting API server on ${ENV} at ${PORT}.`);
+
+//const mongoose = require("mongoose");
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
 const app = express();
 
-app.use(cors());
-app.use(cookieParser());
-app.use(express.json());
-
-const resetRoutes = require('./routes/resetPassword');
 const authRoutes = require('./routes/authRoute');
-
-app.use('', authRoutes);
-app.use('', resetRoutes);
-
+const resetRoutes = require('./routes/resetPassword');
 const articlesRouter = require('./routes/posts');
 const commentRouter = require('./routes/comments');
-const indexPage = require("./routes/index")
+const userRouter = require('./routes/users');
+const indexPage = require("./routes/index");
 
-app.use('/posts', articlesRouter);
-app.use('/comments', commentRouter);
-app.use('', indexPage)
-
-app.listen(PORT, () => {
+app
+  .use(cors())
+  .use(cookieParser())
+  .use(express.json())
+  .use('', authRoutes)
+  .use('', resetRoutes)
+  .use('', indexPage)
+  .use('/posts', articlesRouter)
+  .use('/comments', commentRouter)
+  .use('/user', userRouter)
+  .listen(PORT, () => {
     console.log(`Listening on port ${PORT} in ${ENV}...`);
-});
+  });
+
 
 /*
 ############################ Routes ############################
 
 --------------------------- Posts -----------------------------
-GET      /posts => returns posts post by page and limit
+GET      /posts/?page=1&limit=5 => returns posts post by page and limit
 GET      /posts/comments => returns the post and comments of post with id req.body must have (post_id)
 POST     /posts => creating a post req.body must have (text && url)
 PATCH    /posts => updating a post req.body must have (post_id && (text || url))
@@ -42,7 +47,7 @@ DELETE   /posts/ => deletes a post post by id req.body must have (post_id && use
 PATCH    /posts/upvote => adds/removes an upvote req.body must have (post_id && user_id)
 
 --------------------------- Comments --------------------------
-POST     /comments => creating a comment to a post, req.body must have
+POST     /comments => creating a comment to a post, req.body must have 
                     (parent_post_id && author_id && (parent_comment_id || null) && text)
 PATCH    /comments => updating a comment req.body must have (comment_id && text)
 DELETE   /comments => deletes a comment by id req.body must have(comment_id) (does not remove it from the server)

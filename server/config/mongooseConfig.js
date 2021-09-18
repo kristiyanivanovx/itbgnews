@@ -4,9 +4,10 @@ const mongoose = require('mongoose');
 const ENV = process.env.NODE_ENV || 'development';
 const isProduction = ENV === 'production';
 
-const connectionString = isProduction
-    ? process.env.MONGODB_REMOTE_CONNECTION_STRING
-    : 'mongodb://localhost:27017/itbgnews';
+const connectionString =
+    isProduction ?
+    process.env.MONGODB_REMOTE_CONNECTION_STRING :
+    'mongodb://localhost:27017/itbgnews';
 
 mongoose
     .connect(connectionString)
