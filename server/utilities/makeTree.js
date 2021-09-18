@@ -7,7 +7,6 @@ function makeTree(flatArrayOfComments){
         }),
         {},
     );
-    console.log()
     const commentTree = flatArrayOfComments.reduce((state, comment) => {
         if (comment.parentCommentId !== "false") {
             const parentComment = commentMap[comment.parentCommentId];

@@ -9,7 +9,7 @@ async function getPost(req, res)  {
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
     try {
-        const posts = await post.find({textContent: true});
+        const posts = await Post.find({textContent: true});
         const postPage = posts.slice(startIndex, endIndex);
         res.json(postPage);
     } catch (err) {
@@ -30,7 +30,7 @@ async function getComments (req, res) {
 
 async function postPost(req, res)  {
     const {text, url, authorId} = req.body
-    const newPost = new post({
+    const newPost = new Post({
         text, url, authorId,
         lastEditDate: Date.now(),
         creationDate: Date.now(),
@@ -49,7 +49,7 @@ async function patchPost(req, res) {
     const {text, url} = req.body
     let hasChanged = false;
     if (text) {
-        req.post.url = text
+        req.post.text = text
         hasChanged = true;
     }
     if (url) {
