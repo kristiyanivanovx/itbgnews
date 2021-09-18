@@ -121,7 +121,6 @@ const Article = ({
   };
 
   // voting
-  // todo: impl
   const upvote = async (ENDPOINT) => {
     const json = JSON.stringify({ user_id });
 
@@ -134,15 +133,12 @@ const Article = ({
     });
 
     // todo: check for errors аnd set them
-    // setErrors(() => result);
     await checkResponseVote(response);
   };
 
   const checkResponseVote = async (response) => {
     const data = await response.json();
     const { count } = data;
-    console.log(response);
-    console.log(data);
 
     if (
       response.status === CREATED_RESPONSE_CODE ||
@@ -152,7 +148,7 @@ const Article = ({
     }
   };
 
-  // is first article, presentation logic
+  // presentation logic
   const articleClasses = isFirstArticle
     ? `${styles.article__regular} ${styles.article__rounded}`
     : `${styles.article__regular}`;

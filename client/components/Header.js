@@ -72,7 +72,10 @@ const Header = () => {
       <>
         {results?.map((post) => (
           <>
-            <Link key={post._id} href={post.url}>
+            <Link
+              key={post._id}
+              href={{ pathname: '/view', query: { post_id: post._id } }}
+            >
               <a>{post.text}</a>
             </Link>
             <br />
