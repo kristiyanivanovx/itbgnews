@@ -6,7 +6,7 @@ const postSchema = new mongoose.Schema({
   text: {
     type: String,
   },
-  author_id: {
+  authorId: {
     type: Schema.Types.ObjectId,
     ref: "User",
   },
@@ -15,7 +15,7 @@ const postSchema = new mongoose.Schema({
   },
   upvoters: [
     {
-      user_id: {
+      userId: {
         type: Schema.Types.ObjectId,
         ref: "User",
       },
@@ -27,10 +27,10 @@ const postSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
-  last_edit_date: {
+  lastEditDate: {
     type: Date,
   },
-  creation_date: {
+  creationgDate: {
     type: Date,
   },
 });

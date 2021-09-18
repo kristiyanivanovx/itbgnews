@@ -3,6 +3,20 @@ const router = express.Router();
 const Comment = require('../models/comment');
 const { getComment, getUser } = require('../functions/getters');
 
+// const comment = require('../models/comment');
+// const getter = require('../functions/getters');
+// const controller = require("../controllers/comments")
+
+// //Create a comment ✔
+// router.post('/', controller.postComment);
+// //Adding/removing an upvote ✔
+// router.patch('/upvote', getter.commentGetter, getter.userGetter, controller.upvoteComment);
+
+// //Updateting a comment ✔
+// router.patch('/', getter.commentGetter, controller.patchComment);
+// //'Deletes' a comment (does not remove it from the database) ✔
+// router.delete('/', getter.commentGetter, getter.postGetter, controller.deleteComment);
+
 //Create a comment ✔
 router.post('/', getUser, async (req, res) => {
     const comment = new Comment({

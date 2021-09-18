@@ -2,17 +2,17 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const commentSchema = new mongoose.Schema({
-  parent_post_id: {
+  parentPostId: {
     type: Schema.Types.ObjectId,
     ref: "Article",
     required: true,
   },
-  author_id: {
+  authorId: {
     type: Schema.Types.ObjectId,
     ref: "User",
   },
-  parent_comment_id: {
-    type: Schema.Types.ObjectId,
+  parentCommentId: {
+    type: String,
     ref: "Comment",
   },
   text: {
@@ -20,21 +20,22 @@ const commentSchema = new mongoose.Schema({
   },
   upvoters: [
     {
-      user_id: {
+      userId: {
         type: Schema.Types.ObjectId,
       },
     },
   ],
   //if textContent is true then the file is available.
   //False => it has been deleted
-  textContent: {
-    type: Boolean,
-    default: true,
-  },
-  last_edit_date: {
+  // Todo this will be discused
+  // textContent: {
+  //   type: Boolean,
+  //   default: true,
+  // },
+  lastEditDate: {
     type: Date,
   },
-  creation_date: {
+  creationDate: {
     type: Date,
   },
 });

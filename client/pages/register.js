@@ -118,6 +118,7 @@ const Register = () => {
   );
 };
 
+
 Register.getLayout = getDefaultLayout;
 
 export default Register;

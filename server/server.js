@@ -9,15 +9,16 @@ console.log(`Starting API server on ${ENV} at ${PORT}.`);
 //const mongoose = require("mongoose");
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
-const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/authRoute');
 const resetRoutes = require('./routes/resetPassword');
 const articlesRouter = require('./routes/posts');
 const commentRouter = require('./routes/comments');
 const userRouter = require('./routes/users');
+const indexPage = require("./routes/index");
 
 app
   .use(cors())
@@ -25,6 +26,7 @@ app
   .use(express.json())
   .use('', authRoutes)
   .use('', resetRoutes)
+  .use('', indexPage)
   .use('/posts', articlesRouter)
   .use('/comments', commentRouter)
   .use('/user', userRouter)

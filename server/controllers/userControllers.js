@@ -14,22 +14,30 @@ async function register(req, res) {
     password: hashedPassword,
   });
 
-  try {
-    const saved_user = await user.save();
-    const [accessToken, refreshToken] = makeRefresh(saved_user._id);
-    res.json({
-      status: true,
-      message: 'Registered successfully.',
-      data: {
-        accessToken,
-        refreshToken,
-      },
-    });
-  } catch (error) {
-    if (error.code === 1100) {
-      res.status(409).json({
-        DuplicatedValue: 'The username or email is already user',
-      });
+    try {
+
+        const [accessToken, refreshToken] = makeRefresh(user._id);
+        const saved_user = await user.save();
+        res.json({
+            status: true,
+            message: 'Registered successfully.',
+            data: {
+                accessToken,
+                refreshToken,
+            },
+        });
+    } catch (error) {
+        console.log(error)
+        if (error.code === 1100) {
+            res.status(409).json({
+                DuplicatedValue: 'The username or email is already user',
+            });
+        }
+        res.status(400).json({
+            status: false,
+            message: 'Something went wrong.',
+            data: error,
+        });
     }
     res.status(400).json({
       status: false,
@@ -80,10 +88,10 @@ async function login(req, res) {
 }
 
 async function logout(req, res) {
-  // frontend must remove access token here [from cookie]
-  const user_id = req.userData.sub;
+    // frontend must remove access token here [from cookie]
+    const userId = req.userData.sub;
 
-  await redis_client.del(user_id.toString());
+    await redis_client.del(userId.toString());
 
   return res.json({ status: true, message: 'success.' });
 }
