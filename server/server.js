@@ -1,7 +1,10 @@
 require('dotenv').config();
 
 const ENV = process.env.NODE_ENV || 'development';
-const PORT = process.env.PORT || process.env.LOCALHOST_BACKEND_PORT;
+const isProduction = ENV === 'production';
+const PORT = isProduction ? process.env.PORT : process.env.BACKEND_PORT;
+
+console.log(`Starting API server on ${ENV} at ${PORT}.`);
 
 //const mongoose = require("mongoose");
 const express = require('express');
@@ -9,36 +12,26 @@ const cors = require('cors');
 
 const app = express();
 
-// mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true });
-// const db = mongoose.connection;
-// db.on("error", (err) => {
-//   console.error(err);
-// });
-
-// db.once("open", () => {
-//   console.log("Connected to DB");
-// });
-
-app.use(cors());
-app.use(express.json());
-
-const resetRoutes = require('./routes/resetPassword');
+const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/authRoute');
-
-app.use('', authRoutes);
-app.use('', resetRoutes);
-
-const postsRouter = require('./routes/posts');
-const commentsRouter = require('./routes/comments');
+const resetRoutes = require('./routes/resetPassword');
+const articlesRouter = require('./routes/posts');
+const commentRouter = require('./routes/comments');
 const userRouter = require('./routes/users');
 
-app.use('/posts', postsRouter);
-app.use('/comments', commentsRouter);
-app.use('/user', userRouter);
-
-app.listen(PORT, () => {
+app
+  .use(cors())
+  .use(cookieParser())
+  .use(express.json())
+  .use('', authRoutes)
+  .use('', resetRoutes)
+  .use('/posts', articlesRouter)
+  .use('/comments', commentRouter)
+  .use('/user', userRouter)
+  .listen(PORT, () => {
     console.log(`Listening on port ${PORT} in ${ENV}...`);
-});
+  });
+
 
 /*
 ############################ Routes ############################

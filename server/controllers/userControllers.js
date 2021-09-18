@@ -2,127 +2,106 @@ const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const redis_client = require('../config/redisConfig');
 const bcrypt = require('bcrypt');
+const { makeRefresh } = require('../utilities/token');
 
-async function Register(req, res) {
-    const { username, password, email } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({
-        username,
-        email,
-        password: hashedPassword,
+async function register(req, res) {
+  const { username, password, email } = req.body;
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const user = new User({
+    username,
+    email,
+    password: hashedPassword,
+  });
+
+  try {
+    const saved_user = await user.save();
+    const [accessToken, refreshToken] = makeRefresh(saved_user._id);
+    res.json({
+      status: true,
+      message: 'Registered successfully.',
+      data: {
+        accessToken,
+        refreshToken,
+      },
     });
-
-    try {
-        const saved_user = await user.save();
-        res.json({
-            status: true,
-            message: 'Registered successfully.',
-            data: saved_user,
-        });
-    } catch (error) {
-        res.status(400).json({
-            status: false,
-            message: 'Something went wrong.',
-            data: error,
-        });
+  } catch (error) {
+    if (error.code === 1100) {
+      res.status(409).json({
+        DuplicatedValue: 'The username or email is already user',
+      });
     }
+    res.status(400).json({
+      status: false,
+      message: 'Something went wrong.',
+      data: error,
+    });
+  }
 }
 
-async function Login(req, res) {
-    const { password, email } = req.body;
+async function login(req, res) {
+  const { password, email } = req.body;
+  console.log(req.body);
 
-    try {
-        const user = await User.findOne({
-            email,
-        }).exec();
+  try {
+    const user = await User.findOne({
+      email,
+    }).exec();
 
-        if (user === null) {
-            res.status(401).json({
-                status: false,
-                message: 'There is no such user in the database.',
-            });
-        }
-
-        const isValid = await bcrypt.compare(password, user.password);
-
-        if (!isValid) {
-            res.status(401).json({
-                error: 'Incorrect password',
-            });
-        }
-        const access_token = jwt.sign(
-            { sub: user._id },
-            process.env.JWT_ACCESS_SECRET,
-            { expiresIn: process.env.JWT_ACCESS_TIME },
-        );
-
-        console.log('access_token', access_token);
-
-        const refresh_token = GenerateRefreshToken(user._id);
-        return res.json({
-            status: true,
-            message: 'login success',
-            data: { access_token, refresh_token },
-        });
-    } catch (error) {
-        console.log(error);
-        return res
-            .status(401)
-            .json({ status: true, message: 'login fail', data: error });
+    if (user === null) {
+      res.status(401).json({
+        status: false,
+        message: 'There is no such user in the database.',
+      });
     }
-}
 
-async function Logout(req, res) {
-    const user_id = req.userData.sub;
-    const token = req.token;
+    const isValid = await bcrypt.compare(password, user.password);
 
-    // remove the refresh token
-    await redis_client.del(user_id.toString());
-
-    // blacklist current access token
-    await redis_client.set('BL_' + user_id.toString(), token);
-
-    return res.json({ status: true, message: 'success.' });
-}
-
-function GetAccessToken(req, res) {
-    const user_id = req.userData.sub;
-    const access_token = jwt.sign(
-        { sub: user_id },
-        process.env.JWT_ACCESS_SECRET,
-        { expiresIn: process.env.JWT_ACCESS_TIME },
-    );
-    const refresh_token = GenerateRefreshToken(user_id);
+    if (!isValid) {
+      res.status(401).json({
+        error: 'Incorrect password',
+      });
+    }
+    const [accessToken, refreshToken] = makeRefresh(user._id);
     return res.json({
-        status: true,
-        message: 'success',
-        data: { access_token, refresh_token },
+      status: true,
+      message: 'login success',
+      data: {
+        accessToken,
+        refreshToken,
+      },
     });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(401)
+      .json({ status: true, message: 'login fail', data: error });
+  }
 }
 
-function GenerateRefreshToken(user_id) {
-    const refresh_token = jwt.sign(
-        { sub: user_id },
-        process.env.JWT_REFRESH_SECRET,
-        { expiresIn: process.env.JWT_REFRESH_TIME },
-    );
-    redis_client.get(user_id.toString(), (err, data) => {
-        if (err) {
-            throw err;
-        }
+async function logout(req, res) {
+  // frontend must remove access token here [from cookie]
+  const user_id = req.userData.sub;
 
-        redis_client.set(
-            user_id.toString(),
-            JSON.stringify({ token: refresh_token }),
-        );
-    });
+  await redis_client.del(user_id.toString());
 
-    return refresh_token;
+  return res.json({ status: true, message: 'success.' });
+}
+
+function getAccess(req, res) {
+  const userId = req.userData.sub;
+  const [accessToken, refreshToken] = makeRefresh(userId);
+  res.status(200).json({
+    data: {
+      accessToken,
+      refreshToken,
+    },
+  });
 }
 
 module.exports = {
-    Register,
-    Login,
-    Logout,
-    GetAccessToken,
+  register,
+  logout,
+  login,
+  getAccess,
 };

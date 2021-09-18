@@ -3,5 +3,6 @@ node_modules/
 server/test.rest
 package-lock.json
 server/.env
-client/.env
+*.env
 .env
+

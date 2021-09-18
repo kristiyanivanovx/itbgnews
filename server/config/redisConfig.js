@@ -14,6 +14,8 @@ const redis_client = redis.createClient({
     password: password,
 });
 
+console.log(`Attempting to connect Redis to host ${host}, port ${port}, ${password}` );
+
 redis_client.on('connect', function () {
     console.log(`Connected to Redis in ${ENV} at ${host}:${port}.`);
 });

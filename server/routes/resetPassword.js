@@ -8,10 +8,8 @@ const { mail } = require('../models/mailMessage');
 const crypto = require('crypto');
 
 const { createMessage } = require('../models/mailMessage');
+
 const dotenv = require('dotenv');
-
-const { hash } = require('bcrypt');
-
 dotenv.config();
 
 router.use(app.json());
@@ -54,31 +52,16 @@ router.post('/forgotten', (req, res) => {
     
     console.log(req.body.email);
 
-    let user = new verifySchema({
-        token: code,
-        email: req.body.mail,
-        createdAt: Date(),
-    });
 
-    user.save()
-        .catch((err) => {
-            console.log(err);
-        })
-        .then(() => {
-            console.log(`${req.body.mail} has been added successfully`);
-        });
+const {
+    passwordReset,
+    forgottenPassword,
+} = require('../controllers/sendEmailControllers');
 
-    const msg = createMessage(req.body.mail, code);
+router.use(app.json());
 
-    mail.send(msg)
-        .then((response) => {
-            console.log(response[0].statusCode);
-            console.log(response[0].headers);
-        })
-        .catch((error) => {
-            console.error(error);
-        });
-    res.send('Hello');
-});
+router.post('/password-reset', passwordReset);
+
+router.post('/forgotten', forgottenPassword);
 
 module.exports = router;

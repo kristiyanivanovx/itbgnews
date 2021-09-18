@@ -138,6 +138,7 @@ router.post('/upvote', getPost, getUser, async (req, res) => {
     } catch (err) {
         res.status(304).json({ message: err.message });
     }
+
 });
 
 //'Deletes' a Post (does not remove it from the database) ✔

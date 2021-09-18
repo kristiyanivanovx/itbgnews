@@ -1,25 +1,29 @@
 const router = require('express').Router();
-const user_controller = require('../controllers/userControllers');
-const auth_middleware = require('../middlewares/authMiddleware');
+const userController = require('../controllers/userControllers');
+const authMiddleware = require('../middlewares/authMiddleware');
 
-router.post('/', auth_middleware.verifyRefreshToken, (req, res) => {
+router.get('/', (req, res) => {
+    res.json('hi');
+});
+
+router.post('/', authMiddleware.verifyToken, (req, res) => {
     res.send('ok');
 });
 
 router.post(
     '/register',
-    auth_middleware.validateInputData,
-    user_controller.Register,
+    authMiddleware.validateInputData,
+    userController.register,
 );
 
-router.post('/login', user_controller.Login);
+router.post('/login', userController.login);
 
 router.post(
     '/token',
-    auth_middleware.verifyRefreshToken,
-    user_controller.GetAccessToken,
+    authMiddleware.verifyRefreshToken,
+    userController.getAccess,
 );
 
-router.get('/logout', auth_middleware.verifyToken, user_controller.Logout);
+router.post('/logout', authMiddleware.verifyToken, userController.logout);
 
 module.exports = router;

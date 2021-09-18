@@ -1,56 +1,91 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Article from '../components/Article';
 import SideNav from '../components/SideNav';
-import SearchBar from '../components/SearchBar';
-import Brand from '../components/Brand';
+import Header from '../components/Header';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
+import { getEnvironmentInfo } from '../utilities/common';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import INDEX_PATH from '../next.config';
 
-function Home() {
-    let key = 0;
-    const items = [
-        <Article
-            key={key}
-            title={'Binary Search. ' + key}
-            upvotes={9}
-            username={'admin'}
-            hours={5}
-            comments={103}
-            link={'https://it-bg.github.io/'}
-            isFirstArticle={true}
-        />,
-    ];
+export async function getServerSideProps(context) {
+  const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
 
-    for (let i = key + 1; i < 4; i++) {
-        items.push(
-            <Article
-                key={i}
-                title={'Merge Sort. ' + i}
-                upvotes={9 + i}
-                username={'admin'}
-                hours={5 + i}
-                comments={103 + i}
-                link={'https://it-bg.github.io/'}
-            />,
-        );
-    }
+  const response = await fetch(ENDPOINT + '/posts?skip=0&limit=10');
+  const data = await response.json();
 
-    return (
-        <>
-            <HeadComponent currentPageName={'All Articles'} />
-            <div className={'container'}>
-                <div className={'col'}>
-                    <Brand />
-                    <SearchBar />
-                </div>
-                <div className={'col'}>
-                    <SideNav />
-                    <main className={'articles'}>{items}</main>
-                </div>
-            </div>
-        </>
-    );
+  if (!data) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: { data, ENDPOINT },
+  };
 }
+
+const Home = ({ data, ENDPOINT }) => {
+  const [articles, setArticles] = useState(data.posts);
+  const [hasMore, setHasMore] = useState(true);
+
+  useEffect(() => {
+    setHasMore(data.postsCount > articles.length);
+  }, [articles, data.postsCount]);
+
+  const getMoreArticles = async () => {
+    const response = await fetch(
+      ENDPOINT + `/posts?skip=${articles.length}&limit=10`,
+    );
+
+    const { posts } = await response.json();
+
+    setArticles((articles) => [...articles, ...posts]);
+  };
+
+  return (
+    <>
+      <HeadComponent currentPageName={'Всички Статии'} />
+      <div className={'container'}>
+        <div className={'col'}>
+          <Header />
+        </div>
+        <div className={'col'}>
+          <SideNav />
+          <main className={'articles'}>
+            <InfiniteScroll
+              dataLength={articles.length}
+              next={getMoreArticles}
+              hasMore={hasMore}
+              loader={<h4>Зареждане...</h4>}
+              endMessage={
+                <p className={'center'}>Това са всичките налични статии!</p>
+              }
+            >
+              {articles.map((article, index) => (
+                <Article
+                  key={article._id}
+                  id={article._id}
+                  isFirstArticle={index === 0}
+                  title={article.text}
+                  upvotes={article.upvoters.length}
+                  // todo: use username instead of author id
+                  username={article.author_id.substring(0, 6)}
+                  // todo: improve date displaying
+                  date={article.creation_date.split('T')[0]}
+                  // todo: show real comments count
+                  comments={index}
+                  link={article.url}
+                  redirectUrl={INDEX_PATH}
+                />
+              ))}
+            </InfiniteScroll>
+          </main>
+        </div>
+      </div>
+    </>
+  );
+};
 
 Home.getLayout = getDefaultLayout;
 
