@@ -11,6 +11,8 @@ module.exports = function (comments) {
     if (comment.parent_comment_id) {
       const parentComment = commentMap[comment.parent_comment_id];
 
+      let oldChidlren;
+
       const oldChildren = parentComment.children ?? [];
       parentComment.children = [...oldChildren, comment];
       return state;
