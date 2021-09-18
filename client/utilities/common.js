@@ -4,6 +4,8 @@ module.exports = {
   SUCCESSFUL_REGISTRATION_MESSAGE: 'Registered successfully.',
   USER_NOT_FOUND_ERROR_MESSAGE: 'There is no such user in the database.',
   INCORRECT_PASSWORD_ERROR_MESSAGE: 'Incorrect password',
+  CANNOT_FIND_POST_ERROR: 'Cannot find post with id',
+  INVALID_ID: 'Cast to ObjectId failed for value',
   EXISTING_USER_ERROR_CODE: 11000,
   CREATED_RESPONSE_CODE: 201,
   DELETED_RESPONSE_CODE: 200,

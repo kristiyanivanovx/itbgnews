@@ -30,6 +30,30 @@ router.get('/', async (req, res) => {
   }
 });
 
+//Getting all Posts by searchQuery ✔
+router.get('/search', async (req, res) => {
+  const { searchTerm } = req.query;
+
+  try {
+    if (searchTerm) {
+      const regex = new RegExp(searchTerm, 'i');
+
+      const posts = await Post.find({
+        textContent: true,
+        text: { $regex: regex },
+      });
+
+      res.json({
+        posts: posts,
+      });
+    } else {
+      res.json({});
+    }
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 //Getting comments and post by post id ✔
 router.get('/:post_id/comments', getPost, async (req, res) => {
   try {

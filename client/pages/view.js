@@ -6,8 +6,13 @@ import Header from '../components/Header';
 import SideNav from '../components/SideNav';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
-import { getEnvironmentInfo } from '../utilities/common';
+import {
+  CANNOT_FIND_POST_ERROR,
+  INVALID_ID,
+  getEnvironmentInfo,
+} from '../utilities/common';
 import INDEX_PATH from '../next.config';
+import { useRouter } from 'next/router';
 
 export async function getServerSideProps({ query: { post_id } }) {
   const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
@@ -25,7 +30,22 @@ export async function getServerSideProps({ query: { post_id } }) {
 
 // todo: finish up here, get current post + comments by the post's id
 const View = ({ post_id, data, ENDPOINT }) => {
+  const router = useRouter();
+
+  const isNotFound = data?.message?.includes(CANNOT_FIND_POST_ERROR);
+  const isNotValidId = data?.message?.includes(INVALID_ID);
+
+  useEffect(() => {
+    if (isNotFound || isNotValidId) {
+      router.push('/');
+    }
+  }, [isNotFound, isNotValidId, router]);
+
   const article = data.post;
+
+  if (isNotFound || isNotValidId) {
+    return <div>Invalid ID was provided.</div>;
+  }
 
   const singleArticle = (
     <Article
