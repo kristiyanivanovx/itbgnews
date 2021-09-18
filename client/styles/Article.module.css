@@ -40,10 +40,8 @@
     /*color: #3BA55D;*/
 }
 .article__modify svg:hover {
-    margin: 10px;
+    cursor: pointer;
     color: var(--clr-background);
-    /*margin-bottom: 5px;*/
-    /*width: 2em !important;*/
 }
 
 .article__rounded {
