@@ -5,9 +5,10 @@ const userSchema = new mongoose.Schema({
     email: String,
     username: String,
     passwordHash: String,
-    date: Date,
-    commentCount: { type: Number, default: 0 },
-    postCount: { type: Number, default: 0 },
+    bio: String,
+    ownCommentCount: { type: Number, default: 0 },
+    ownPostCount: { type: Number, default: 0 },
+    commitedLikes: { type: Number, default: 0 },
     //profilePhoto: {},
     //Getting it by looking at each post seems faster
     /*userComments: [

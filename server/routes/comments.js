@@ -63,6 +63,9 @@ router.post('/upvote', getComment, getUser, async (req, res) => {
                 $pull: { upvoters: { user_id: res.user._id } },
             });
 
+            res.user.commitedLikes -= 1;
+            user.save();
+
             res.status(200).json({
                 count: comment.upvoters.length - 1,
                 message: `removed ${user.username}`,
@@ -70,7 +73,11 @@ router.post('/upvote', getComment, getUser, async (req, res) => {
         } else {
             //Add the upvote
             comment.upvoters.push({ user_id: user._id });
+            res.user.commitedLikes += 1;
+
             comment.save();
+            user.save();
+
             res.status(201).json({
                 count: comment.upvoters.length,
                 message: `added ${user.username}`,

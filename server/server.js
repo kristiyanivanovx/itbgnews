@@ -1,11 +1,11 @@
-require("dotenv").config();
+require('dotenv').config();
 
 const ENV = process.env.NODE_ENV || 'development';
 const PORT = process.env.PORT || process.env.LOCALHOST_BACKEND_PORT;
 
 //const mongoose = require("mongoose");
-const express = require("express");
-const cors = require("cors");
+const express = require('express');
+const cors = require('cors');
 
 const app = express();
 
@@ -28,11 +28,13 @@ const authRoutes = require('./routes/authRoute');
 app.use('', authRoutes);
 app.use('', resetRoutes);
 
-const articlesRouter = require("./routes/posts");
-const commentRouter = require("./routes/comments");
+const postsRouter = require('./routes/posts');
+const commentsRouter = require('./routes/comments');
+const userRouter = require('./routes/users');
 
-app.use("/posts", articlesRouter);
-app.use("/comments", commentRouter);
+app.use('/posts', postsRouter);
+app.use('/comments', commentsRouter);
+app.use('/user', userRouter);
 
 app.listen(PORT, () => {
     console.log(`Listening on port ${PORT} in ${ENV}...`);
@@ -67,4 +69,3 @@ PATCH    /comments/upvote => adds/removes an upvote req.body must have (comment_
 304 - Not Modified
 405 - Method not allowed
 */
-
