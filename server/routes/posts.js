@@ -70,9 +70,24 @@ router.get('/:post_id/comments', getPost, async (req, res) => {
 
 //Creating a Post ✔
 router.post('/', async (req, res) => {
+  const text = req.body.text;
+  const url = req.body.url;
+  let errors = {};
+
+  // validate text
+  if (text <= 0 || text > 250) {
+    //  Texts accepted are with length between 1 and 250 inclusive
+    errors.errorUsername =
+      'Username must be at least 6 letters and at most 30.';
+  }
+  if (url <= 0 || url > 1024) {
+    //  Urls accepted are with length between 1 and 1024 inclusive
+    errors.errorEmail = 'The provided email is not valid.';
+  }
+
   const post = new Post({
-    text: req.body.text,
-    url: req.body.url,
+    text: text,
+    url: url,
     author_id: req.body.user_id,
     last_edit_date: Date.now(),
     creation_date: Date.now(),
@@ -118,20 +133,12 @@ router.patch('/upvote/:post_id', getPost, getUser, async (req, res) => {
     upvoters: { $elemMatch: { user_id: user._id } },
   }));
 
-  console.log('upvote exists?');
-  console.log(upvoteExists);
-
   try {
     if (upvoteExists) {
       //remove the upvote
       await Post.updateOne(post, {
         $pull: { upvoters: { user_id: res.user._id } },
       });
-
-      // post.update({
-      //   $pull: { upvoters: { user_id: res.user._id } },
-      // });
-      // await post.save();
 
       res.status(200).json({
         count: post.upvoters.length - 1,

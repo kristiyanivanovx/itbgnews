@@ -87,7 +87,7 @@ const View = ({ post_id, data, ENDPOINT }) => {
 
   return (
     <>
-      <HeadComponent currentPageName={'Article #ID'} />
+      <HeadComponent currentPageName={article.text} />
       <div className={'container'}>
         <div className={'col'}>
           <Header />

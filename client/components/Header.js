@@ -7,12 +7,15 @@ import MobileNav from './MobileNav';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { getEnvironmentInfo } from '../utilities/common';
+import { useRouter } from 'next/router';
 
 const Header = () => {
   const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
   const [shouldDisplay, setShouldDisplay] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
+
+  const router = useRouter();
 
   let icon = shouldDisplay ? faTimes : faBars;
 
@@ -22,6 +25,7 @@ const Header = () => {
 
   const handleChange = (newTerm) => {
     setSearchTerm(() => newTerm);
+    // todo: set search term to be query parameter
   };
 
   let data = null;
@@ -32,10 +36,9 @@ const Header = () => {
       );
 
       const json = await response.json();
-      console.log(json.posts);
       setResults(() => json.posts);
     })();
-  }, [ENDPOINT, data, searchTerm]);
+  }, [ENDPOINT, data, router, searchTerm]);
 
   return (
     <>
@@ -74,7 +77,10 @@ const Header = () => {
           <>
             <Link
               key={post._id}
-              href={{ pathname: '/view', query: { post_id: post._id } }}
+              href={{
+                pathname: '/view',
+                query: { name: post.text, post_id: post._id },
+              }}
             >
               <a>{post.text}</a>
             </Link>

@@ -87,7 +87,7 @@ const Article = ({
     if (response.status === DELETED_RESPONSE_CODE) {
       setHasDeleteOption((hasDeleteOption) => !hasDeleteOption);
       setModalMessage(() => 'Новината беше успешно изтрита.');
-      setTimeout(() => Router.push(redirectUrl), 2000);
+      setTimeout(() => Router.push('/'), 2000);
     }
   };
 
@@ -245,7 +245,9 @@ const Article = ({
             icon={faClock}
             className={styles.article__information__icon}
           />
-          <Link href={{ pathname: '/view', query: { post_id: id } }}>
+          <Link
+            href={{ pathname: '/view', query: { name: text, post_id: id } }}
+          >
             <a>{date}</a>
           </Link>
         </div>
