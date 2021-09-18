@@ -38,7 +38,7 @@ const MyProfile = ({ data, ENDPOINT }) => {
   ]);
 
   // todo: critical: do not hardcode value
-  const user_id = '61456ecfddea6520db1c8a7c';
+  const userId = '6146239ddb68b22e424946c6';
 
   // logout
   const triggerLogoutConfirmation = async (e) => {
@@ -93,7 +93,7 @@ const MyProfile = ({ data, ENDPOINT }) => {
 
   // todo: upload profile image - https://codesandbox.io/s/thyb0?file=/pages/index.js:869-895
   const style = `jdenticon`;
-  const randomized = user_id + Math.random();
+  const randomized = userId + Math.random();
   const image = `https://avatars.dicebear.com/api/${style}/${randomized}.svg`;
 
   return (
@@ -127,14 +127,14 @@ const MyProfile = ({ data, ENDPOINT }) => {
               {articles.map((article, index) => (
                 <Article
                   key={article._id}
-                  id={article._id}
+                  postId={article._id}
                   isFirstArticle={index === 0}
                   title={article.text}
                   upvotes={article.upvoters.length}
                   // todo: use username instead of author id
-                  username={article.author_id.substring(0, 6)}
+                  username={article.authorName}
                   // todo: improve date displaying
-                  date={article.creation_date.split('T')[0]}
+                  date={article.creationDate.split('T')[0]}
                   // todo: show real comments count
                   comments={index}
                   link={article.url}

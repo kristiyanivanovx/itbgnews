@@ -41,9 +41,6 @@ async function passwordReset(req, res) {
 async function forgottenPassword(req, res) {
   let code = crypto.randomBytes(8).toString('hex');
 
-  console.log(code);
-  console.log(req.body.email);
-
   let user = new verifySchema({
     token: code,
     email: req.body.email,
@@ -58,7 +55,6 @@ async function forgottenPassword(req, res) {
     .then(() => {
       console.log(`${req.body.email} has been added successfully`);
     });
-
   const msg = createMessage(req.body.email, code);
   mail
     .send(msg)

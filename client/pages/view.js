@@ -14,14 +14,14 @@ import {
 import INDEX_PATH from '../next.config';
 import { useRouter } from 'next/router';
 
-export async function getServerSideProps({ query: { post_id } }) {
+export async function getServerSideProps({ query: { postId, name } }) {
   const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
-  const response = await fetch(ENDPOINT + `/posts/${post_id}/comments`);
+  const response = await fetch(ENDPOINT + `/posts/comments/` + postId);
   const data = await response.json();
 
   return {
     props: {
-      post_id,
+      postId,
       data,
       ENDPOINT,
     },
@@ -29,7 +29,7 @@ export async function getServerSideProps({ query: { post_id } }) {
 }
 
 // todo: finish up here, get current post + comments by the post's id
-const View = ({ post_id, data, ENDPOINT }) => {
+const View = ({ postId, data, ENDPOINT }) => {
   const router = useRouter();
 
   const isNotFound = data?.message?.includes(CANNOT_FIND_POST_ERROR);
@@ -52,15 +52,16 @@ const View = ({ post_id, data, ENDPOINT }) => {
       // key={_id}
       // id={_id}
       key={article._id}
-      id={article._id}
+      postId={article._id}
       isFirstArticle={true}
       title={article.text}
       // upvotes={article.upvoters.length}
       // todo: use username instead of author id
-      username={article.author_id.substring(0, 6)}
+      username={article.authorId.substring(0, 6)}
       // todo: improve date displaying
-      date={article.creation_date.split('T')[0]}
+      date={article.creationDate.split('T')[0]}
       // todo: show real comments count
+      upvotes={article.upvoters.length}
       comments={6}
       link={article.url}
       redirectUrl={INDEX_PATH}
@@ -73,7 +74,7 @@ const View = ({ post_id, data, ENDPOINT }) => {
     comments.push(
       <div key={i} className={styles.comment__wrapper}>
         <Comment
-          title={'Добре.'}
+          title={'Ne e Добре. Ni6to ne e Добре'}
           date={new Date().toLocaleDateString('bg-BG')}
           upvotes={19}
           username={'admin'}

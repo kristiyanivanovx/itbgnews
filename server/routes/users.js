@@ -1,11 +1,10 @@
 const express = require('express');
-const { getUser } = require('../functions/getters');
+const { userGetter } = require('../functions/getters');
 const router = express.Router();
 
 //get info about each user
-router.get('/:user_id', getUser, (req, res) => {
-    res.json(res.user);
+router.get('/:userId', userGetter, (req, res) => {
+  res.json(req.user);
 });
-
 
 module.exports = router;

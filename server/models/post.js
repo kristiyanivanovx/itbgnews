@@ -1,5 +1,4 @@
-
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const postSchema = new mongoose.Schema({
@@ -8,7 +7,10 @@ const postSchema = new mongoose.Schema({
   },
   authorId: {
     type: Schema.Types.ObjectId,
-    ref: "User",
+    ref: 'User',
+  },
+  authorName: {
+    type: String,
   },
   url: {
     type: String,
@@ -17,22 +19,16 @@ const postSchema = new mongoose.Schema({
     {
       userId: {
         type: Schema.Types.ObjectId,
-        ref: "User",
+        ref: 'User',
       },
     },
   ],
-  //if textContent is true then the file is available.
-  //False => it has been deleted
-  textContent: {
-    type: Boolean,
-    default: true,
-  },
   lastEditDate: {
     type: Date,
   },
-  creationgDate: {
+  creationDate: {
     type: Date,
   },
 });
 
-module.exports = mongoose.model("Post", postSchema);
+module.exports = mongoose.model('Post', postSchema);

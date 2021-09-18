@@ -1,19 +1,19 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const commentSchema = new mongoose.Schema({
   parentPostId: {
     type: Schema.Types.ObjectId,
-    ref: "Article",
+    ref: 'Article',
     required: true,
   },
   authorId: {
     type: Schema.Types.ObjectId,
-    ref: "User",
+    ref: 'User',
   },
   parentCommentId: {
     type: String,
-    ref: "Comment",
+    ref: 'Comment',
   },
   text: {
     type: String,
@@ -25,13 +25,6 @@ const commentSchema = new mongoose.Schema({
       },
     },
   ],
-  //if textContent is true then the file is available.
-  //False => it has been deleted
-  // Todo this will be discused
-  // textContent: {
-  //   type: Boolean,
-  //   default: true,
-  // },
   lastEditDate: {
     type: Date,
   },
@@ -40,4 +33,4 @@ const commentSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Comment", commentSchema);
+module.exports = mongoose.model('Comment', commentSchema);

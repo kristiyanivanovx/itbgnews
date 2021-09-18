@@ -28,7 +28,7 @@ const Edit = () => {
   const [url, setUrl] = useState('');
 
   // todo: critical - do not use hardcoded value
-  const user_id = '6145698390a1897378449cd5';
+  const userId = '6145698390a1897378449cd5';
 
   // todo: use getServerSideProps / hoc
   // if user doesnt have cookies, make him login
@@ -56,7 +56,7 @@ const Edit = () => {
   };
 
   const submitForm = async () => {
-    let jsonData = JSON.stringify({ text, url, user_id });
+    let jsonData = JSON.stringify({ text, url, userId: userId });
     console.log(jsonData);
 
     const response = await fetch(ENDPOINT + '/posts', {

@@ -24,7 +24,7 @@ import { useCookies } from 'react-cookie';
 import Input from './Input';
 
 const Article = ({
-  id,
+  postId,
   title,
   link,
   username,
@@ -36,7 +36,6 @@ const Article = ({
   redirectUrl,
 }) => {
   const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
-  // const [deleteConfirmation, setDeleteConfirmation] = useState(1);
   const [shouldDisplayEditInputs, setShouldDisplayEditInputs] = useState(false);
   const [shouldDisplayModal, setShouldDisplayModal] = useState(false);
   const [hasDeleteOption, setHasDeleteOption] = useState(false);
@@ -55,7 +54,7 @@ const Article = ({
 
   // todo: critical - do not use hardcoded value
   // todo: maybe check cookies?
-  const user_id = '61456ecfddea6520db1c8a7c';
+  const userId = '614629f5d33952852417060a';
 
   const toggleModalDelete = (message) => {
     setHasDeleteOption(() => true);
@@ -66,10 +65,10 @@ const Article = ({
   // delete
   // todo: delete the specific post, then redirect
   const confirmDelete = async (ENDPOINT) => {
-    const jsonData = JSON.stringify({ user_id });
+    const jsonData = JSON.stringify({ userId });
 
     // /posts/comments
-    const response = await fetch(ENDPOINT + '/posts/' + user_id + '/' + id, {
+    const response = await fetch(ENDPOINT + '/posts/' + userId + '/' + postId, {
       method: 'DELETE',
       body: jsonData,
       headers: {
@@ -99,15 +98,18 @@ const Article = ({
   };
 
   const confirmEdit = async (ENDPOINT) => {
-    const json = JSON.stringify({ user_id, text, url });
+    const json = JSON.stringify({ text, url });
 
-    const response = await fetch(ENDPOINT + '/posts/' + id, {
-      method: 'PATCH',
-      body: json,
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      ENDPOINT + '/posts/update/' + postId + '/' + userId,
+      {
+        method: 'PATCH',
+        body: json,
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
-    });
+    );
 
     // todo: check for errors аnd set them
     // setErrors(() => result);
@@ -122,9 +124,9 @@ const Article = ({
 
   // voting
   const upvote = async (ENDPOINT) => {
-    const json = JSON.stringify({ user_id });
+    const json = JSON.stringify({ userId, postId });
 
-    const response = await fetch(ENDPOINT + '/posts/upvote/' + id, {
+    const response = await fetch(ENDPOINT + '/posts/upvote/', {
       method: 'PATCH',
       body: json,
       headers: {
@@ -245,9 +247,7 @@ const Article = ({
             icon={faClock}
             className={styles.article__information__icon}
           />
-          <Link
-            href={{ pathname: '/view', query: { name: text, post_id: id } }}
-          >
+          <Link href={{ pathname: '/view', query: { name: text, postId } }}>
             <a>{date}</a>
           </Link>
         </div>

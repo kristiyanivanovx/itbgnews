@@ -65,14 +65,14 @@ const Home = ({ data, ENDPOINT }) => {
               {articles.map((article, index) => (
                 <Article
                   key={article._id}
-                  id={article._id}
+                  postId={article._id}
                   isFirstArticle={index === 0}
                   title={article.text}
                   upvotes={article.upvoters.length}
                   // todo: use username instead of author id
-                  username={article.author_id.substring(0, 6)}
+                  username={article.authorName}
                   // todo: improve date displaying
-                  date={article.creation_date.split('T')[0]}
+                  date={article.creationDate.split('T')[0]}
                   // todo: show real comments count
                   comments={index}
                   link={article.url}

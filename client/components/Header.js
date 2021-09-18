@@ -79,7 +79,7 @@ const Header = () => {
               key={post._id}
               href={{
                 pathname: '/view',
-                query: { name: post.text, post_id: post._id },
+                query: { name: post.text, postId: post._id },
               }}
             >
               <a>{post.text}</a>
