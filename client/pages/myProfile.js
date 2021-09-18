@@ -7,33 +7,49 @@ import getDefaultLayout from '../utilities/getDefaultLayout';
 import Footer from "../components/Footer";
 
 import { useCookies } from 'react-cookie';
-import Router, { useRouter } from 'next/router';
 import { getEnvironmentInfo } from '../utilities/common';
-import styles from '../styles/Profile.module.css';
 import Article from '../components/Article';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import MY_PROFILE_PATH from '../next.config';
 
-const MyProfile = () => {
+export async function getServerSideProps(context) {
   const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
+
+  const response = await fetch(ENDPOINT + '/posts?skip=0&limit=10');
+  const data = await response.json();
+
+  if (!data) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: { data, ENDPOINT },
+  };
+}
+
+const MyProfile = ({ data, ENDPOINT }) => {
+  const [articles, setArticles] = useState(data.posts);
+  const [hasMore, setHasMore] = useState(true);
+
   const [confirmation, setConfirmation] = useState(1);
   const [cookies, setCookie, removeCookie] = useCookies([
     'accessToken',
     'accessToken',
   ]);
 
-  const triggerConfirmation = async (e) => {
-    setConfirmation((confirmation) => confirmation + 1);
+  // todo: critical: do not hardcode value
+  const user_id = '61456ecfddea6520db1c8a7c';
 
-    // add confirmation class when clicked
-    e.target.classList.add(styles.exit__btn__confirm);
+  // logout
+  const triggerLogoutConfirmation = async (e) => {
+    setConfirmation((confirmation) => confirmation + 1);
+    await submitForm();
 
     // todo: improve logout
     // if user has clicked more than one time, remove the cookies
-    if (confirmation > 1) {
-      // removeCookie("access_token");
-      // removeCookie("refresh_token");
-      await submitForm();
-      //await Router.push('/');
-    }
+    // if (confirmation > 1) { await submitForm(); /* await Router.push('/'); */ }
   };
 
   // todo: improve cookie sending
@@ -50,37 +66,37 @@ const MyProfile = () => {
     // await checkResult(result);
   };
 
-  const router = useRouter();
-
   // if user doesnt have cookies, make him login
   // temporarily commented out
-  // todo: improve checks
-  // todo: use getServerSideProps / hoc
+  // todo: improve checks, use getServerSideProps / hoc
+  // useEffect(() => {
+  //   // if (!cookies || !router) { return; }
+  //
+  //   const { refreshToken, accessToken } = cookies;
+  //   // if (refreshToken === undefined || accessToken === undefined) {
+  //   //   router.push('/login');
+  //   // }
+  // }, [cookies, router]);
+
+  // articles
   useEffect(() => {
-    // if (!cookies || !router) { return; }
+    setHasMore(data.postsCount > articles.length);
+  }, [articles, data.postsCount]);
 
-    const { refreshToken, accessToken } = cookies;
-    // if (refreshToken === undefined || accessToken === undefined) {
-    //   router.push('/login');
-    // }
-  }, [cookies, router]);
-
-  const articles = [];
-  for (let i = 0; i <= 4; i++) {
-    articles.push(
-      <Article
-        isFirstArticle={i === 0}
-        key={i}
-        title={'Binary Search'}
-        username={'admin'}
-        date={new Date().toLocaleDateString('bg-BG')}
-        upvotes={9}
-        hours={5}
-        comments={103}
-        link={'https://it-bg.github.io/'}
-      />,
+  const getMoreArticles = async () => {
+    const response = await fetch(
+      ENDPOINT + `/posts?skip=${articles.length}&limit=10`,
     );
-  }
+
+    const { posts } = await response.json();
+
+    setArticles((articles) => [...articles, ...posts]);
+  };
+
+  // todo: upload profile image - https://codesandbox.io/s/thyb0?file=/pages/index.js:869-895
+  const style = `jdenticon`;
+  const randomized = user_id + Math.random();
+  const image = `https://avatars.dicebear.com/api/${style}/${randomized}.svg`;
 
   return (
     <>
@@ -92,14 +108,43 @@ const MyProfile = () => {
         <div className={'col'}>
           <SideNav />
           <Profile
-            triggerConfirmation={(e) => triggerConfirmation(e)}
+            triggerConfirmation={(e) => triggerLogoutConfirmation(e)}
+            image={image}
+            // todo: get these props dynamically
             username={'Никола'}
             bio={'Да жиевее българия.'}
-            articles={articles}
             commentsCount={50}
             likesCount={1920}
             articlesCount={3}
-          />
+          >
+            <InfiniteScroll
+              dataLength={articles.length}
+              next={getMoreArticles}
+              hasMore={hasMore}
+              loader={<h4>Зареждане...</h4>}
+              endMessage={
+                <p className={'center'}>Това са всичките налични статии!</p>
+              }
+            >
+              {articles.map((article, index) => (
+                <Article
+                  key={article._id}
+                  id={article._id}
+                  isFirstArticle={index === 0}
+                  title={article.text}
+                  upvotes={article.upvoters.length}
+                  // todo: use username instead of author id
+                  username={article.author_id.substring(0, 6)}
+                  // todo: improve date displaying
+                  date={article.creation_date.split('T')[0]}
+                  // todo: show real comments count
+                  comments={index}
+                  link={article.url}
+                  redirectUrl={MY_PROFILE_PATH}
+                />
+              ))}
+            </InfiniteScroll>
+          </Profile>
         </div>
       </div>
     </>

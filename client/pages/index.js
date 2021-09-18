@@ -1,16 +1,17 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Article from '../components/Article';
 import SideNav from '../components/SideNav';
 import Header from '../components/Header';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
 import { getEnvironmentInfo } from '../utilities/common';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import INDEX_PATH from '../next.config';
 
-export async function getStaticProps(context) {
-  let [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
+export async function getServerSideProps(context) {
+  const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
 
-  // todo: get page and limit dynamically - /posts?page=1&limit=10
-  const response = await fetch(ENDPOINT + '/posts?page=1&limit=10');
+  const response = await fetch(ENDPOINT + '/posts?skip=0&limit=10');
   const data = await response.json();
 
   if (!data) {
@@ -19,44 +20,29 @@ export async function getStaticProps(context) {
     };
   }
 
-  // todo: check for error (data.message != null)
   return {
-    props: { data },
+    props: { data, ENDPOINT },
   };
 }
 
-function Home({ data }) {
-  const articles = [];
+const Home = ({ data, ENDPOINT }) => {
+  const [articles, setArticles] = useState(data.posts);
+  const [hasMore, setHasMore] = useState(true);
 
-  for (let i = 0; i < data.length; i++) {
-    let {
-      _id,
-      text,
-      author_id,
-      url,
-      textContent,
-      last_edit_date,
-      creation_date,
-      upvoters,
-    } = data[i];
+  useEffect(() => {
+    setHasMore(data.postsCount > articles.length);
+  }, [articles, data.postsCount]);
 
-    articles.push(
-      <Article
-        key={_id}
-        id={_id}
-        isFirstArticle={i === 0}
-        title={text}
-        upvotes={upvoters.length}
-        // todo: use username instead of author id
-        username={author_id.substring(0, 6)}
-        // todo: improve date displaying
-        date={creation_date.split('T')[0]}
-        // todo: show real comments count
-        comments={i}
-        link={url}
-      />,
+  const getMoreArticles = async () => {
+    const response = await fetch(
+      ENDPOINT + `/posts?skip=${articles.length}&limit=10`,
     );
-  }
+
+    const { posts } = await response.json();
+
+    setArticles((articles) => [...articles, ...posts]);
+  };
+
   return (
     <>
       <HeadComponent currentPageName={'Всички Статии'} />
@@ -66,12 +52,40 @@ function Home({ data }) {
         </div>
         <div className={'col'}>
           <SideNav />
-          <main className={'articles'}>{articles}</main>
+          <main className={'articles'}>
+            <InfiniteScroll
+              dataLength={articles.length}
+              next={getMoreArticles}
+              hasMore={hasMore}
+              loader={<h4>Зареждане...</h4>}
+              endMessage={
+                <p className={'center'}>Това са всичките налични статии!</p>
+              }
+            >
+              {articles.map((article, index) => (
+                <Article
+                  key={article._id}
+                  id={article._id}
+                  isFirstArticle={index === 0}
+                  title={article.text}
+                  upvotes={article.upvoters.length}
+                  // todo: use username instead of author id
+                  username={article.author_id.substring(0, 6)}
+                  // todo: improve date displaying
+                  date={article.creation_date.split('T')[0]}
+                  // todo: show real comments count
+                  comments={index}
+                  link={article.url}
+                  redirectUrl={INDEX_PATH}
+                />
+              ))}
+            </InfiniteScroll>
+          </main>
         </div>
       </div>
     </>
   );
-}
+};
 
 Home.getLayout = getDefaultLayout;
 

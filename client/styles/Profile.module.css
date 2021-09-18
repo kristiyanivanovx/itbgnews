@@ -5,6 +5,32 @@
 .profile__information {
     display: flex;
     margin: 3rem 0;
+    overflow-x: hidden;
+}
+
+/* file upload */
+/*.file__upload__input {*/
+/*    display: none;*/
+/*}*/
+
+.file__upload {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    border-radius: 15px;
+    border: 1px solid #ccc;
+    padding: 3px 6px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.upload__widget {
+
+}
+
+.upload__photo {
+    width:auto;
+    /*opacity: 0;*/
+    /*z-index: -1;*/
 }
 
 /* .profile__pic {
@@ -150,6 +176,10 @@
     .profile {
         width: 100%;
     }
+    .upload__photo {
+        font-size: smaller;
+    }
+
 }
 
 @media (max-width: 400px) {

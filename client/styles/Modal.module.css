@@ -18,14 +18,14 @@
     background-color: #cf42db;
     margin: 15% auto;
     padding: 1rem;
-    border: 1px solid #888;
+    border: 1px solid var(--clr-purple);
     width: 25rem;
-    height: 6rem;
+    min-height: 6rem;
 }
 
 /* The Close Button */
 .close {
-    color: #e2e2e2;
+    color: #ffffff;
     top: 0;
     float: right;
     font-size: 28px;
@@ -34,11 +34,16 @@
 
 .close:hover,
 .close:focus {
-    color: #b8b8b8;
+    color: var(--clr-background);
     text-decoration: none;
     cursor: pointer;
 }
 
 .login__text {
     padding-top: 10px;
+}
+
+.options__text {
+    cursor: pointer;
+    padding: 10px;
 }

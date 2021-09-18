@@ -29,7 +29,7 @@ const Create = () => {
   const [url, setUrl] = useState('');
 
   // todo: critical - do not use hardcoded value
-  const user_id = '613fc9389fa3734feef85202';
+  const user_id = '61456ecfddea6520db1c8a7c';
 
   // todo: use getServerSideProps / hoc
   // if user doesnt have cookies, make him login

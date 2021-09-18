@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from '../styles/SingleArticle.module.css';
 import Article from '../components/Article';
 import Comment from '../components/Comment';
@@ -6,75 +6,68 @@ import Header from '../components/Header';
 import SideNav from '../components/SideNav';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
-import Link from 'next/link';
+import {
+  CANNOT_FIND_POST_ERROR,
+  INVALID_ID,
+  getEnvironmentInfo,
+} from '../utilities/common';
+import INDEX_PATH from '../next.config';
 import { useRouter } from 'next/router';
-import { getEnvironmentInfo } from '../utilities/common';
 
-export async function getServerSideProps({ query }) {
+export async function getServerSideProps({ query: { post_id } }) {
   const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
-  // const post_id = query.post_id;
-  const post_id = '613e45bcc7c51d3a984a682d';
-
-  // todo: get page and limit dynamically - /posts?page=1&limit=10
-  const response = await fetch(
-    ENDPOINT + `/posts/comments?post_id=${post_id}`,
-    {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    },
-  );
-
-  // const data = response;
+  const response = await fetch(ENDPOINT + `/posts/${post_id}/comments`);
   const data = await response.json();
-  console.log(response);
-
-  if (!data) {
-    return {
-      notFound: true,
-    };
-  }
 
   return {
-    props: { data },
+    props: {
+      post_id,
+      data,
+      ENDPOINT,
+    },
   };
 }
 
 // todo: finish up here, get current post + comments by the post's id
-const View = ({ data }) => {
-  console.log(data);
+const View = ({ post_id, data, ENDPOINT }) => {
+  const router = useRouter();
 
-  // let {
-  //   _id,
-  //   text,
-  //   author_id,
-  //   url,
-  //   textContent,
-  //   last_edit_date,
-  //   creation_date,
-  //   upvoters,
-  // } = data[i];
+  const isNotFound = data?.message?.includes(CANNOT_FIND_POST_ERROR);
+  const isNotValidId = data?.message?.includes(INVALID_ID);
 
-  const article = (
+  useEffect(() => {
+    if (isNotFound || isNotValidId) {
+      router.push('/');
+    }
+  }, [isNotFound, isNotValidId, router]);
+
+  const article = data.post;
+
+  if (isNotFound || isNotValidId) {
+    return <div>Invalid ID was provided.</div>;
+  }
+
+  const singleArticle = (
     <Article
       // key={_id}
       // id={_id}
-      key={1}
-      title={'Ех този Binary Search!'}
-      upvotes={9}
-      // upvotes={upvoters.length}
-      username={'admin'}
-      // todo: improve date displaying
-      // date={creation_date.split('T')[0]}
-      date={new Date().toLocaleDateString('bg-BG')}
-      hours={5}
-      comments={103}
-      link={'https://it-bg.github.io/'}
+      key={article._id}
+      id={article._id}
       isFirstArticle={true}
+      title={article.text}
+      // upvotes={article.upvoters.length}
+      // todo: use username instead of author id
+      username={article.author_id.substring(0, 6)}
+      // todo: improve date displaying
+      date={article.creation_date.split('T')[0]}
+      // todo: show real comments count
+      comments={6}
+      link={article.url}
+      redirectUrl={INDEX_PATH}
     />
   );
 
+  // todo: get dynamically
   const comments = [];
   for (let i = 0; i < 3; i++) {
     comments.push(
@@ -103,7 +96,7 @@ const View = ({ data }) => {
           <SideNav />
           <main className={'articles'}>
             <section className="article__wrapper">
-              {article}
+              {singleArticle}
               {comments}
             </section>
           </main>
