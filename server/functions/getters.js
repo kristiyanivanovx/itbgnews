@@ -58,41 +58,4 @@ module.exports = {
       textContent: true,
     });
   },
-  getPost_owner_relations: async function (posts) {
-    //Array of objects with attributes post, owner
-    //[ { owner_username:"hello", post={} } ]
-    // [{ owner_username:"hello", (other data) }]
-    let post_owner_relations = [];
-    for (let i = 0; i < posts.length; i++) {
-      let post_owner = {};
-      await User.findById(posts[i].author_id).then((user) => {
-        post_owner.owner_username = user.username;
-      });
-      post_owner.post = posts[i];
-      post_owner_relations.push(post_owner);
-    }
-    return post_owner_relations;
-  },
-  getComment_owner_relations: async function (comments) {
-    let nestedComments = (current_comment_branch) => {};
-    let root = (root_comment_branch) => {
-      for (let i = 0; i < root_comment_branch.length; i++) {}
-    };
-
-    //Array of objects with attributes comment, owner
-    //[ { owner_username:"hello", comment={} } ]
-    let comment_owner_relations = [];
-    for (let i = 0; i < comments.length; i++) {
-      let comment_owner = {};
-
-      await User.findById(comments[i].author_id).then((user) => {
-        comment_owner.owner_username = user.username;
-      });
-
-      comment_owner.comment = comments[i];
-      comment_owner_relations.push(comment_owner);
-    }
-
-    return comment_owner_relations;
-  },
 };

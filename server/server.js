@@ -6,16 +6,18 @@ const PORT = isProduction ? process.env.PORT : process.env.BACKEND_PORT;
 
 console.log(`Starting API server on ${ENV} at ${PORT}.`);
 
+//const mongoose = require("mongoose");
 const express = require('express');
 const cors = require('cors');
-const cookieParser = require('cookie-parser');
 
 const app = express();
 
+const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/authRoute');
 const resetRoutes = require('./routes/resetPassword');
 const articlesRouter = require('./routes/posts');
 const commentRouter = require('./routes/comments');
+const userRouter = require('./routes/users');
 
 app
   .use(cors())
@@ -25,15 +27,17 @@ app
   .use('', resetRoutes)
   .use('/posts', articlesRouter)
   .use('/comments', commentRouter)
+  .use('/user', userRouter)
   .listen(PORT, () => {
     console.log(`Listening on port ${PORT} in ${ENV}...`);
   });
+
 
 /*
 ############################ Routes ############################
 
 --------------------------- Posts -----------------------------
-GET      /posts => returns posts post by page and limit
+GET      /posts/?page=1&limit=5 => returns posts post by page and limit
 GET      /posts/comments => returns the post and comments of post with id req.body must have (post_id)
 POST     /posts => creating a post req.body must have (text && url)
 PATCH    /posts => updating a post req.body must have (post_id && (text || url))
@@ -41,7 +45,7 @@ DELETE   /posts/ => deletes a post post by id req.body must have (post_id && use
 PATCH    /posts/upvote => adds/removes an upvote req.body must have (post_id && user_id)
 
 --------------------------- Comments --------------------------
-POST     /comments => creating a comment to a post, req.body must have
+POST     /comments => creating a comment to a post, req.body must have 
                     (parent_post_id && author_id && (parent_comment_id || null) && text)
 PATCH    /comments => updating a comment req.body must have (comment_id && text)
 DELETE   /comments => deletes a comment by id req.body must have(comment_id) (does not remove it from the server)

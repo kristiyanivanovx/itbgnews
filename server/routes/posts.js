@@ -1,180 +1,164 @@
 const express = require('express');
 const router = express.Router();
 const Post = require('../models/post');
+const User = require('../models/user');
 const ConvertToTree = require('../functions/commentTree');
-const {
-  getPost,
-  getUser,
-  getComments,
-  getComment_owner_relations,
-} = require('../functions/getters');
+const { getPost, getUser, getComments } = require('../functions/getters');
 
 //Getting all Posts by page ✔
 router.get('/', async (req, res) => {
-  const { skip, limit } = req.query;
+    const page = req.query.page;
+    const limit = req.query.limit;
 
-  try {
-    const posts = await Post.find({ textContent: true })
-      .sort({ upvoters: -1, creation_date: -1 })
-      .skip(Number(skip))
-      .limit(Number(limit));
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    try {
+        const Posts = await Post.find({ textContent: true });
+        const posts_page = Posts.slice(startIndex, endIndex);
 
-    const count = await Post.find({ textContent: true }).count();
-
-    res.json({
-      posts: posts,
-      postsCount: count,
-    });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-//Getting all Posts by searchQuery ✔
-router.get('/search', async (req, res) => {
-  const { searchTerm } = req.query;
-
-  try {
-    if (searchTerm) {
-      const regex = new RegExp(searchTerm, 'i');
-
-      const posts = await Post.find({
-        textContent: true,
-        text: { $regex: regex },
-      });
-
-      res.json({
-        posts: posts,
-      });
-    } else {
-      res.json({});
+        //const post_owner_relations = await getPost_owner_relations(posts_page);
+        //console.log(posts_owner)
+        res.status(200).json(posts_page);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
     }
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
 });
-
 //Getting comments and post by post id ✔
-router.get('/:post_id/comments', getPost, async (req, res) => {
-  try {
-    let comments = await getComments(res);
+router.get('/:post_id', getPost, async (req, res) => {
+    try {
+        let comments = await getComments(res);
 
-    let commentTree = ConvertToTree(comments);
-    commentTree = await getComment_owner_relations(commentTree);
+        let commentTree = ConvertToTree(comments);
+        //Seems too slow (sending req for each comment to determine its author username)
+        //Replaced it with just storing autohrUsername on each comment
+        //commentTree = await getComment_owner_relations(commentTree);
 
-    res.status(200).json({ post: res.post, commentTree });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+        res.status(200).json({ post: res.post, commentTree });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
 });
-
 //Creating a Post ✔
-router.post('/', async (req, res) => {
-  const text = req.body.text;
-  const url = req.body.url;
-  let errors = {};
+router.post('/', getUser, async (req, res) => {
+    const post = new Post({
+        text: req.body.text,
+        url: req.body.url,
+        author_id: req.body.user_id,
+        authorUsername: res.user.username,
+        last_edit_date: Date.now(),
+        creation_date: Date.now(),
+    });
+    try {
+        if (!post.text) {
+            res.status(400).json({
+                message: 'User gave empty input on text attribute!',
+            });
+            return;
+        }
+        if (!post.url) {
+            res.status(400).json({
+                message: 'User gave empty input on url attribute!',
+            });
+            return;
+        }
 
-  // validate text
-  if (text <= 0 || text > 250) {
-    //  Texts accepted are with length between 1 and 250 inclusive
-    errors.errorUsername =
-      'Username must be at least 6 letters and at most 30.';
-  }
-  if (url <= 0 || url > 1024) {
-    //  Urls accepted are with length between 1 and 1024 inclusive
-    errors.errorEmail = 'The provided email is not valid.';
-  }
+        res.user.postCount += 1;
 
-  const post = new Post({
-    text: text,
-    url: url,
-    author_id: req.body.user_id,
-    last_edit_date: Date.now(),
-    creation_date: Date.now(),
-  });
-  try {
-    const newPost = await post.save();
-    res.status(201).json(newPost);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
+        await post.save();
+        await res.user.save();
+
+        res.status(201).json({ message: 'New post created!' });
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
 });
-
-//Updating a Post ✔
+//Updateting a Post ✔
 router.patch('/:post_id', getPost, async (req, res) => {
-  let hasChanged = false;
-  if (req.body.text) {
-    res.post.text = req.body.text;
-    hasChanged = true;
-  }
-  if (req.body.url) {
-    res.post.url = req.body.url;
-    hasChanged = true;
-  }
-  if (hasChanged) res.post.last_edit_date = Date.now();
-  try {
-    if (!hasChanged) res.status(400).json({ message: 'Nothing was changed.' });
+    let hasChanged = false;
+    if (req.body.text) {
+        res.post.text = req.body.text;
+        hasChanged = true;
+    }
+    if (req.body.url) {
+        res.post.url = req.body.url;
+        hasChanged = true;
+    }
+    if (hasChanged) res.post.last_edit_date = Date.now();
 
-    const updated = await res.post.save();
-    res.status(200).json(updated);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
+    try {
+        if (!hasChanged) {
+            res.status(400).json({ message: 'Nothing was changed.' });
+            return;
+        }
+        const updated = await res.post.save();
+        res.status(200).json(updated);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
 });
 
 //Voting on a post ✔
-router.patch('/upvote/:post_id', getPost, getUser, async (req, res) => {
-  const post = res.post;
-  const user = res.user;
+router.post('/upvote', getPost, getUser, async (req, res) => {
+    const post = res.post;
+    const user = res.user;
 
-  //check if upvote exists
-  const upvoteExists = !!(await Post.findOne({
-    _id: post._id,
-    upvoters: { $elemMatch: { user_id: user._id } },
-  }));
+    //check if upvote exists
+    const upvoteExists = !!(await Post.findOne({
+        _id: post._id,
+        upvoters: { $elemMatch: { user_id: user._id } },
+    }));
 
-  try {
-    if (upvoteExists) {
-      //remove the upvote
-      await Post.updateOne(post, {
-        $pull: { upvoters: { user_id: res.user._id } },
-      });
+    try {
+        if (upvoteExists) {
+            //remove the upvote
+            await Post.updateOne(post, {
+                $pull: { upvoters: { user_id: user._id } },
+            });
 
-      res.status(200).json({
-        count: post.upvoters.length - 1,
-        message: `removed ${user.username}`,
-      });
-    } else {
-      //Add the upvote
-      post.upvoters.push({ user_id: user._id });
-      post.save();
+            res.user.commitedLikes -= 1;
+            user.save();
 
-      res.status(201).json({
-        count: post.upvoters.length,
-        message: `added ${user.username}`,
-      });
+            res.status(200).json({
+                count: post.upvoters.length - 1,
+                message: `removed ${user.username}`,
+            });
+        } else {
+            //Add the upvote
+            post.upvoters.push({ user_id: user._id });
+            res.user.commitedLikes += 1;
+
+            post.save();
+            user.save();
+
+            res.status(201).json({
+                count: post.upvoters.length,
+                message: `added ${user.username}`,
+            });
+        }
+    } catch (err) {
+        res.status(304).json({ message: err.message });
     }
-  } catch (err) {
-    res.status(304).json({ message: err.message });
-  }
+
 });
 
 //'Deletes' a Post (does not remove it from the database) ✔
 router.delete('/:user_id/:post_id', getPost, getUser, async (req, res) => {
-  const post = res.post;
-  const user = res.user;
+    const post = res.post;
+    const user = res.user;
 
-  if (String(post.author_id) === String(user._id)) {
-    try {
-      res.post.textContent = false;
-      await res.post.save();
-      res.status(200).json({ message: 'post deleted!' });
-    } catch (err) {
-      res.status(500).json({ message: err.message });
+    if (String(post.author_id) === String(user._id)) {
+        try {
+            post.textContent = false;
+            user.postCount -= 1;
+            await post.save();
+            await user.save();
+            res.status(200).json({ message: 'post deleted!' });
+        } catch (err) {
+            res.status(500).json({ message: err.message });
+        }
+        return;
     }
-    return;
-  }
-  res.status(401).json({ message: 'The user does not own the post!' });
+    res.status(401).json({ message: 'The user does not own the post!' });
 });
 
 module.exports = router;
