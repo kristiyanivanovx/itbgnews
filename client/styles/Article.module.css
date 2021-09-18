@@ -17,7 +17,8 @@
 .article__votes svg {
     padding: 4px;
     margin-bottom: 5px;
-    width: 2em !important;
+    width: 25px !important;
+    height: 25px !important;
 }
 
 
@@ -26,9 +27,7 @@
     margin: 0 .5rem;
 }
 .article__modify svg {
-    margin: 10px;
-    /*margin-bottom: 5px;*/
-    /*width: 2em !important;*/
+    margin: 0 7px;
 }
 .article__delete svg:hover {
     color: var(--clr-background);
@@ -53,8 +52,6 @@
 }
 
 .article__votes__icon {
-    width: 25px !important;
-    height: 25px !important;
     font-weight: bold;
     color: var(--clr-white);
     background: var(--clr-purple);

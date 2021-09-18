@@ -111,7 +111,6 @@ a:hover {
 .col {
     display: flex;
     justify-content: space-between;
-
     /*margin: 40px 0 40px 0;*/
     margin-bottom: 40px;
 }
@@ -144,15 +143,6 @@ a:hover {
 
 .center {
     text-align: center;
-}
-
-.link {
-    /*background: #554360;*/
-    width: 100%;
-}
-.link2{
-    width: 70%;
-    background: #554360;
 }
 
 /*#__next {*/
