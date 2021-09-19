@@ -39,7 +39,7 @@ const MyProfile = ({ data, ENDPOINT }) => {
   const [articlesCount, setArticlesCount] = useState(data.postsCount);
   const [articles, setArticles] = useState(data.posts);
   const [hasMore, setHasMore] = useState(true);
-  const [confirmation, setConfirmation] = useState(1);
+  const [shouldRedirect, setShouldRedirect] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -77,14 +77,14 @@ const MyProfile = ({ data, ENDPOINT }) => {
 
   // articles
   useEffect(() => {
-    if (confirmation > 1 && !cookies.accessToken) {
-      router.push('/');
+    if (shouldRedirect) {
+      router.push('/login');
     }
 
     setHasMore(data.postsCount > articles.length);
   }, [
     articles.length,
-    confirmation,
+    shouldRedirect,
     cookies.accessToken,
     data.postsCount,
     router,
@@ -92,7 +92,7 @@ const MyProfile = ({ data, ENDPOINT }) => {
 
   // logout
   const triggerLogoutConfirmation = async (e) => {
-    setConfirmation((confirmation) => confirmation + 1);
+    // setConfirmation((confirmation) => confirmation + 1);
     await submitLogoutForm();
 
     // todo: improve logout
@@ -108,11 +108,11 @@ const MyProfile = ({ data, ENDPOINT }) => {
     });
 
     let result = await response.json();
-    console.log(result);
-    // removeCookie('accessToken');
+    removeCookie('accessToken');
+    setShouldRedirect(() => true);
 
-    if (result.status === SUCCESS_RESPONSE_CODE) {
-    }
+    // if (result.status === SUCCESS_RESPONSE_CODE) {
+    // }
   };
 
   const getMoreArticles = async () => {

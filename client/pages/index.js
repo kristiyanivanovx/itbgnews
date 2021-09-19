@@ -110,8 +110,8 @@ const Home = ({ data, ENDPOINT }) => {
                       comments={index}
                       link={article.url}
                       redirectUrl={INDEX_PATH}
-                      shouldDisplayModifyButtons={3 === article.authorName}
-                      userId={3}
+                      shouldDisplayModifyButtons={userId === article.authorId}
+                      userId={userId}
                     />
                   ))
                 : null}

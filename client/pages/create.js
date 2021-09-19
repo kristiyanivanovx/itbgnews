@@ -93,6 +93,7 @@ const Create = () => {
       method: 'POST',
       body: jsonData,
       headers: {
+        Authorization: `Bearer ${cookies.accessToken}`,
         'Content-Type': 'application/json',
       },
     });

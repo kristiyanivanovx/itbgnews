@@ -127,20 +127,25 @@ const Article = ({
 
   // voting
   const upvote = async (ENDPOINT) => {
-    const response = await fetch(ENDPOINT + '/posts/upvote/', {
-      method: 'PATCH',
-      body: JSON.stringify({ postId, userId }),
-      headers: {
-        Authorization: `Bearer ${cookies.accessToken}`,
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      ENDPOINT + '/posts/upvote/' + userId + '/' + postId,
+      {
+        method: 'PATCH',
+        // body: JSON.stringify({ postId, userId }),
+        headers: {
+          Authorization: `Bearer ${cookies.accessToken}`,
+          // 'Content-Type': 'application/json',
+        },
       },
-    });
+    );
 
     // todo: check for errors аnd set them
     await checkResponseVote(response);
   };
 
   const checkResponseVote = async (response) => {
+    console.log(response);
+
     const data = await response.json();
     const { count } = data;
 

@@ -32,8 +32,6 @@ async function getComments(req, res) {
 }
 
 async function postPost(req, res) {
-  console.log('BACKEND');
-  console.log(req.body);
   const { text, url, authorId } = req.body;
   const user = await User.findById({ _id: authorId });
 
