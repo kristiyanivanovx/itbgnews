@@ -5,13 +5,24 @@ const { validatePassword, validateEmail } = require('../utilities/validation');
 
 function verifyToken(req, res, next) {
   try {
-    const token = req.headers.authorization.split(' ')[1];
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+      // throw new Error('Your token is not valid. Login or register first.');
+      res.status(401).json({
+        status: false,
+        message: 'Your token is not valid. Login or register first.',
+      });
+
+      return;
+    }
+
     req.user = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
   } catch (error) {
     console.error(error);
+
     res.status(401).json({
       status: false,
-      message: 'Your session is not valid.',
+      message: 'Your token is not valid.',
       data: error,
     });
 

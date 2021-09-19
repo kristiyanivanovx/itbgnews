@@ -124,6 +124,7 @@ const Article = ({
 
   // voting
   const upvote = async (ENDPOINT) => {
+    // todo: critical GET userID dynamically
     const json = JSON.stringify({ userId, postId });
 
     const response = await fetch(ENDPOINT + '/posts/upvote/', {

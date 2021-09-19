@@ -27,6 +27,7 @@ router.patch(
 //Voting on a post ✔
 router.patch(
   '/upvote',
+  auth.verifyToken,
   getters.userGetter,
   getters.postGetter,
   controllers.vote,
@@ -35,6 +36,7 @@ router.patch(
 //'Deletes' a Post (does not remove it from the database) ✔
 router.delete(
   '/:userId/:postId',
+  auth.verifyToken,
   getters.postGetter,
   getters.userGetter,
   controllers.deletePost,
