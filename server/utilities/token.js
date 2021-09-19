@@ -11,6 +11,7 @@ function generateAccessToken(userId) {
 
 function cashAndReturnRefreshToken(userId) {
   console.log(process.env.JWT_REFRESH_SECRET);
+
   const refreshToken = jwt.sign(
     { sub: userId },
     process.env.JWT_REFRESH_SECRET,

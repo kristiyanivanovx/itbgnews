@@ -5,10 +5,12 @@ import Profile from '../components/Profile';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
 import { useCookies } from 'react-cookie';
-import { getEnvironmentInfo } from '../utilities/common';
+import { SUCCESS_RESPONSE_CODE, getEnvironmentInfo } from '../utilities/common';
 import Article from '../components/Article';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import MY_PROFILE_PATH from '../next.config';
+import { route } from 'next/dist/server/router';
+import { useRouter } from 'next/router';
 
 export async function getServerSideProps(context) {
   const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
@@ -30,12 +32,22 @@ export async function getServerSideProps(context) {
 const MyProfile = ({ data, ENDPOINT }) => {
   const [articles, setArticles] = useState(data.posts);
   const [hasMore, setHasMore] = useState(true);
-
   const [confirmation, setConfirmation] = useState(1);
+  const router = useRouter();
+
   const [cookies, setCookie, removeCookie] = useCookies([
     'accessToken',
-    'accessToken',
+    'refreshToken',
   ]);
+
+  // articles
+  useEffect(() => {
+    if (!cookies.accessToken) {
+      router.push('/login');
+    }
+
+    setHasMore(data.postsCount > articles.length);
+  }, [articles.length, cookies.accessToken, data.postsCount, router]);
 
   // todo: critical: do not hardcode value
   const userId = '6146239ddb68b22e424946c6';
@@ -53,33 +65,17 @@ const MyProfile = ({ data, ENDPOINT }) => {
   // todo: improve cookie sending
   const submitForm = async () => {
     const response = await fetch(ENDPOINT + '/logout', {
+      headers: { authorization: `Bearer ${cookies.accessToken}` },
       method: 'POST',
-      cookies: document.cookie,
     });
 
     let result = await response.json();
     console.log(result);
+    removeCookie('accessToken');
 
-    // setErrors(() => result.data);
-    // await checkResult(result);
+    if (result.status === SUCCESS_RESPONSE_CODE) {
+    }
   };
-
-  // if user doesnt have cookies, make him login
-  // temporarily commented out
-  // todo: improve checks, use getServerSideProps / hoc
-  // useEffect(() => {
-  //   // if (!cookies || !router) { return; }
-  //
-  //   const { refreshToken, accessToken } = cookies;
-  //   // if (refreshToken === undefined || accessToken === undefined) {
-  //   //   router.push('/login');
-  //   // }
-  // }, [cookies, router]);
-
-  // articles
-  useEffect(() => {
-    setHasMore(data.postsCount > articles.length);
-  }, [articles, data.postsCount]);
 
   const getMoreArticles = async () => {
     const response = await fetch(
@@ -87,7 +83,6 @@ const MyProfile = ({ data, ENDPOINT }) => {
     );
 
     const { posts } = await response.json();
-
     setArticles((articles) => [...articles, ...posts]);
   };
 

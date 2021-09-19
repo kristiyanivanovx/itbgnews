@@ -27,6 +27,8 @@ const Register = () => {
 
   const [cookies, setCookie] = useCookies(['accessToken', 'refreshToken']);
 
+  // TODO CRITICAL : add option to just login
+
   // todo: set tokens for a reasonable time
   function handleTokens(accessToken, refreshToken) {
     setCookie('accessToken', accessToken, {
@@ -117,7 +119,6 @@ const Register = () => {
     </>
   );
 };
-
 
 Register.getLayout = getDefaultLayout;
 

@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const user_controller = require('../controllers/userControllers');
-const auth_middleware = require('../middlewares/authMiddleware');
+const userController = require('../controllers/userControllers');
+const authMiddleware = require('../middlewares/authMiddleware');
 
 router.get('/', (req, res) => {
   res.json('hi');
@@ -8,18 +8,18 @@ router.get('/', (req, res) => {
 
 router.post(
   '/register',
-  auth_middleware.validateInputData,
-  user_controller.register,
+  authMiddleware.validateInputData,
+  userController.register,
 );
 
-router.post('/login', user_controller.login);
+router.post('/login', userController.login);
 
 router.post(
   '/token',
-  auth_middleware.verifyRefreshToken,
-  user_controller.getAccess,
+  authMiddleware.verifyRefreshToken,
+  userController.getAccess,
 );
 
-router.post('/logout', auth_middleware.verifyToken, user_controller.logout);
+router.post('/logout', authMiddleware.verifyToken, userController.logout);
 
 module.exports = router;

@@ -63,6 +63,7 @@ async function login(req, res) {
       });
     }
     const [accessToken, refreshToken] = makeRefresh(user._id);
+
     return res.json({
       status: true,
       message: 'login success',
@@ -81,11 +82,13 @@ async function login(req, res) {
 
 async function logout(req, res) {
   // frontend must remove access token here [from cookie]
-  const userId = req.userData.sub;
+  const userId = req.user.sub;
+  console.log('userId');
+  console.log(userId);
 
   await redisClient.del(userId.toString());
 
-  return res.json({ status: true, message: 'success.' });
+  return res.status(200).json({ status: true, message: 'success.' });
 }
 
 function getAccess(req, res) {
