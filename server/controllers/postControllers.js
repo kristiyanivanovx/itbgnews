@@ -53,6 +53,7 @@ async function postPost(req, res) {
 }
 
 async function patchPost(req, res) {
+<<<<<<< HEAD
   // todo make validation on url if exists
   const { text, url } = req.body;
   let hasChanged = false;
@@ -74,6 +75,14 @@ async function patchPost(req, res) {
   try {
     if (!hasChanged) {
       res.status(400).json({ message: 'Nothing was changed.' });
+=======
+    // todo make validation on url if exists
+    const {text, url} = req.body
+    let hasChanged = false;
+    if (text) {
+        req.post.text = text
+        hasChanged = true;
+>>>>>>> refs/remotes/origin/pavel
     }
 
     const updated = await req.post.save();

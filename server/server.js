@@ -53,7 +53,6 @@ DELETE   /comments => deletes a comment by id req.body must have(comment_id) (do
 PATCH    /comments/upvote => adds/removes an upvote req.body must have (comment_id && user_id)
 */
 
-<<<<<<< HEAD
 /*
 ######################### ERROR STATUS #########################
 400 - User gave wrong(bad) data.
@@ -64,12 +63,3 @@ PATCH    /comments/upvote => adds/removes an upvote req.body must have (comment_
 304 - Not Modified
 405 - Method not allowed
 */
-=======
-app.use('', authRoutes);
-
-app.listen(BACKEND_PORT, () => {
-    console.log(`Listening on port ${BACKEND_PORT}`)
-})
-
-
->>>>>>> bf3a25f (d)
