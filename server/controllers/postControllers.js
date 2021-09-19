@@ -1,6 +1,7 @@
 const getters = require('../functions/getters');
 const Post = require('../models/post');
 const User = require('../models/user');
+const { upvoteComment } = require('./comments');
 
 async function getPost(req, res) {
   const { skip, limit } = req.query;
@@ -33,7 +34,7 @@ async function getComments(req, res) {
 
 async function postPost(req, res) {
   const { text, url, authorId } = req.body;
-  const user = await User.findById({ _id: authorId });
+  const user = req.user;
 
   const newPost = new Post({
     text,
@@ -45,7 +46,11 @@ async function postPost(req, res) {
   });
 
   try {
+    user.postsCount += 1;
+
     await newPost.save();
+    await user.save();
+
     res.status(201).json(newPost);
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -92,14 +97,16 @@ async function vote(req, res) {
     _id: post._id,
     upvoters: { $elemMatch: { userId: user._id } },
   }));
-
   try {
     if (upvoteExists) {
       //remove the upvote
       await Post.updateOne(post, {
         $pull: { upvoters: { userId: user._id } },
       });
+      user.commitedLikes -= 1;
+
       await post.save();
+      await user.save();
 
       res.status(200).json({
         count: post.upvoters.length - 1,
@@ -109,8 +116,10 @@ async function vote(req, res) {
     } else {
       //Add the upvote
       post.upvoters.push({ userId: user._id });
+      user.commitedLikes += 1;
+
       await post.save();
-      // post.save();
+      await user.save();
 
       res.status(201).json({
         // count: post.upvoters.length + 1,
@@ -129,11 +138,21 @@ async function deletePost(req, res) {
 
   if (String(post.authorId) === String(user._id)) {
     try {
+      //get all comments
+      //connected to the post and delete them too
+      let comments = await getters.commentsGetter(req);
+      const deletionsCount = comments.length;
+
+      for (let i = 0; i < comments.length; i++) {
+        await comments[i].delete();
+      }
       await post.delete();
+
       user.postsCount -= 1;
+      user.commentsCount -= deletionsCount;
       await user.save();
 
-      res.status(200).json({ message: 'post deleted!' });
+      res.status(200).json({ message: 'post and comments deleted!' });
     } catch (err) {
       res.status(500).json({ message: err.message });
     }

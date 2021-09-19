@@ -4,7 +4,7 @@ const getter = require('../functions/getters');
 const controller = require('../controllers/comments');
 
 //Create a comment ✔
-router.post('/', controller.postComment);
+router.post('/', getter.userGetter, controller.postComment);
 
 //Adding/removing an upvote ✔
 router.patch(

@@ -6,6 +6,9 @@ const userSchema = new Schema({
   username: String,
   password: String,
   date: Date,
+  postsCount: { type: Number, default: 0 },
+  commentsCount: { type: Number, default: 0 },
+  commitedLikes: { type: Number, default: 0 },
 });
 
 userSchema.index(
