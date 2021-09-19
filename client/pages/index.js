@@ -8,30 +8,47 @@ import { getEnvironmentInfo } from '../utilities/common';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import INDEX_PATH from '../next.config';
 
-export async function getServerSideProps(context) {
+// export async function getServerSideProps(context) {
+//   const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
+//
+//   const response = await fetch(ENDPOINT + '/posts?skip=0&limit=10');
+//   const data = await response.json();
+//
+//   if (!data) {
+//     return {
+//       notFound: true,
+//     };
+//   }
+//
+//   return {
+//     props: { data, ENDPOINT },
+//   };
+// }
+
+const Home = () => {
   const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
+  const [articles, setArticles] = useState({});
+  const [articlesCount, setArticlesCount] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [shouldFetch, setShouldFetch] = useState(true);
 
-  const response = await fetch(ENDPOINT + '/posts?skip=0&limit=10');
-  const data = await response.json();
+  const getInitialArticles = async () => {
+    const response = await fetch(ENDPOINT + '/posts?skip=0&limit=10');
+    return await response.json();
+  };
 
-  if (!data) {
-    return {
-      notFound: true,
-    };
+  if (shouldFetch) {
+    getInitialArticles()
+      .then((data) => {
+        setArticles((prev) => data.posts);
+        setArticlesCount((articlesCount) => data.postsCount);
+      })
+      .then(() => setShouldFetch((prev) => false));
   }
 
-  return {
-    props: { data, ENDPOINT },
-  };
-}
-
-const Home = ({ data, ENDPOINT }) => {
-  const [articles, setArticles] = useState(data.posts);
-  const [hasMore, setHasMore] = useState(true);
-
   useEffect(() => {
-    setHasMore(data.postsCount > articles.length);
-  }, [articles, data.postsCount]);
+    setHasMore(articlesCount > articles.length);
+  }, [articles, articlesCount]);
 
   const getMoreArticles = async () => {
     const response = await fetch(
@@ -39,7 +56,6 @@ const Home = ({ data, ENDPOINT }) => {
     );
 
     const { posts } = await response.json();
-
     setArticles((articles) => [...articles, ...posts]);
   };
 
@@ -54,7 +70,7 @@ const Home = ({ data, ENDPOINT }) => {
           <SideNav />
           <main className={'articles'}>
             <InfiniteScroll
-              dataLength={articles.length}
+              dataLength={articles.length ?? 0}
               next={getMoreArticles}
               hasMore={hasMore}
               loader={<h4>Зареждане...</h4>}
@@ -62,23 +78,25 @@ const Home = ({ data, ENDPOINT }) => {
                 <p className={'center'}>Това са всичките налични статии!</p>
               }
             >
-              {articles.map((article, index) => (
-                <Article
-                  key={article._id}
-                  postId={article._id}
-                  isFirstArticle={index === 0}
-                  title={article.text}
-                  upvotes={article.upvoters.length}
-                  // todo: use username instead of author id
-                  username={article.authorName}
-                  // todo: improve date displaying
-                  date={article.creationDate.split('T')[0]}
-                  // todo: show real comments count
-                  comments={index}
-                  link={article.url}
-                  redirectUrl={INDEX_PATH}
-                />
-              ))}
+              {articles.length > 0
+                ? articles.map((article, index) => (
+                    <Article
+                      key={article._id}
+                      postId={article._id}
+                      isFirstArticle={index === 0}
+                      title={article.text}
+                      upvotes={article.upvoters.length}
+                      // todo: use username instead of author id
+                      username={article.authorName}
+                      // todo: improve date displaying
+                      date={article.creationDate.split('T')[0]}
+                      // todo: show real comments count
+                      comments={index}
+                      link={article.url}
+                      redirectUrl={INDEX_PATH}
+                    />
+                  ))
+                : null}
             </InfiniteScroll>
           </main>
         </div>
