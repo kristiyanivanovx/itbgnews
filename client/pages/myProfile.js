@@ -5,7 +5,12 @@ import Profile from '../components/Profile';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
 import { useCookies } from 'react-cookie';
-import { SUCCESS_RESPONSE_CODE, getEnvironmentInfo } from '../utilities/common';
+import {
+  JWT_ACCESS_TIME,
+  SUCCESS_RESPONSE_CODE,
+  getEnvironmentInfo,
+  hasAccess,
+} from '../utilities/common';
 import Article from '../components/Article';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import MY_PROFILE_PATH from '../next.config';
@@ -30,6 +35,7 @@ export async function getServerSideProps(context) {
 }
 
 const MyProfile = ({ data, ENDPOINT }) => {
+  const [shouldAuth, setShouldAuth] = useState(true);
   const [articles, setArticles] = useState(data.posts);
   const [hasMore, setHasMore] = useState(true);
   const [confirmation, setConfirmation] = useState(1);
@@ -40,14 +46,42 @@ const MyProfile = ({ data, ENDPOINT }) => {
     'refreshToken',
   ]);
 
+  let user;
+  if (shouldAuth) {
+    user = hasAccess(cookies.accessToken, cookies.refreshToken, ENDPOINT);
+
+    user.then((accessToken) => {
+      if (accessToken) {
+        setCookie('accessToken', accessToken, {
+          path: '/',
+          maxAge: JWT_ACCESS_TIME,
+        });
+      }
+    });
+
+    setShouldAuth(() => false);
+  }
+
   // articles
   useEffect(() => {
-    if (!cookies.accessToken) {
-      router.push('/login');
+    if (confirmation > 1) {
+      if (!cookies.refreshToken) {
+        router.push('/');
+      }
+    } else {
+      if (!cookies.refreshToken) {
+        router.push('/login');
+      }
     }
 
     setHasMore(data.postsCount > articles.length);
-  }, [articles.length, cookies.accessToken, data.postsCount, router]);
+  }, [
+    articles.length,
+    confirmation,
+    cookies.refreshToken,
+    data.postsCount,
+    router,
+  ]);
 
   // todo: critical: do not hardcode value
   const userId = '6146239ddb68b22e424946c6';
@@ -55,7 +89,7 @@ const MyProfile = ({ data, ENDPOINT }) => {
   // logout
   const triggerLogoutConfirmation = async (e) => {
     setConfirmation((confirmation) => confirmation + 1);
-    await submitForm();
+    await submitLogoutForm();
 
     // todo: improve logout
     // if user has clicked more than one time, remove the cookies
@@ -63,7 +97,7 @@ const MyProfile = ({ data, ENDPOINT }) => {
   };
 
   // todo: improve cookie sending
-  const submitForm = async () => {
+  const submitLogoutForm = async () => {
     const response = await fetch(ENDPOINT + '/logout', {
       headers: { authorization: `Bearer ${cookies.accessToken}` },
       method: 'POST',
@@ -72,6 +106,7 @@ const MyProfile = ({ data, ENDPOINT }) => {
     let result = await response.json();
     console.log(result);
     removeCookie('accessToken');
+    removeCookie('refreshToken');
 
     if (result.status === SUCCESS_RESPONSE_CODE) {
     }

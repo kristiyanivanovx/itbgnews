@@ -12,36 +12,34 @@ module.exports = {
   SUCCESS_RESPONSE_CODE: 200,
   EDITED_RESPONSE_CODE: 200,
   REMOVED_RESPONSE_CODE: 200,
+  JWT_ACCESS_TIME: 60 * 2, // 2 minutes
+  JWT_REFRESH_TIME: 60 * 60 * 24 * 30, // 30 days
 
-  refresh: async (refreshToken, ENDPOINT, setCookieCallback) => {
+  // refresh token by tutorial, access token otherwise
+  refresh: async (token, ENDPOINT) => {
     console.log('Refreshing token...');
 
     return new Promise((resolve, reject) => {
-      fetch(ENDPOINT + '', {
+      fetch(ENDPOINT + '/token', {
         method: 'POST',
-        headers: { authorization: `Bearer ${refreshToken}` },
+        headers: { authorization: `Bearer ${token}` },
       })
         .then((data) => data.json())
         .then((data) => {
           if (data.status === false) {
+            console.log('4?');
             console.error(data.message);
-            resolve(false);
+            reject(false);
           } else {
+            console.log('5?');
             const { accessToken } = data.data;
-            setCookieCallback(accessToken);
             resolve(accessToken);
           }
         });
     });
   },
 
-  requestLogin: (
-    accessToken,
-    refreshToken,
-    ENDPOINT,
-    route,
-    setCookieCallback,
-  ) => {
+  requestLogin: (accessToken, refreshToken, ENDPOINT, route) => {
     return new Promise((resolve, reject) => {
       fetch(ENDPOINT + '/' + route, {
         headers: { authorization: `Bearer ${accessToken}` },
@@ -64,12 +62,11 @@ module.exports = {
               console.error(data.message);
             }
           } else {
-            const accessToken = await this.refresh(
+            const accessToken = await module.exports.refresh(
               refreshToken,
               ENDPOINT,
-              setCookieCallback,
             );
-            return await this.requestLogin(
+            return await module.exports.requestLogin(
               accessToken,
               refreshToken,
               ENDPOINT,
@@ -79,33 +76,41 @@ module.exports = {
         });
     });
   },
+
   // handleChange: (e) => {},
   // handleSubmit: (e) => {},
 
-  hasAccess: async (accessToken, refreshToken, ENDPOINT, setCookieCallback) => {
-    if (!refreshToken) return null;
+  hasAccess: async (accessToken, refreshToken, ENDPOINT) => {
+    console.log('1');
+    if (!refreshToken) {
+      return null;
+    }
+
+    console.log('2');
 
     if (accessToken === undefined) {
+      console.log('2.5');
+
       // generate new access token
-      return await this.refresh(refreshToken, ENDPOINT, setCookieCallback);
+      return await module.exports.refresh(refreshToken, ENDPOINT);
     }
+    console.log('3');
 
     return accessToken;
   },
 
   /**
-   * @param {string} e - Event
    * @param {string} accessToken - The access token
    * @param {string} refreshToken, - The refresh token
    */
-  protect: async (e, accessToken, refreshToken) => {
-    accessToken = await this.hasAccess(accessToken, refreshToken);
+  protect: async (accessToken, refreshToken) => {
+    accessToken = await module.exports.hasAccess(accessToken, refreshToken);
 
     if (!accessToken) {
       console.error('No access token has been found, login again');
       // set message saying login again
     } else {
-      await this.requestLogin(accessToken, refreshToken);
+      await module.exports.requestLogin(accessToken, refreshToken);
     }
   },
 

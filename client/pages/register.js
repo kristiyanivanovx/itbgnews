@@ -11,6 +11,8 @@ import {
   EXISTING_USER_ERROR_CODE,
   getEnvironmentInfo,
   SUCCESSFUL_REGISTRATION_MESSAGE,
+  JWT_ACCESS_TIME,
+  JWT_REFRESH_TIME,
 } from '../utilities/common';
 import Router from 'next/router';
 import { useCookies } from 'react-cookie';
@@ -33,12 +35,12 @@ const Register = () => {
   function handleTokens(accessToken, refreshToken) {
     setCookie('accessToken', accessToken, {
       path: '/',
-      maxAge: 60 * 60 * 24,
-    }); // 1 day
+      maxAge: JWT_ACCESS_TIME,
+    });
     setCookie('refreshToken', refreshToken, {
       path: '/',
-      maxAge: 60 * 60 * 24 * 30,
-    }); // 30 days
+      maxAge: JWT_REFRESH_TIME,
+    });
 
     console.log(cookies.accessToken);
     console.log(cookies.refreshToken);
