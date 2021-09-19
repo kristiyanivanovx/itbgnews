@@ -42,7 +42,8 @@ const Header = () => {
 
   return (
     <>
-      <header className={`${styles.site__header} col`}>
+      <div className={styles.site__header}>
+      <header className={styles.header__main}>
         <FontAwesomeIcon
           onClick={() => toggleNavigation()}
           className={styles.icon__burger}
@@ -59,9 +60,11 @@ const Header = () => {
           </div>
         </div>
 
+        {/*<div>*/}
         {shouldDisplay ? (
           <MobileNav />
         ) : (
+
           <div className={styles.search__bar}>
             <FontAwesomeIcon className={styles.icon__search} icon={faSearch} />
             <input
@@ -71,10 +74,12 @@ const Header = () => {
           </div>
         )}
       </header>
-
       <>
+        <div className={styles.predictions}>
+
         {results?.map((post) => (
           <>
+            <div className={styles.prediction}>
             <Link
               key={post._id}
               href={{
@@ -82,17 +87,23 @@ const Header = () => {
                 query: { name: post.text, postId: post._id },
               }}
             >
+
               <a>{post.text}</a>
             </Link>
-            <br />
+              </div>
+            {/*<br />*/}
           </>
         ))}
+        </div>
+
       </>
 
-      {/*{results?.map((post) => {*/}
-      {/*  console.log('da');*/}
-      {/*  console.log(post);*/}
-      {/*})}*/}
+      {results?.map((post) => {
+        console.log('da');
+        console.log(post);
+      })}
+    {/*</>*/}
+    </div>
     </>
   );
 };

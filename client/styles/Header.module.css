@@ -1,6 +1,12 @@
 .site__header {
+    width: 100%;
+    margin-bottom: 80px;
+}
+.header__main {
     position: relative;
     width: 100%;
+    display: flex;
+    justify-content: space-between;
 }
 
 .brand {
@@ -53,12 +59,25 @@
     display: none;
 }
 
+.predictions {
+    float: right;
+    width: 70%;
+    background: var(--clr-main);
+    border-radius: 22px;
+
+}
+
+.prediction {
+    border-top: 2px solid var(--clr-background);
+    padding: 10px 20px 10px 50px ;
+}
+
 @media (max-width: 600px) {
     .icon__burger {
         display: block;
     }
 
-    .site__header {
+    .header__main {
         display: block;
     }
 
@@ -71,5 +90,9 @@
         width: calc(100% - 110px);
         text-align: center;
         font-size: 1.5rem;
+    }
+    .predictions {
+        clear: both;
+        width: 100%;
     }
 }

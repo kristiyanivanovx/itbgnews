@@ -75,6 +75,7 @@
 
 .user__activity {
     text-align: center;
+    font-size: clamp(18px, 2vw, 1.3rem);
     margin-left: 20px;
 }
 
@@ -169,6 +170,7 @@
         margin: 0;
     }
 }
+
 
 @media (max-width: 600px) {
     .profile {

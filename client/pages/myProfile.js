@@ -4,6 +4,8 @@ import SideNav from '../components/SideNav';
 import Profile from '../components/Profile';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
+import Footer from "../components/Footer";
+
 import { useCookies } from 'react-cookie';
 import {
   JWT_ACCESS_TIME,
