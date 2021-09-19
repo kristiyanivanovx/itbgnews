@@ -6,6 +6,7 @@ const PORT = isProduction ? process.env.PORT : process.env.BACKEND_PORT;
 
 console.log(`Starting API server on ${ENV} at ${PORT}.`);
 
+//const mongoose = require("mongoose");
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
@@ -14,8 +15,10 @@ const app = express();
 
 const authRoutes = require('./routes/authRoute');
 const resetRoutes = require('./routes/resetPassword');
-const articlesRouter = require('./routes/posts');
+const postsRouter = require('./routes/posts');
 const commentRouter = require('./routes/comments');
+const userRouter = require('./routes/users');
+const treeRoutes = require('./routes/treeRoutes');
 
 app
   .use(cors())
@@ -23,8 +26,10 @@ app
   .use(express.json())
   .use('', authRoutes)
   .use('', resetRoutes)
-  .use('/posts', articlesRouter)
+  .use('/tree', treeRoutes)
+  .use('/posts', postsRouter)
   .use('/comments', commentRouter)
+  .use('/user', userRouter)
   .listen(PORT, () => {
     console.log(`Listening on port ${PORT} in ${ENV}...`);
   });
@@ -33,7 +38,7 @@ app
 ############################ Routes ############################
 
 --------------------------- Posts -----------------------------
-GET      /posts => returns posts post by page and limit
+GET      /posts/?page=1&limit=5 => returns posts post by page and limit
 GET      /posts/comments => returns the post and comments of post with id req.body must have (post_id)
 POST     /posts => creating a post req.body must have (text && url)
 PATCH    /posts => updating a post req.body must have (post_id && (text || url))

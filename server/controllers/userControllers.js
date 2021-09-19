@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const redis_client = require('../config/redisConfig');
+const redisClient = require('../config/redisConfig');
 const bcrypt = require('bcrypt');
 const { makeRefresh } = require('../utilities/token');
 
@@ -14,8 +14,9 @@ async function register(req, res) {
   });
 
   try {
-    const saved_user = await user.save();
-    const [accessToken, refreshToken] = makeRefresh(saved_user._id);
+    const [accessToken, refreshToken] = makeRefresh(user._id);
+    const savedUser = await user.save();
+
     res.json({
       status: true,
       message: 'Registered successfully.',
@@ -30,6 +31,7 @@ async function register(req, res) {
         DuplicatedValue: 'The username or email is already user',
       });
     }
+
     res.status(400).json({
       status: false,
       message: 'Something went wrong.',
@@ -40,7 +42,6 @@ async function register(req, res) {
 
 async function login(req, res) {
   const { password, email } = req.body;
-  console.log(req.body);
 
   try {
     const user = await User.findOne({
@@ -62,6 +63,7 @@ async function login(req, res) {
       });
     }
     const [accessToken, refreshToken] = makeRefresh(user._id);
+
     return res.json({
       status: true,
       message: 'login success',
@@ -80,16 +82,19 @@ async function login(req, res) {
 
 async function logout(req, res) {
   // frontend must remove access token here [from cookie]
-  const user_id = req.userData.sub;
+  const userId = req.user.sub;
+  console.log('userId');
+  console.log(userId);
 
-  await redis_client.del(user_id.toString());
+  await redisClient.del(userId.toString());
 
-  return res.json({ status: true, message: 'success.' });
+  return res.status(200).json({ status: true, message: 'success.' });
 }
 
 function getAccess(req, res) {
-  const userId = req.userData.sub;
+  const userId = req.user.sub;
   const [accessToken, refreshToken] = makeRefresh(userId);
+
   res.status(200).json({
     data: {
       accessToken,

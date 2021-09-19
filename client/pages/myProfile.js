@@ -7,10 +7,17 @@ import getDefaultLayout from '../utilities/getDefaultLayout';
 import Footer from "../components/Footer";
 
 import { useCookies } from 'react-cookie';
-import { getEnvironmentInfo } from '../utilities/common';
+import {
+  JWT_ACCESS_TIME,
+  SUCCESS_RESPONSE_CODE,
+  getEnvironmentInfo,
+  hasAccess,
+} from '../utilities/common';
 import Article from '../components/Article';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import MY_PROFILE_PATH from '../next.config';
+import { route } from 'next/dist/server/router';
+import { useRouter } from 'next/router';
 
 export async function getServerSideProps(context) {
   const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
@@ -30,22 +37,61 @@ export async function getServerSideProps(context) {
 }
 
 const MyProfile = ({ data, ENDPOINT }) => {
+  const [shouldAuth, setShouldAuth] = useState(true);
   const [articles, setArticles] = useState(data.posts);
   const [hasMore, setHasMore] = useState(true);
-
   const [confirmation, setConfirmation] = useState(1);
+  const router = useRouter();
+
   const [cookies, setCookie, removeCookie] = useCookies([
     'accessToken',
-    'accessToken',
+    'refreshToken',
+  ]);
+
+  let user;
+  if (shouldAuth) {
+    user = hasAccess(cookies.accessToken, cookies.refreshToken, ENDPOINT);
+
+    user.then((accessToken) => {
+      if (accessToken) {
+        setCookie('accessToken', accessToken, {
+          path: '/',
+          maxAge: JWT_ACCESS_TIME,
+        });
+      }
+    });
+
+    setShouldAuth(() => false);
+  }
+
+  // articles
+  useEffect(() => {
+    if (confirmation > 1) {
+      if (!cookies.refreshToken) {
+        router.push('/');
+      }
+    } else {
+      if (!cookies.refreshToken) {
+        router.push('/login');
+      }
+    }
+
+    setHasMore(data.postsCount > articles.length);
+  }, [
+    articles.length,
+    confirmation,
+    cookies.refreshToken,
+    data.postsCount,
+    router,
   ]);
 
   // todo: critical: do not hardcode value
-  const user_id = '61456ecfddea6520db1c8a7c';
+  const userId = '6146239ddb68b22e424946c6';
 
   // logout
   const triggerLogoutConfirmation = async (e) => {
     setConfirmation((confirmation) => confirmation + 1);
-    await submitForm();
+    await submitLogoutForm();
 
     // todo: improve logout
     // if user has clicked more than one time, remove the cookies
@@ -53,35 +99,20 @@ const MyProfile = ({ data, ENDPOINT }) => {
   };
 
   // todo: improve cookie sending
-  const submitForm = async () => {
+  const submitLogoutForm = async () => {
     const response = await fetch(ENDPOINT + '/logout', {
+      headers: { authorization: `Bearer ${cookies.accessToken}` },
       method: 'POST',
-      cookies: document.cookie,
     });
 
     let result = await response.json();
     console.log(result);
+    removeCookie('accessToken');
+    removeCookie('refreshToken');
 
-    // setErrors(() => result.data);
-    // await checkResult(result);
+    if (result.status === SUCCESS_RESPONSE_CODE) {
+    }
   };
-
-  // if user doesnt have cookies, make him login
-  // temporarily commented out
-  // todo: improve checks, use getServerSideProps / hoc
-  // useEffect(() => {
-  //   // if (!cookies || !router) { return; }
-  //
-  //   const { refreshToken, accessToken } = cookies;
-  //   // if (refreshToken === undefined || accessToken === undefined) {
-  //   //   router.push('/login');
-  //   // }
-  // }, [cookies, router]);
-
-  // articles
-  useEffect(() => {
-    setHasMore(data.postsCount > articles.length);
-  }, [articles, data.postsCount]);
 
   const getMoreArticles = async () => {
     const response = await fetch(
@@ -89,13 +120,12 @@ const MyProfile = ({ data, ENDPOINT }) => {
     );
 
     const { posts } = await response.json();
-
     setArticles((articles) => [...articles, ...posts]);
   };
 
   // todo: upload profile image - https://codesandbox.io/s/thyb0?file=/pages/index.js:869-895
   const style = `jdenticon`;
-  const randomized = user_id + Math.random();
+  const randomized = userId + Math.random();
   const image = `https://avatars.dicebear.com/api/${style}/${randomized}.svg`;
 
   return (
@@ -129,14 +159,14 @@ const MyProfile = ({ data, ENDPOINT }) => {
               {articles.map((article, index) => (
                 <Article
                   key={article._id}
-                  id={article._id}
+                  postId={article._id}
                   isFirstArticle={index === 0}
                   title={article.text}
                   upvotes={article.upvoters.length}
                   // todo: use username instead of author id
-                  username={article.author_id.substring(0, 6)}
+                  username={article.authorName}
                   // todo: improve date displaying
-                  date={article.creation_date.split('T')[0]}
+                  date={article.creationDate.split('T')[0]}
                   // todo: show real comments count
                   comments={index}
                   link={article.url}

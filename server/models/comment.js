@@ -1,42 +1,36 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const commentSchema = new mongoose.Schema({
-  parent_post_id: {
+  parentPostId: {
     type: Schema.Types.ObjectId,
-    ref: "Article",
+    ref: 'Article',
     required: true,
   },
-  author_id: {
+  authorId: {
     type: Schema.Types.ObjectId,
-    ref: "User",
+    ref: 'User',
   },
-  parent_comment_id: {
-    type: Schema.Types.ObjectId,
-    ref: "Comment",
+  parentCommentId: {
+    type: String,
+    ref: 'Comment',
   },
   text: {
     type: String,
   },
   upvoters: [
     {
-      user_id: {
+      userId: {
         type: Schema.Types.ObjectId,
       },
     },
   ],
-  //if textContent is true then the file is available.
-  //False => it has been deleted
-  textContent: {
-    type: Boolean,
-    default: true,
-  },
-  last_edit_date: {
+  lastEditDate: {
     type: Date,
   },
-  creation_date: {
+  creationDate: {
     type: Date,
   },
 });
 
-module.exports = mongoose.model("Comment", commentSchema);
+module.exports = mongoose.model('Comment', commentSchema);

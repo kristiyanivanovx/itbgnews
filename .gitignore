@@ -1,7 +1,7 @@
 .idea/
 node_modules/
-package-lock.json 
 server/test.rest
+package-lock.json
 server/.env
 *.env
 .env

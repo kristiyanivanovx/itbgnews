@@ -29,7 +29,7 @@ const Create = () => {
   const [url, setUrl] = useState('');
 
   // todo: critical - do not use hardcoded value
-  const user_id = '61456ecfddea6520db1c8a7c';
+  const authorId = '614629f5d33952852417060a';
 
   // todo: use getServerSideProps / hoc
   // if user doesnt have cookies, make him login
@@ -61,10 +61,9 @@ const Create = () => {
   }
 
   const submitForm = async () => {
-    let jsonData = JSON.stringify({ text, url, user_id });
-    console.log(jsonData);
+    let jsonData = JSON.stringify({ text, url, authorId });
 
-    const response = await fetch(ENDPOINT + '/posts', {
+    const response = await fetch(ENDPOINT + '/posts/create', {
       method: 'POST',
       body: jsonData,
       headers: {

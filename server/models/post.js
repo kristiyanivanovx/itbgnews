@@ -1,37 +1,34 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const postSchema = new mongoose.Schema({
   text: {
     type: String,
   },
-  author_id: {
+  authorId: {
     type: Schema.Types.ObjectId,
-    ref: "User",
+    ref: 'User',
+  },
+  authorName: {
+    type: String,
   },
   url: {
     type: String,
   },
   upvoters: [
     {
-      user_id: {
+      userId: {
         type: Schema.Types.ObjectId,
-        ref: "User",
+        ref: 'User',
       },
     },
   ],
-  //if textContent is true then the file is available.
-  //False => it has been deleted
-  textContent: {
-    type: Boolean,
-    default: true,
-  },
-  last_edit_date: {
+  lastEditDate: {
     type: Date,
   },
-  creation_date: {
+  creationDate: {
     type: Date,
   },
 });
 
-module.exports = mongoose.model("Post", postSchema);
+module.exports = mongoose.model('Post', postSchema);

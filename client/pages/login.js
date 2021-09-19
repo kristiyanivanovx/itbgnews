@@ -32,12 +32,6 @@ const Login = () => {
 
   // todo: set cookies for a reasonable time
   function handleTokens(accessToken, refreshToken) {
-    console.log('accessToken >>>');
-    console.log(accessToken);
-
-    console.log('refreshToken >>>');
-    console.log(refreshToken);
-
     setCookie('accessToken', accessToken, {
       path: '/',
       maxAge: 60 * 60 * 24,
