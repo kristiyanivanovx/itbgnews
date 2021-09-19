@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const getters = require('../functions/getters');
 const controllers = require('../controllers/postControllers');
+const auth = require('../middlewares/authMiddleware');
 
 //Getting all Posts by page ✔
 router.get('/', controllers.getPost);
@@ -17,6 +18,7 @@ router.post('/create', controllers.postPost);
 //Updating a Post ✔
 router.patch(
   '/update/:postId/:userId',
+  auth.verifyToken,
   getters.postGetter,
   getters.userGetter,
   controllers.patchPost,

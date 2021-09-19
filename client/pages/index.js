@@ -37,13 +37,13 @@ const Home = () => {
     return await response.json();
   };
 
+  // only fetch the articles one time, then set the boolean to false
   if (shouldFetch) {
-    getInitialArticles()
-      .then((data) => {
-        setArticles((prev) => data.posts);
-        setArticlesCount((articlesCount) => data.postsCount);
-      })
-      .then(() => setShouldFetch((prev) => false));
+    getInitialArticles().then((data) => {
+      setArticles((prev) => data.posts);
+      setArticlesCount((articlesCount) => data.postsCount);
+      setShouldFetch((prev) => false);
+    });
   }
 
   useEffect(() => {
