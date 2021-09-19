@@ -5,26 +5,21 @@ const { validatePassword, validateEmail } = require('../utilities/validation');
 
 function verifyToken(req, res, next) {
   try {
-    const token = req.cookies.accessToken;
+    const token = req.headers.authorization.split(" ")[1]
 
-    // console.log(token);
-    // console.log(req.cookies);
-
-    req.userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+    req.user = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
   } catch (error) {
-    console.log(error);
-    res.status(401).json({
+    return res.status(401).json({
       status: false,
       message: 'Your session is not valid.',
       data: error,
     });
-    return;
   }
   next();
 }
 
 function verifyRefreshToken(req, res, next) {
-  const token = req.cookies.refreshToken;
+  const token = req.headers.authorization.split(" ")[1]
   if (token === null) {
     res.status(401).json({ status: false, message: 'Invalid request.' });
     return;
@@ -53,7 +48,6 @@ function verifyRefreshToken(req, res, next) {
           status: false,
           message: 'Invalid request. Token is not same in store.',
         });
-
         return;
       }
     });

@@ -28,7 +28,7 @@ async function cache(req, res, next) {
     } else {
       next();
     }
-  });
+  })
 }
 
 module.exports = router;

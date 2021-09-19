@@ -1,11 +1,6 @@
 const router = require('express').Router();
 const user_controller = require('../controllers/userControllers');
 const auth_middleware = require('../middlewares/authMiddleware');
-
-router.get('/', (req, res) => {
-  res.json('hi');
-});
-
 router.post(
   '/register',
   auth_middleware.validateInputData,

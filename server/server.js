@@ -26,7 +26,7 @@ app
   .use(express.json())
   .use('', authRoutes)
   .use('', resetRoutes)
-  .use('', indexPage)
+  .use('/tree', indexPage)
   .use('/posts', postsRouter)
   .use('/comments', commentRouter)
   .use('/user', userRouter)
