@@ -54,7 +54,7 @@ const Article = ({
 
   // todo: critical - do not use hardcoded value
   // todo: maybe check cookies?
-  const userId = '614629f5d33952852417060a';
+  const userId = '61472b32e9e5301182d4a775';
 
   const toggleModalDelete = (message) => {
     setHasDeleteOption(() => true);

@@ -4,7 +4,7 @@ import SideNav from '../components/SideNav';
 import Profile from '../components/Profile';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
-import Footer from "../components/Footer";
+import Footer from '../components/Footer';
 
 import { useCookies } from 'react-cookie';
 import {
@@ -86,7 +86,7 @@ const MyProfile = ({ data, ENDPOINT }) => {
   ]);
 
   // todo: critical: do not hardcode value
-  const userId = '6146239ddb68b22e424946c6';
+  const userId = '61472b32e9e5301182d4a775';
 
   // logout
   const triggerLogoutConfirmation = async (e) => {

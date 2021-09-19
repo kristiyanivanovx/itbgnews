@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from '../styles/SingleArticle.module.css';
 import Article from '../components/Article';
 import Comment from '../components/Comment';
@@ -13,33 +13,45 @@ import {
 } from '../utilities/common';
 import INDEX_PATH from '../next.config';
 import { useRouter } from 'next/router';
+import countChildren from '../utilities/countChildren';
 
 export async function getServerSideProps({ query: { postId, name } }) {
   const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
   const response = await fetch(ENDPOINT + `/posts/comments/` + postId);
   const data = await response.json();
 
+  const treeResponse = await fetch(ENDPOINT + '/tree/' + postId);
+  const treeData = await treeResponse.json();
+
   return {
     props: {
       postId,
       data,
+      tree: treeData.tree,
       ENDPOINT,
     },
   };
 }
 
 // todo: finish up here, get current post + comments by the post's id
-const View = ({ postId, data, ENDPOINT }) => {
+const View = ({ postId, data, tree, ENDPOINT }) => {
   const router = useRouter();
-
   const isNotFound = data?.message?.includes(CANNOT_FIND_POST_ERROR);
   const isNotValidId = data?.message?.includes(INVALID_ID);
+
+  const [iconsDisplay, setIconsDisplay] = useState(false);
 
   useEffect(() => {
     if (isNotFound || isNotValidId) {
       router.push('/');
     }
   }, [isNotFound, isNotValidId, router]);
+
+  useEffect(() => {
+    //TODO: Should display icons
+    // //   const shouldDisplayIcons = data.post.authorId ===
+    // console.log(data);
+  }, []);
 
   const article = data.post;
 
@@ -68,24 +80,6 @@ const View = ({ postId, data, ENDPOINT }) => {
     />
   );
 
-  // todo: get dynamically
-  const comments = [];
-  for (let i = 0; i < 3; i++) {
-    comments.push(
-      <div key={i} className={styles.comment__wrapper}>
-        <Comment
-          title={'Ne e Добре. Ni6to ne e Добре'}
-          date={new Date().toLocaleDateString('bg-BG')}
-          upvotes={19}
-          username={'admin'}
-          hours={6}
-          comments={163}
-          tabs={i * 2}
-        />
-      </div>,
-    );
-  }
-
   return (
     <>
       <HeadComponent currentPageName={article.text} />
@@ -98,7 +92,21 @@ const View = ({ postId, data, ENDPOINT }) => {
           <main className={'articles'}>
             <section className="article__wrapper">
               {singleArticle}
-              {comments}
+              {tree.map((comment) => {
+                const childrenCount = countChildren(comment);
+
+                return (
+                  <Comment
+                    title={comment.text}
+                    date={comment.creationDate}
+                    upvotes={comment.upvoters.length}
+                    username={'TODO'}
+                    comments={childrenCount}
+                    childrenComments={comment.children}
+                    key={comment._id}
+                  />
+                );
+              })}
             </section>
           </main>
         </div>

@@ -28,7 +28,7 @@ const Edit = () => {
   const [url, setUrl] = useState('');
 
   // todo: critical - do not use hardcoded value
-  const userId = '6145698390a1897378449cd5';
+  const userId = '61472b32e9e5301182d4a775';
 
   // todo: use getServerSideProps / hoc
   // if user doesnt have cookies, make him login
