@@ -10,8 +10,6 @@ function generateAccessToken(userId) {
 }
 
 function cashAndReturnRefreshToken(userId) {
-  console.log(process.env.JWT_REFRESH_SECRET);
-
   const refreshToken = jwt.sign(
     { sub: userId },
     process.env.JWT_REFRESH_SECRET,
@@ -20,21 +18,20 @@ function cashAndReturnRefreshToken(userId) {
 
   redisClient.get(userId.toString(), (err, data) => {
     if (err) {
-      console.log(err);
+      console.error(err);
+      throw err;
     }
 
     redisClient.set(userId.toString(), JSON.stringify({ token: refreshToken }));
-
     redisClient.expire(userId.toString(), 60 * 60 * 24 * 30);
   });
-
-  return refreshToken;
 }
 
 function makeRefresh(userId) {
   const accessToken = generateAccessToken(userId);
-  const refreshToken = cashAndReturnRefreshToken(userId);
-  return [accessToken, refreshToken];
+  cashAndReturnRefreshToken(userId);
+
+  return accessToken;
 }
 
 module.exports = {

@@ -32,6 +32,8 @@ async function getComments(req, res) {
 }
 
 async function postPost(req, res) {
+  console.log('BACKEND');
+  console.log(req.body);
   const { text, url, authorId } = req.body;
   const user = await User.findById({ _id: authorId });
 
@@ -74,6 +76,7 @@ async function patchPost(req, res) {
   try {
     if (!hasChanged) {
       res.status(400).json({ message: 'Nothing was changed.' });
+      return;
     }
 
     const updated = await req.post.save();
@@ -134,11 +137,11 @@ async function deletePost(req, res) {
       await user.save();
 
       res.status(200).json({ message: 'post deleted!' });
+      return;
     } catch (err) {
       res.status(500).json({ message: err.message });
+      return;
     }
-
-    return;
   }
 
   res.status(401).json({ message: 'The user does not own the post!' });

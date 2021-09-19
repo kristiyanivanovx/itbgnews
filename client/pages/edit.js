@@ -17,10 +17,7 @@ const Edit = () => {
   const router = useRouter();
 
   const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
-  const [cookies, setCookie, removeCookie] = useCookies([
-    'accessToken',
-    'refreshToken',
-  ]);
+  const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
 
   const [shouldDisplay, setShouldDisplay] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
@@ -37,9 +34,9 @@ const Edit = () => {
       return;
     }
 
-    const { refreshToken, accessToken } = cookies;
+    const { accessToken } = cookies;
 
-    if (refreshToken === undefined || accessToken === undefined) {
+    if (accessToken === undefined) {
       router.push('/login');
     }
   }, [cookies, router]);
@@ -49,7 +46,7 @@ const Edit = () => {
     console.log(response.status, CREATED_RESPONSE_CODE);
     if (response.status === CREATED_RESPONSE_CODE) {
       setModalMessage(() => 'Новината беше успешно създадена!');
-      toggleModal();
+      // toggleModal();
 
       setTimeout(async () => await router.push('/'), 1000);
     }

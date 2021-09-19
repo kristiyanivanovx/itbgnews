@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import FormTitle from '../components/FormTitle';
@@ -8,39 +8,63 @@ import Form from '../components/Form';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
 import {
+  JWT_ACCESS_TIME,
   getEnvironmentInfo,
   INCORRECT_PASSWORD_ERROR_MESSAGE,
   USER_NOT_FOUND_ERROR_MESSAGE,
 } from '../utilities/common';
 import Modal from '../components/Modal';
 import { useCookies } from 'react-cookie';
-import Router from 'next/router';
+import Router, { useRouter } from 'next/router';
+import jwt from 'jsonwebtoken';
 
 const Login = () => {
-  let [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
-
+  const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
   const [modalMessage, setModalMessage] = useState('');
   const [shouldDisplay, setShouldDisplay] = useState(false);
-  const [cookies, setCookie] = useCookies(['accessToken', 'refreshToken']);
+  const [cookies, setCookie] = useCookies(['accessToken']);
+  const [userId, setUserId] = useState(null);
 
-  function toggleModal() {
+  const toggleModal = () => {
     setShouldDisplay((shouldDisplay) => !shouldDisplay);
-  }
+  };
 
-  // todo: set cookies for a reasonable time
-  function handleTokens(accessToken, refreshToken) {
+  const handleTokens = (accessToken) => {
     setCookie('accessToken', accessToken, {
       path: '/',
-      maxAge: 60 * 60 * 24,
-    }); // 1 day
-    setCookie('refreshToken', refreshToken, {
-      path: '/',
-      maxAge: 60 * 60 * 24 * 30,
-    }); // 30 days
-  }
+      maxAge: JWT_ACCESS_TIME,
+    });
+  };
+
+  useEffect(() => {
+    if (cookies.accessToken) {
+      const res = jwt.decode(cookies.accessToken);
+      setUserId(() => res.sub);
+
+      if (userId) {
+        fetch(ENDPOINT + '/token', {
+          method: 'POST',
+          body: JSON.stringify({ userId }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+          .then((data) => data.json())
+          .then((data) => {
+            if (data.accessToken) {
+              setCookie('accessToken', data.accessToken, {
+                path: '/',
+                maxAge: JWT_ACCESS_TIME,
+              });
+              setUserId(() => jwt.decode(cookies.accessToken).sub);
+            }
+          });
+      }
+    }
+  }, [cookies.accessToken, ENDPOINT, userId, setCookie]);
 
   const checkResult = async (result) => {
     if (result.message === USER_NOT_FOUND_ERROR_MESSAGE) {
@@ -50,8 +74,8 @@ const Login = () => {
       setModalMessage(() => 'Грешна парола');
       toggleModal();
     } else {
-      const { accessToken, refreshToken } = result.data;
-      handleTokens(accessToken, refreshToken);
+      const { accessToken } = result.data;
+      handleTokens(accessToken);
 
       setModalMessage(() => 'Влязохте успешно.');
       toggleModal();

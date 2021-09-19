@@ -2,6 +2,7 @@ const Comment = require('../models/comment');
 
 async function postComment(req, res) {
   console.log(req.body);
+
   const { parentPostId, authorId, parentCommentId, text } = req.body;
   const newComment = new Comment({
     parentCommentId,
@@ -25,11 +26,6 @@ async function upvoteComment(req, res) {
   const comment = req.comment;
   const user = req.user;
 
-  if (String(comment.authorId) === String(user._id)) {
-    res.status(405).json({
-      message: "You can't vote on your own comment!",
-    });
-  }
   //check if upvote exists
   const upvoteExists = !!(await Comment.findOne({
     comment,
@@ -51,6 +47,7 @@ async function upvoteComment(req, res) {
       //Add the upvote
       comment.upvoters.push({ userId: user._id });
       await comment.save();
+
       res.status(201).json({
         count: comment.upvoters.length,
         message: `added ${user.username}`,
@@ -64,19 +61,22 @@ async function upvoteComment(req, res) {
 async function patchComment(req, res) {
   const { text } = req.body;
   let hasChanged = false;
+
   if (text !== req.comment.text) {
     hasChanged = true;
     req.comment.text = text;
     req.comment.lastEditDate = Date.now();
   }
+
   try {
     if (!hasChanged) {
-      console.log(1);
       res.status(200).json({
         message: 'Nothing was changed',
       });
+
       return;
     }
+
     const updated = await req.comment.save();
     res.status(200).json(updated);
   } catch (err) {
@@ -93,11 +93,13 @@ async function deleteComment(req, res) {
       comment.text = 'Deleted';
       await comment.save();
       res.status(200).json({ message: 'comment deleted!' });
+      return;
     } catch (err) {
       res.status(500).json({ message: err.message });
+      return;
     }
-    return;
   }
+
   res.status(401).json({ message: 'The user does not own the comment!' });
 }
 

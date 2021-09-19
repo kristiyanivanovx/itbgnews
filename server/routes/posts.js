@@ -13,7 +13,7 @@ router.get('/search', getters.getSearch);
 router.get('/comments/:postId', getters.postGetter, controllers.getComments);
 
 //Creating a Post ✔
-router.post('/create', controllers.postPost);
+router.post('/create', auth.verifyToken, controllers.postPost);
 
 //Updating a Post ✔
 router.patch(

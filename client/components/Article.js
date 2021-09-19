@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from '../styles/Article.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
@@ -14,6 +14,7 @@ import {
 import Modal from './Modal';
 import Router, { useRouter } from 'next/router';
 import {
+  UNAUTHORIZED_RESPONSE_CODE,
   REMOVED_RESPONSE_CODE,
   CREATED_RESPONSE_CODE,
   DELETED_RESPONSE_CODE,
@@ -22,6 +23,7 @@ import {
 } from '../utilities/common';
 import { useCookies } from 'react-cookie';
 import Input from './Input';
+import jwt from 'jsonwebtoken';
 
 const Article = ({
   postId,
@@ -32,29 +34,30 @@ const Article = ({
   comments,
   upvotes,
   isFirstArticle,
-  shouldDisplayEditAndDeleteButtons,
+  shouldDisplayModifyButtons,
   redirectUrl,
+  userId,
 }) => {
   const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
   const [shouldDisplayEditInputs, setShouldDisplayEditInputs] = useState(false);
   const [shouldDisplayModal, setShouldDisplayModal] = useState(false);
   const [hasDeleteOption, setHasDeleteOption] = useState(false);
+  const [shouldRedirect, setShouldRedirect] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [upvotesCount, setUpvotesCount] = useState(upvotes);
 
   const [text, setText] = useState(title);
   const [url, setUrl] = useState(link);
 
-  const [cookies, setCookie, removeCookie] = useCookies([
-    'accessToken',
-    'refreshToken',
-  ]);
+  const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
 
-  const { asPath } = useRouter();
+  const router = useRouter();
 
-  // todo: critical - do not use hardcoded value
-  // todo: maybe check cookies?
-  const userId = '614629f5d33952852417060a';
+  useEffect(() => {
+    if (shouldRedirect) {
+      router.push('/login');
+    }
+  }, [shouldRedirect, router]);
 
   const toggleModalDelete = (message) => {
     setHasDeleteOption(() => true);
@@ -124,13 +127,11 @@ const Article = ({
 
   // voting
   const upvote = async (ENDPOINT) => {
-    // todo: critical GET userID dynamically
-    const json = JSON.stringify({ userId, postId });
-
     const response = await fetch(ENDPOINT + '/posts/upvote/', {
       method: 'PATCH',
-      body: json,
+      body: JSON.stringify({ postId, userId }),
       headers: {
+        Authorization: `Bearer ${cookies.accessToken}`,
         'Content-Type': 'application/json',
       },
     });
@@ -148,6 +149,8 @@ const Article = ({
       response.status === REMOVED_RESPONSE_CODE
     ) {
       setUpvotesCount(() => count);
+    } else if (response.status === UNAUTHORIZED_RESPONSE_CODE) {
+      setShouldRedirect(() => true);
     }
   };
 
@@ -197,9 +200,7 @@ const Article = ({
           confirmDelete={() => confirmDelete(ENDPOINT)}
         />
 
-        {/* todo: implement functionality */}
-        {/* todo: only show to user who created the current item */}
-        {!shouldDisplayEditAndDeleteButtons ? (
+        {shouldDisplayModifyButtons ? (
           <>
             <div
               className={styles.article__modify}

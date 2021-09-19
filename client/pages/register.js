@@ -12,7 +12,6 @@ import {
   getEnvironmentInfo,
   SUCCESSFUL_REGISTRATION_MESSAGE,
   JWT_ACCESS_TIME,
-  JWT_REFRESH_TIME,
 } from '../utilities/common';
 import Router from 'next/router';
 import { useCookies } from 'react-cookie';
@@ -27,24 +26,16 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const [cookies, setCookie] = useCookies(['accessToken', 'refreshToken']);
+  const [cookies, setCookie] = useCookies(['accessToken']);
 
   // TODO CRITICAL : add option to just login
 
-  // todo: set tokens for a reasonable time
-  function handleTokens(accessToken, refreshToken) {
+  const handleTokens = (accessToken) => {
     setCookie('accessToken', accessToken, {
       path: '/',
       maxAge: JWT_ACCESS_TIME,
     });
-    setCookie('refreshToken', refreshToken, {
-      path: '/',
-      maxAge: JWT_REFRESH_TIME,
-    });
-
-    console.log(cookies.accessToken);
-    console.log(cookies.refreshToken);
-  }
+  };
 
   function toggleModal() {
     setShouldDisplay((shouldDisplay) => !shouldDisplay);
@@ -54,11 +45,11 @@ const Register = () => {
     if (result.message === SUCCESSFUL_REGISTRATION_MESSAGE) {
       setModalMessage(() => 'Регистрирахте се успешно!');
 
-      let { accessToken, refreshToken } = result.data;
-      handleTokens(accessToken, refreshToken);
+      let { accessToken } = result.data;
+      handleTokens(accessToken);
 
       toggleModal();
-      setTimeout(() => Router.push('/login'), 2000);
+      setTimeout(() => Router.push('/'), 2000);
     } else if (result.data?.code === EXISTING_USER_ERROR_CODE) {
       setModalMessage(() => 'Потребител с това име или имейл вече съществува.');
 

@@ -64,7 +64,9 @@ const Header = () => {
           ) : (
             <div
               className={
-                searchTerm ? styles.search__bar__edges : styles.search__bar
+                results?.length > 0
+                  ? `${styles.search__bar} ${styles.search__bar__edges}`
+                  : styles.search__bar
               }
             >
               <FontAwesomeIcon

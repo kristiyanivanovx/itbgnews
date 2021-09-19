@@ -30,12 +30,15 @@ async function userGetter(req, res, next) {
     user = await User.findById(userId);
 
     if (!user) {
-      return res.status(404).json({
+      res.status(404).json({
         message: `Cannot find user with id: ${userId}`,
       });
+
+      return;
     }
   } catch (err) {
-    return res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err.message });
+    return;
   }
 
   req.user = user;
@@ -49,12 +52,15 @@ async function commentGetter(req, res, next) {
     comment = await Comment.findById(req.body.commentId);
 
     if (!comment) {
-      return res.status(404).json({
+      res.status(404).json({
         message: `Cannot find comment with id: ${req.body.commentId}`,
       });
+
+      return;
     }
   } catch (err) {
-    return res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err.message });
+    return;
   }
 
   req.comment = comment;

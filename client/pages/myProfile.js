@@ -4,8 +4,6 @@ import SideNav from '../components/SideNav';
 import Profile from '../components/Profile';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
-import Footer from "../components/Footer";
-
 import { useCookies } from 'react-cookie';
 import {
   JWT_ACCESS_TIME,
@@ -16,12 +14,11 @@ import {
 import Article from '../components/Article';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import MY_PROFILE_PATH from '../next.config';
-import { route } from 'next/dist/server/router';
 import { useRouter } from 'next/router';
+import jwt from 'jsonwebtoken';
 
 export async function getServerSideProps(context) {
   const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
-
   const response = await fetch(ENDPOINT + '/posts?skip=0&limit=10');
   const data = await response.json();
 
@@ -37,56 +34,61 @@ export async function getServerSideProps(context) {
 }
 
 const MyProfile = ({ data, ENDPOINT }) => {
-  const [shouldAuth, setShouldAuth] = useState(true);
+  const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
+  const [userId, setUserId] = useState(null);
+  const [articlesCount, setArticlesCount] = useState(data.postsCount);
   const [articles, setArticles] = useState(data.posts);
   const [hasMore, setHasMore] = useState(true);
   const [confirmation, setConfirmation] = useState(1);
   const router = useRouter();
 
-  const [cookies, setCookie, removeCookie] = useCookies([
-    'accessToken',
-    'refreshToken',
-  ]);
+  useEffect(() => {
+    if (!cookies || !cookies.accessToken) {
+      router.push('/login');
+    }
+  });
 
-  let user;
-  if (shouldAuth) {
-    user = hasAccess(cookies.accessToken, cookies.refreshToken, ENDPOINT);
+  useEffect(() => {
+    if (cookies.accessToken) {
+      const res = jwt.decode(cookies.accessToken);
+      setUserId(() => res.sub);
 
-    user.then((accessToken) => {
-      if (accessToken) {
-        setCookie('accessToken', accessToken, {
-          path: '/',
-          maxAge: JWT_ACCESS_TIME,
-        });
+      if (userId) {
+        fetch(ENDPOINT + '/token', {
+          method: 'POST',
+          body: JSON.stringify({ userId }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+          .then((data) => data.json())
+          .then((data) => {
+            if (data.accessToken) {
+              setCookie('accessToken', data.accessToken, {
+                path: '/',
+                maxAge: JWT_ACCESS_TIME,
+              });
+              setUserId(() => jwt.decode(cookies.accessToken).sub);
+            }
+          });
       }
-    });
-
-    setShouldAuth(() => false);
-  }
+    }
+  }, [cookies.accessToken, ENDPOINT, userId, setCookie]);
 
   // articles
   useEffect(() => {
-    if (confirmation > 1) {
-      if (!cookies.refreshToken) {
-        router.push('/');
-      }
-    } else {
-      if (!cookies.refreshToken) {
-        router.push('/login');
-      }
+    if (confirmation > 1 && !cookies.accessToken) {
+      router.push('/');
     }
 
     setHasMore(data.postsCount > articles.length);
   }, [
     articles.length,
     confirmation,
-    cookies.refreshToken,
+    cookies.accessToken,
     data.postsCount,
     router,
   ]);
-
-  // todo: critical: do not hardcode value
-  const userId = '6146239ddb68b22e424946c6';
 
   // logout
   const triggerLogoutConfirmation = async (e) => {
@@ -107,8 +109,7 @@ const MyProfile = ({ data, ENDPOINT }) => {
 
     let result = await response.json();
     console.log(result);
-    removeCookie('accessToken');
-    removeCookie('refreshToken');
+    // removeCookie('accessToken');
 
     if (result.status === SUCCESS_RESPONSE_CODE) {
     }

@@ -12,79 +12,69 @@ module.exports = {
   SUCCESS_RESPONSE_CODE: 200,
   EDITED_RESPONSE_CODE: 200,
   REMOVED_RESPONSE_CODE: 200,
-  JWT_ACCESS_TIME: 60 * 2, // 2 minutes
-  JWT_REFRESH_TIME: 60 * 60 * 24 * 30, // 30 days
+  UNAUTHORIZED_RESPONSE_CODE: 401,
+  JWT_ACCESS_TIME: 60 * 60 * 24 * 7, // 7 days
 
   // refresh token by tutorial, access token otherwise
-  refresh: async (token, ENDPOINT) => {
+  refresh: (token, ENDPOINT) => {
     console.log('Refreshing token...');
 
-    return new Promise((resolve, reject) => {
-      fetch(ENDPOINT + '/token', {
-        method: 'POST',
-        headers: { authorization: `Bearer ${token}` },
-      })
-        .then((data) => data.json())
-        .then((data) => {
-          if (data.status === false) {
-            console.log('4?');
-            console.error(data.message);
-            reject(false);
-          } else {
-            console.log('5?');
-            const { accessToken } = data.data;
-            resolve(accessToken);
-          }
-        });
-    });
+    return fetch(ENDPOINT + '/token', {
+      method: 'POST',
+      headers: { authorization: ` Bearer${token}` },
+    })
+      .then((data) => data.json())
+      .then((data) => {
+        if (data.status === false) {
+          console.log('4?');
+          console.error(data.message);
+          return false;
+        } else {
+          console.log('5?');
+          const { accessToken } = data.data;
+          return accessToken;
+        }
+      });
   },
 
-  requestLogin: (accessToken, refreshToken, ENDPOINT, route) => {
-    return new Promise((resolve, reject) => {
-      fetch(ENDPOINT + '/' + route, {
-        headers: { authorization: `Bearer ${accessToken}` },
-      })
-        .then((data) => data.json())
-        .then(async (data) => {
-          if (data.status === false) {
-            if (data.message === 'Invalid request.') {
-              console.error(data.message);
-            } else if (
-              data.message === 'Invalid request. Token is not in store.'
-            ) {
-              console.error(data.message);
-            } else if (
-              data.message === 'Invalid request. Token is not same in store.'
-            ) {
-              console.error(data.message);
-            }
-            if (data.message === 'Your session is not valid.') {
-              console.error(data.message);
-            }
-          } else {
-            const accessToken = await module.exports.refresh(
-              refreshToken,
-              ENDPOINT,
-            );
-            return await module.exports.requestLogin(
-              accessToken,
-              refreshToken,
-              ENDPOINT,
-              route,
-            );
+  requestLogin: (accessToken, ENDPOINT, route) => {
+    fetch(ENDPOINT + '/' + route, {
+      headers: { authorization: `Bearer ${accessToken}` },
+    })
+      .then((data) => data.json())
+      .then((data) => {
+        if (data.status === false) {
+          if (
+            data.message === 'Invalid request.' ||
+            data.message === 'Invalid request. Token is not in store.' ||
+            data.message === 'Invalid request. Token is not same in store.' ||
+            data.message === 'Your session is not valid.'
+          ) {
+            console.error(data.message);
+            return false;
           }
-        });
-    });
+        } else {
+          const newAccessToken = module.exports.refresh(accessToken, ENDPOINT);
+
+          return newAccessToken;
+          // return await module.exports.requestLogin(
+          //   accessToken,
+          //   refreshToken,
+          //   ENDPOINT,
+          //   route,
+          // );
+        }
+      });
   },
 
   // handleChange: (e) => {},
   // handleSubmit: (e) => {},
 
-  hasAccess: async (accessToken, refreshToken, ENDPOINT) => {
+  hasAccess: async (accessToken, ENDPOINT) => {
     console.log('1');
-    if (!refreshToken) {
-      return null;
-    }
+    // if (!accessToken) {
+    //   return null;
+    // }
 
     console.log('2');
 
@@ -92,25 +82,23 @@ module.exports = {
       console.log('2.5');
 
       // generate new access token
-      return await module.exports.refresh(refreshToken, ENDPOINT);
+      return await module.exports.refresh(accessToken, ENDPOINT);
     }
-    console.log('3');
 
     return accessToken;
   },
 
   /**
    * @param {string} accessToken - The access token
-   * @param {string} refreshToken, - The refresh token
    */
-  protect: async (accessToken, refreshToken) => {
-    accessToken = await module.exports.hasAccess(accessToken, refreshToken);
+  protect: async (accessToken) => {
+    accessToken = await module.exports.hasAccess(accessToken);
 
     if (!accessToken) {
       console.error('No access token has been found, login again');
       // set message saying login again
     } else {
-      await module.exports.requestLogin(accessToken, refreshToken);
+      await module.exports.requestLogin(accessToken);
     }
   },
 
