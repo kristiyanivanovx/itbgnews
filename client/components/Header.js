@@ -43,67 +43,62 @@ const Header = () => {
   return (
     <>
       <div className={styles.site__header}>
-      <header className={styles.header__main}>
-        <FontAwesomeIcon
-          onClick={() => toggleNavigation()}
-          className={styles.icon__burger}
-          icon={icon}
-        />
-        <div className={styles.brand}>
-          <div className={styles.brand__logo}>
-            <Image src={logo} alt={'logo'} />
+        <header className={styles.header__main}>
+          <FontAwesomeIcon
+            onClick={() => toggleNavigation()}
+            className={styles.icon__burger}
+            icon={icon}
+          />
+          <div className={styles.brand}>
+            <div className={styles.brand__logo}>
+              <Image src={logo} alt={'logo'} />
+            </div>
+            <div className={styles.brand__title}>
+              <Link href={'/'}>
+                <a>IT-BG News</a>
+              </Link>
+            </div>
           </div>
-          <div className={styles.brand__title}>
-            <Link href={'/'}>
-              <a>IT-BG News</a>
-            </Link>
-          </div>
-        </div>
-
-        {/*<div>*/}
-        {shouldDisplay ? (
-          <MobileNav />
-        ) : (
-
-          <div className={styles.search__bar}>
-            <FontAwesomeIcon className={styles.icon__search} icon={faSearch} />
-            <input
-              onChange={(e) => handleChange(e.target.value)}
-              className={styles.search__bar__input}
-            />
-          </div>
-        )}
-      </header>
-      <>
-        <div className={styles.predictions}>
-
-        {results?.map((post) => (
-          <>
-            <div className={styles.prediction}>
-            <Link
-              key={post._id}
-              href={{
-                pathname: '/view',
-                query: { name: post.text, postId: post._id },
-              }}
+          {shouldDisplay ? (
+            <MobileNav />
+          ) : (
+            <div
+              className={
+                searchTerm ? styles.search__bar__edges : styles.search__bar
+              }
             >
-
-              <a>{post.text}</a>
-            </Link>
-              </div>
-            {/*<br />*/}
-          </>
-        ))}
-        </div>
-
-      </>
-
-      {results?.map((post) => {
-        console.log('da');
-        console.log(post);
-      })}
-    {/*</>*/}
-    </div>
+              <FontAwesomeIcon
+                className={styles.icon__search}
+                icon={faSearch}
+              />
+              <input
+                onChange={(e) => handleChange(e.target.value)}
+                className={styles.search__bar__input}
+              />
+            </div>
+          )}
+        </header>
+        <>
+          <div className={styles.predictions}>
+            {results?.map((post) => (
+              <>
+                <div className={styles.prediction}>
+                  <Link
+                    key={post._id}
+                    href={{
+                      pathname: '/view',
+                      query: { name: post.text, postId: post._id },
+                    }}
+                  >
+                    <a>{post.text}</a>
+                  </Link>
+                </div>
+                {/*<br />*/}
+              </>
+            ))}
+          </div>
+        </>
+      </div>
     </>
   );
 };
