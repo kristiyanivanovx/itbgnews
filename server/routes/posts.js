@@ -5,7 +5,7 @@ const auth = require("../middlewares/authMiddleware")
 const controllers = require('../controllers/postControllers');
 
 //Getting all Posts by page ✔
-router.get('/', auth.verifyToken, controllers.getPost);
+router.get('/', controllers.getPost);
 
 router.get('/search', getters.getSearch);
 

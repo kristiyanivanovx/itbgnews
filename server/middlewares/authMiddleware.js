@@ -3,7 +3,10 @@ const redisClient = require('../config/redisConfig');
 const { isEmpty } = require('../utilities/common');
 const { validatePassword, validateEmail } = require('../utilities/validation');
 
-function verifyToken(req, res, next) {
+function verifyToken(req, res, next){
+
+  console.log("da")
+  console.log(req.headers)
   try {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
