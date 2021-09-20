@@ -13,30 +13,33 @@ router.get('/search', getters.getSearch);
 router.get('/comments/:postId', getters.postGetter, controllers.getComments);
 
 //Creating a Post ✔
-router.post('/create', controllers.postPost);
+router.post('/create', auth.verifyToken, controllers.postPost);
 
 //Updating a Post ✔
 router.patch(
-    '/update/:postId/:userId',
-    getters.postGetter,
-    getters.userGetter,
-    controllers.patchPost,
+  '/update/:postId/:userId',
+  auth.verifyToken,
+  getters.postGetter,
+  getters.userGetter,
+  controllers.patchPost,
 );
 
 //Voting on a post ✔
 router.patch(
-    '/upvote',
-    getters.userGetter,
-    getters.postGetter,
-    controllers.vote,
+  '/upvote/:userId/:postId',
+  auth.verifyToken,
+  getters.userGetter,
+  getters.postGetter,
+  controllers.vote,
 );
 
 //'Deletes' a Post (does not remove it from the database) ✔
 router.delete(
-    '/:userId/:postId',
-    getters.postGetter,
-    getters.userGetter,
-    controllers.deletePost,
+  '/:userId/:postId',
+  auth.verifyToken,
+  getters.postGetter,
+  getters.userGetter,
+  controllers.deletePost,
 );
 
 module.exports = router;

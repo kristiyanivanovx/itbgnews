@@ -15,8 +15,8 @@
     --clr-background: #302636;
     --clr-main: #554360;
     --clr-grey: #51515b;
-    --clr-red: #c10000;
-    --clr-green: #13c100;
+    --clr-red: #51515b;
+    --clr-green: #72a772;
     --clr-purple: #d03ad2;
     --clr-white: #ffffff;
     --clr-comment: #755a85;
@@ -111,7 +111,6 @@ a:hover {
 .col {
     display: flex;
     justify-content: space-between;
-
     /*margin: 40px 0 40px 0;*/
     margin-bottom: 40px;
 }

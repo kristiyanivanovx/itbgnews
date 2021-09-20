@@ -5,14 +5,20 @@ import Profile from '../components/Profile';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
 import { useCookies } from 'react-cookie';
-import { getEnvironmentInfo } from '../utilities/common';
+import {
+  JWT_ACCESS_TIME,
+  SUCCESS_RESPONSE_CODE,
+  getEnvironmentInfo,
+  hasAccess,
+} from '../utilities/common';
 import Article from '../components/Article';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import MY_PROFILE_PATH from '../next.config';
+import { useRouter } from 'next/router';
+import jwt from 'jsonwebtoken';
 
 export async function getServerSideProps(context) {
   const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
-
   const response = await fetch(ENDPOINT + '/posts?skip=0&limit=10');
   const data = await response.json();
 
@@ -28,22 +34,66 @@ export async function getServerSideProps(context) {
 }
 
 const MyProfile = ({ data, ENDPOINT }) => {
+  const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
+  const [userId, setUserId] = useState(null);
+  const [articlesCount, setArticlesCount] = useState(data.postsCount);
   const [articles, setArticles] = useState(data.posts);
   const [hasMore, setHasMore] = useState(true);
+  const [shouldRedirect, setShouldRedirect] = useState(false);
+  const router = useRouter();
 
-  const [confirmation, setConfirmation] = useState(1);
-  const [cookies, setCookie, removeCookie] = useCookies([
-    'accessToken',
-    'accessToken',
+  useEffect(() => {
+    if (!cookies || !cookies.accessToken) {
+      router.push('/login');
+    }
+  });
+
+  useEffect(() => {
+    if (cookies.accessToken) {
+      const res = jwt.decode(cookies.accessToken);
+      setUserId(() => res.sub);
+
+      if (userId) {
+        fetch(ENDPOINT + '/token', {
+          method: 'POST',
+          body: JSON.stringify({ userId }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+          .then((data) => data.json())
+          .then((data) => {
+            if (data.accessToken) {
+              setCookie('accessToken', data.accessToken, {
+                path: '/',
+                maxAge: JWT_ACCESS_TIME,
+              });
+              setUserId(() => jwt.decode(cookies.accessToken).sub);
+            }
+          });
+      }
+    }
+  }, [cookies.accessToken, ENDPOINT, userId, setCookie]);
+
+  // articles
+  useEffect(() => {
+    if (shouldRedirect) {
+      router.push('/login');
+    }
+
+    setHasMore(data.postsCount > articles.length);
+  }, [
+    articles.length,
+    shouldRedirect,
+    cookies.accessToken,
+    data.postsCount,
+    router,
   ]);
-
-  // todo: critical: do not hardcode value
-  const userId = '6146239ddb68b22e424946c6';
 
   // logout
   const triggerLogoutConfirmation = async (e) => {
-    setConfirmation((confirmation) => confirmation + 1);
-    await submitForm();
+    // setConfirmation((confirmation) => confirmation + 1);
+    await submitLogoutForm();
 
     // todo: improve logout
     // if user has clicked more than one time, remove the cookies
@@ -51,35 +101,19 @@ const MyProfile = ({ data, ENDPOINT }) => {
   };
 
   // todo: improve cookie sending
-  const submitForm = async () => {
+  const submitLogoutForm = async () => {
     const response = await fetch(ENDPOINT + '/logout', {
+      headers: { authorization: `Bearer ${cookies.accessToken}` },
       method: 'POST',
-      cookies: document.cookie,
     });
 
     let result = await response.json();
-    console.log(result);
+    removeCookie('accessToken');
+    setShouldRedirect(() => true);
 
-    // setErrors(() => result.data);
-    // await checkResult(result);
+    // if (result.status === SUCCESS_RESPONSE_CODE) {
+    // }
   };
-
-  // if user doesnt have cookies, make him login
-  // temporarily commented out
-  // todo: improve checks, use getServerSideProps / hoc
-  // useEffect(() => {
-  //   // if (!cookies || !router) { return; }
-  //
-  //   const { refreshToken, accessToken } = cookies;
-  //   // if (refreshToken === undefined || accessToken === undefined) {
-  //   //   router.push('/login');
-  //   // }
-  // }, [cookies, router]);
-
-  // articles
-  useEffect(() => {
-    setHasMore(data.postsCount > articles.length);
-  }, [articles, data.postsCount]);
 
   const getMoreArticles = async () => {
     const response = await fetch(
@@ -87,7 +121,6 @@ const MyProfile = ({ data, ENDPOINT }) => {
     );
 
     const { posts } = await response.json();
-
     setArticles((articles) => [...articles, ...posts]);
   };
 

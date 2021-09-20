@@ -17,7 +17,7 @@ const Comment = ({
   comments,
   upvotes,
   tabs,
-  shouldDisplayEditAndDeleteButtons,
+  shouldDisplayModifyButtons,
 }) => {
   const [tabsPercent, setTabsPercent] = useState(5);
   const width = 100 - tabs * tabsPercent;

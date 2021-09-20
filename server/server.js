@@ -18,7 +18,7 @@ const resetRoutes = require('./routes/resetPassword');
 const postsRouter = require('./routes/posts');
 const commentRouter = require('./routes/comments');
 const userRouter = require('./routes/users');
-const indexPage = require('./routes/index');
+const treeRoutes = require('./routes/treeRoutes');
 
 app
   .use(cors())
@@ -26,7 +26,7 @@ app
   .use(express.json())
   .use('', authRoutes)
   .use('', resetRoutes)
-  .use('/tree', indexPage)
+  .use('/tree', treeRoutes)
   .use('/posts', postsRouter)
   .use('/comments', commentRouter)
   .use('/user', userRouter)

@@ -55,7 +55,9 @@ async function forgottenPassword(req, res) {
     .then(() => {
       console.log(`${req.body.email} has been added successfully`);
     });
+
   const msg = createMessage(req.body.email, code);
+
   mail
     .send(msg)
     .then((response) => {

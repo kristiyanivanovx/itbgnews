@@ -1,4 +1,3 @@
-import styles from '../styles/Header.module.css';
 import Header from '../components/Header';
 import React, { useEffect, useState } from 'react';
 import Input from '../components/Input';
@@ -9,44 +8,64 @@ import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
 import FormContainer from '../components/FormContainer';
 import SideNav from '../components/SideNav';
-import { CREATED_RESPONSE_CODE, getEnvironmentInfo } from '../utilities/common';
+import {
+  CREATED_RESPONSE_CODE,
+  getEnvironmentInfo,
+  JWT_ACCESS_TIME,
+} from '../utilities/common';
 import { useCookies } from 'react-cookie';
 import { useRouter } from 'next/router';
 import Modal from '../components/Modal';
+import jwt from 'jsonwebtoken';
 
 const Create = () => {
   const router = useRouter();
-
   const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
-  const [cookies, setCookie, removeCookie] = useCookies([
-    'accessToken',
-    'refreshToken',
-  ]);
-
+  const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
   const [shouldDisplay, setShouldDisplay] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [text, setText] = useState('');
   const [url, setUrl] = useState('');
+  const [userId, setUserId] = useState(null);
 
-  // todo: critical - do not use hardcoded value
-  const authorId = '614629f5d33952852417060a';
-
-  // todo: use getServerSideProps / hoc
-  // if user doesnt have cookies, make him login
   useEffect(() => {
-    if (!cookies || !router) {
-      return;
-    }
-
-    const { refreshToken, accessToken } = cookies;
-    if (refreshToken === undefined || accessToken === undefined) {
+    if (!cookies || !router || !cookies.accessToken) {
       router.push('/login');
     }
   }, [cookies, router]);
 
+  useEffect(() => {
+    if (cookies.accessToken) {
+      const res = jwt.decode(cookies.accessToken);
+      setUserId(() => res.sub);
+
+      if (userId) {
+        fetch(ENDPOINT + '/token', {
+          method: 'POST',
+          body: JSON.stringify({ userId }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+          .then((data) => data.json())
+          .then((data) => {
+            if (data.accessToken) {
+              setCookie('accessToken', data.accessToken, {
+                path: '/',
+                maxAge: JWT_ACCESS_TIME,
+              });
+              setUserId(() => jwt.decode(cookies.accessToken).sub);
+            }
+          });
+      }
+    }
+  }, [cookies.accessToken, ENDPOINT, userId, setCookie]);
+
   // todo: add checks and error validation
   const checkResponse = (response) => {
-    console.log(response.status, CREATED_RESPONSE_CODE);
+    console.log('response');
+    console.log(response);
+
     if (response.status === CREATED_RESPONSE_CODE) {
       setModalMessage(() => 'Новината беше успешно създадена!');
       toggleModal();
@@ -61,12 +80,20 @@ const Create = () => {
   }
 
   const submitForm = async () => {
+    console.log('sus user id');
+    console.log(userId);
+
+    let authorId = userId;
     let jsonData = JSON.stringify({ text, url, authorId });
+
+    console.log('jsonData');
+    console.log(jsonData);
 
     const response = await fetch(ENDPOINT + '/posts/create', {
       method: 'POST',
       body: jsonData,
       headers: {
+        Authorization: `Bearer ${cookies.accessToken}`,
         'Content-Type': 'application/json',
       },
     });
