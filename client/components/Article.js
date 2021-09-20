@@ -52,7 +52,7 @@ const Article = ({
   const [text, setText] = useState(title);
   const [url, setUrl] = useState(link);
 
-  const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
+  const [cookies, setCookie] = useCookies(['accessToken']);
 
   const router = useRouter();
 
@@ -130,6 +130,12 @@ const Article = ({
 
   // voting
   const upvote = async () => {
+    // ?
+    if (!cookies || !cookies.accessToken) {
+      setShouldRedirect(() => true);
+      return;
+    }
+
     let userId = jwt.decode(cookies.accessToken).sub;
     let isExpired = isTokenExpired(cookies.accessToken);
 

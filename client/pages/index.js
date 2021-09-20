@@ -30,11 +30,6 @@ const Home = ({ data, ENDPOINT }) => {
   const [cookies, setCookie] = useCookies(['accessToken']);
   const [userId, setUserId] = useState(null);
 
-  const getInitialArticles = async () => {
-    const response = await fetch(ENDPOINT + '/posts?skip=0&limit=10');
-    return await response.json();
-  };
-
   useEffect(() => {
     setHasMore(articlesCount > articles.length);
   }, [articles, articlesCount]);

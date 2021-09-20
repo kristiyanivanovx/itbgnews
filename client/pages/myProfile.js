@@ -42,8 +42,7 @@ const MyProfile = ({ data, ENDPOINT }) => {
   // articles
   useEffect(() => {
     if (shouldRedirect) {
-      console.log('shouldRedirect?');
-      console.log(shouldRedirect);
+      removeCookie('accessToken');
       router.push('/login');
     }
 
@@ -54,6 +53,7 @@ const MyProfile = ({ data, ENDPOINT }) => {
     cookies.accessToken,
     data.postsCount,
     router,
+    removeCookie,
   ]);
 
   // logout
@@ -74,7 +74,6 @@ const MyProfile = ({ data, ENDPOINT }) => {
     });
 
     let result = await response.json();
-    removeCookie('accessToken');
     setShouldRedirect(() => true);
 
     // if (result.status === SUCCESS_RESPONSE_CODE) {
