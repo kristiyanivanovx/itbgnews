@@ -2,9 +2,10 @@ const express = require('express');
 const router = express.Router();
 const getter = require('../functions/getters');
 const controller = require('../controllers/comments');
+const {cache, rebaseRedis} = require("../middlewares/cache")
 
 //Create a comment ✔
-router.post('/', controller.postComment);
+router.post('/', controller.postComment, rebaseRedis, cache);
 
 //Adding/removing an upvote ✔
 router.patch(
@@ -15,7 +16,7 @@ router.patch(
 );
 
 //Updating a comment ✔
-router.patch('/', getter.commentGetter, controller.patchComment);
+router.patch('/', getter.commentGetter, controller.patchComment, rebaseRedis, cache);
 
 //'Deletes' a comment (does not remove it from the database) ✔
 router.delete(
@@ -23,6 +24,7 @@ router.delete(
   getter.commentGetter,
   getter.postGetter,
   controller.deleteComment,
+  rebaseRedis, cache
 );
 
 module.exports = router;
