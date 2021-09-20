@@ -5,19 +5,16 @@ import Profile from '../components/Profile';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
 import { useCookies } from 'react-cookie';
-import {
-  JWT_ACCESS_TIME,
-  SUCCESS_RESPONSE_CODE,
-  getEnvironmentInfo,
-  hasAccess,
-} from '../utilities/common';
+import { getEnvironmentInfo } from '../utilities/common';
 import Article from '../components/Article';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import MY_PROFILE_PATH from '../next.config';
 import { useRouter } from 'next/router';
-import jwt from 'jsonwebtoken';
+import withAuth from '../helpers/withAuth';
+import withTokens from '../helpers/withTokens';
+import requireAuthentication from '../helpers/withAuth';
 
-export async function getServerSideProps(context) {
+export const getServerSideProps = requireAuthentication(async (context) => {
   const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
   const response = await fetch(ENDPOINT + '/posts?skip=0&limit=10');
   const data = await response.json();
@@ -31,9 +28,9 @@ export async function getServerSideProps(context) {
   return {
     props: { data, ENDPOINT },
   };
-}
+});
 
-const MyProfile = ({ data, ENDPOINT }) => {
+const MyProfileBase = ({ data, ENDPOINT }) => {
   const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
   const [userId, setUserId] = useState(null);
   const [articlesCount, setArticlesCount] = useState(data.postsCount);
@@ -42,42 +39,11 @@ const MyProfile = ({ data, ENDPOINT }) => {
   const [shouldRedirect, setShouldRedirect] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    if (!cookies || !cookies.accessToken) {
-      router.push('/login');
-    }
-  });
-
-  useEffect(() => {
-    if (cookies.accessToken) {
-      const res = jwt.decode(cookies.accessToken);
-      setUserId(() => res.sub);
-
-      if (userId) {
-        fetch(ENDPOINT + '/token', {
-          method: 'POST',
-          body: JSON.stringify({ userId }),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-          .then((data) => data.json())
-          .then((data) => {
-            if (data.accessToken) {
-              setCookie('accessToken', data.accessToken, {
-                path: '/',
-                maxAge: JWT_ACCESS_TIME,
-              });
-              setUserId(() => jwt.decode(cookies.accessToken).sub);
-            }
-          });
-      }
-    }
-  }, [cookies.accessToken, ENDPOINT, userId, setCookie]);
-
   // articles
   useEffect(() => {
     if (shouldRedirect) {
+      console.log('shouldRedirect?');
+      console.log(shouldRedirect);
       router.push('/login');
     }
 
@@ -182,6 +148,7 @@ const MyProfile = ({ data, ENDPOINT }) => {
   );
 };
 
+let MyProfile = withTokens(MyProfileBase);
 MyProfile.getLayout = getDefaultLayout;
 
 export default MyProfile;

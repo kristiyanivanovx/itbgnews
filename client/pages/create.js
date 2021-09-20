@@ -1,5 +1,5 @@
 import Header from '../components/Header';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import FormTitle from '../components/FormTitle';
@@ -16,9 +16,21 @@ import {
 import { useCookies } from 'react-cookie';
 import { useRouter } from 'next/router';
 import Modal from '../components/Modal';
+import withTokens from '../helpers/withTokens';
+import isTokenValid from '../utilities/isTokenValid';
+import renewToken from '../utilities/refreshToken';
 import jwt from 'jsonwebtoken';
+import requireAuthentication from '../helpers/withAuth';
 
-const Create = () => {
+export const getServerSideProps = requireAuthentication((context) => {
+  // Your normal `getServerSideProps` code here
+
+  return {
+    props: {},
+  };
+});
+
+const CreateBase = () => {
   const router = useRouter();
   const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
   const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
@@ -27,39 +39,6 @@ const Create = () => {
   const [text, setText] = useState('');
   const [url, setUrl] = useState('');
   const [userId, setUserId] = useState(null);
-
-  useEffect(() => {
-    if (!cookies || !router || !cookies.accessToken) {
-      router.push('/login');
-    }
-  }, [cookies, router]);
-
-  useEffect(() => {
-    if (cookies.accessToken) {
-      const res = jwt.decode(cookies.accessToken);
-      setUserId(() => res.sub);
-
-      if (userId) {
-        fetch(ENDPOINT + '/token', {
-          method: 'POST',
-          body: JSON.stringify({ userId }),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-          .then((data) => data.json())
-          .then((data) => {
-            if (data.accessToken) {
-              setCookie('accessToken', data.accessToken, {
-                path: '/',
-                maxAge: JWT_ACCESS_TIME,
-              });
-              setUserId(() => jwt.decode(cookies.accessToken).sub);
-            }
-          });
-      }
-    }
-  }, [cookies.accessToken, ENDPOINT, userId, setCookie]);
 
   // todo: add checks and error validation
   const checkResponse = (response) => {
@@ -80,14 +59,26 @@ const Create = () => {
   }
 
   const submitForm = async () => {
-    console.log('sus user id');
-    console.log(userId);
+    let isValid = isTokenValid(cookies.accessToken);
+
+    // presumably we have the userId in jwt
+    console.log(jwt.decode(cookies.accessToken));
+    console.log(jwt.decode(cookies.accessToken).sub);
+    setUserId(() => jwt.decode(cookies.accessToken).sub);
+
+    // if token is valid, generate a new one
+    if (!isValid || !userId) {
+      let newAccessToken = renewToken(ENDPOINT, userId);
+      console.log('newAccessToken');
+      console.log(newAccessToken);
+      setCookie('accessToken', newAccessToken, {
+        path: '/',
+        maxAge: JWT_ACCESS_TIME,
+      });
+    }
 
     let authorId = userId;
     let jsonData = JSON.stringify({ text, url, authorId });
-
-    console.log('jsonData');
-    console.log(jsonData);
 
     const response = await fetch(ENDPOINT + '/posts/create', {
       method: 'POST',
@@ -100,7 +91,6 @@ const Create = () => {
 
     // todo: check for errors аnd set them
     console.log(response.status);
-
     // setErrors(() => result);
     checkResponse(response);
   };
@@ -137,6 +127,7 @@ const Create = () => {
   );
 };
 
+let Create = withTokens(CreateBase);
 Create.getLayout = getDefaultLayout;
 
 export default Create;

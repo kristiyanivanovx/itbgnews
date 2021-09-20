@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const redisClient = require('../config/redisConfig');
 const { isEmpty } = require('../utilities/common');
 const { validatePassword, validateEmail } = require('../utilities/validation');
+const { log } = require('nodemon/lib/utils');
 
 function verifyToken(req, res, next) {
   try {

@@ -8,6 +8,8 @@ import { getEnvironmentInfo, JWT_ACCESS_TIME } from '../utilities/common';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import INDEX_PATH from '../next.config';
 import { useCookies } from 'react-cookie';
+import withTokens from '../helpers/withTokens';
+import Create from './create';
 const jwt = require('jsonwebtoken');
 
 export async function getServerSideProps(context) {
@@ -23,7 +25,7 @@ export async function getServerSideProps(context) {
   return { props: { data, ENDPOINT } };
 }
 
-const Home = ({ data, ENDPOINT }) => {
+const HomeBase = ({ data, ENDPOINT }) => {
   const [articles, setArticles] = useState(data.posts);
   const [articlesCount, setArticlesCount] = useState(data.postsCount);
   const [hasMore, setHasMore] = useState(true);
@@ -38,33 +40,6 @@ const Home = ({ data, ENDPOINT }) => {
   useEffect(() => {
     setHasMore(articlesCount > articles.length);
   }, [articles, articlesCount]);
-
-  useEffect(() => {
-    if (cookies.accessToken) {
-      const res = jwt.decode(cookies.accessToken);
-      setUserId(() => res.sub);
-
-      if (userId) {
-        fetch(ENDPOINT + '/token', {
-          method: 'POST',
-          body: JSON.stringify({ userId }),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-          .then((data) => data.json())
-          .then((data) => {
-            if (data.accessToken) {
-              setCookie('accessToken', data.accessToken, {
-                path: '/',
-                maxAge: JWT_ACCESS_TIME,
-              });
-              setUserId(() => jwt.decode(cookies.accessToken).sub);
-            }
-          });
-      }
-    }
-  }, [cookies.accessToken, ENDPOINT, userId, setCookie]);
 
   const getMoreArticles = async () => {
     const response = await fetch(
@@ -123,6 +98,7 @@ const Home = ({ data, ENDPOINT }) => {
   );
 };
 
+let Home = withTokens(HomeBase);
 Home.getLayout = getDefaultLayout;
 
 export default Home;

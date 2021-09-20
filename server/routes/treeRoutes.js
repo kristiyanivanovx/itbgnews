@@ -15,8 +15,6 @@ router.get('/:parentPostId', async (req, res) => {
   res.json({
     tree: treeData,
   });
-
-  return;
 });
 
 // this is for caching tree
@@ -28,8 +26,6 @@ async function cache(req, res, next) {
       res.json({
         tree: JSON.parse(data),
       });
-
-      return;
     } else {
       next();
     }
