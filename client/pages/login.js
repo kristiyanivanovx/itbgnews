@@ -18,7 +18,7 @@ import { useCookies } from 'react-cookie';
 import Router, { useRouter } from 'next/router';
 import withTokens from '../helpers/withTokens';
 
-const LoginBase = () => {
+const Login = () => {
   const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -109,7 +109,7 @@ const LoginBase = () => {
 };
 
 // ?
-let Login = withTokens(LoginBase);
+// let Login = withTokens(LoginBase);
 Login.getLayout = getDefaultLayout;
 
 export default Login;

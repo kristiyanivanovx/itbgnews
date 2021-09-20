@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { getEnvironmentInfo, JWT_ACCESS_TIME } from '../utilities/common';
 import jwt from 'jsonwebtoken';
 import refreshToken from '../utilities/refreshToken';
-import isTokenValid from '../utilities/isTokenValid';
+import isTokenExpired from '../utilities/isTokenExpired';
 
 function withTokens(Component) {
   return function AuthComponent({ ...props }) {
@@ -17,7 +17,7 @@ function withTokens(Component) {
         return;
       }
 
-      let isValid = isTokenValid(cookies.accessToken);
+      let isValid = isTokenExpired(cookies.accessToken);
 
       // if token is valid, we do not need to set anything
       if (isValid || !userId) {

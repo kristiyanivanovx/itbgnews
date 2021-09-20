@@ -20,11 +20,13 @@ import {
   DELETED_RESPONSE_CODE,
   EDITED_RESPONSE_CODE,
   getEnvironmentInfo,
+  JWT_ACCESS_TIME,
 } from '../utilities/common';
 import { useCookies } from 'react-cookie';
 import Input from './Input';
 import jwt from 'jsonwebtoken';
-import isTokenValid from '../utilities/isTokenValid';
+import isTokenExpired from '../utilities/isTokenExpired';
+import renewToken from '../utilities/refreshToken';
 
 const Article = ({
   postId,
@@ -127,8 +129,17 @@ const Article = ({
   };
 
   // voting
-  const upvote = async (ENDPOINT, cookies) => {
-    if (!isTokenValid(cookies.accessToken)) {
+  const upvote = async () => {
+    let userId = jwt.decode(cookies.accessToken).sub;
+    let isExpired = isTokenExpired(cookies.accessToken);
+
+    if (isExpired) {
+      let newAccessToken = await renewToken(ENDPOINT, userId);
+
+      setCookie('accessToken', newAccessToken, {
+        path: '/',
+        maxAge: JWT_ACCESS_TIME,
+      });
     }
 
     const response = await fetch(ENDPOINT + '/posts/upvote/' + postId, {
@@ -147,18 +158,17 @@ const Article = ({
 
   const checkResponseVote = async (response) => {
     console.log(response);
+    const data = await response.json();
+    const { count } = data;
 
-    // const data = await response.json();
-    // const { count } = data;
-    //
-    // if (
-    //   response.status === CREATED_RESPONSE_CODE ||
-    //   response.status === REMOVED_RESPONSE_CODE
-    // ) {
-    //   setUpvotesCount(() => count);
-    // } else if (response.status === UNAUTHORIZED_RESPONSE_CODE) {
-    //   setShouldRedirect(() => true);
-    // }
+    if (
+      response.status === CREATED_RESPONSE_CODE ||
+      response.status === REMOVED_RESPONSE_CODE
+    ) {
+      setUpvotesCount(() => count);
+    } else if (response.status === UNAUTHORIZED_RESPONSE_CODE) {
+      setShouldRedirect(() => true);
+    }
   };
 
   // presentation logic
@@ -229,7 +239,7 @@ const Article = ({
         ) : null}
 
         <div
-          onClick={() => upvote(ENDPOINT, cookies)}
+          onClick={() => upvote()}
           className={`${styles.article__votes} ${styles.article__small__text}`}
         >
           <FontAwesomeIcon

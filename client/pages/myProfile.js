@@ -30,7 +30,7 @@ export const getServerSideProps = requireAuthentication(async (context) => {
   };
 });
 
-const MyProfileBase = ({ data, ENDPOINT }) => {
+const MyProfile = ({ data, ENDPOINT }) => {
   const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
   const [userId, setUserId] = useState(null);
   const [articlesCount, setArticlesCount] = useState(data.postsCount);
@@ -148,7 +148,7 @@ const MyProfileBase = ({ data, ENDPOINT }) => {
   );
 };
 
-let MyProfile = withTokens(MyProfileBase);
+// let MyProfile = withTokens(MyProfileBase);
 MyProfile.getLayout = getDefaultLayout;
 
 export default MyProfile;
