@@ -26,7 +26,7 @@ router.patch(
 
 //Voting on a post ✔
 router.patch(
-  '/upvote/:userId/:postId',
+  '/upvote/:postId',
   auth.verifyToken,
   getters.userGetter,
   getters.postGetter,

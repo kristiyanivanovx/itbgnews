@@ -3,7 +3,8 @@ const Comment = require('../models/comment');
 const User = require('../models/user');
 
 async function postGetter(req, res, next) {
-  const postId = req.params.postId ?? req.body.postId;
+  // const postId = req.params.postId ?? req.body.postId;
+  const postId = req.params.postId;
   let post;
 
   try {
@@ -23,7 +24,8 @@ async function postGetter(req, res, next) {
 }
 
 async function userGetter(req, res, next) {
-  const userId = req.params.userId ?? req.body.userId;
+  // const userId = req.params.userId ?? req.body.userId;
+  const userId = req.user.sub;
   let user;
 
   try {
@@ -41,7 +43,7 @@ async function userGetter(req, res, next) {
     return;
   }
 
-  req.user = user;
+  req.userData = user;
   next();
 }
 

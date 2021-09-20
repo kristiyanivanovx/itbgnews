@@ -24,6 +24,7 @@ import {
 import { useCookies } from 'react-cookie';
 import Input from './Input';
 import jwt from 'jsonwebtoken';
+import isTokenValid from '../utilities/isTokenValid';
 
 const Article = ({
   postId,
@@ -126,18 +127,19 @@ const Article = ({
   };
 
   // voting
-  const upvote = async (ENDPOINT) => {
-    const response = await fetch(
-      ENDPOINT + '/posts/upvote/' + userId + '/' + postId,
-      {
-        method: 'PATCH',
-        // body: JSON.stringify({ postId, userId }),
-        headers: {
-          Authorization: `Bearer ${cookies.accessToken}`,
-          // 'Content-Type': 'application/json',
-        },
+  const upvote = async (ENDPOINT, cookies) => {
+    if (!isTokenValid(cookies.accessToken)) {
+    }
+
+    const response = await fetch(ENDPOINT + '/posts/upvote/' + postId, {
+      method: 'PATCH',
+      // body: JSON.stringify({ postId, userId }),
+      // body: JSON.stringify({ postId }),
+      headers: {
+        Authorization: `Bearer ${cookies.accessToken}`,
+        // 'Content-Type': 'application/json',
       },
-    );
+    });
 
     // todo: check for errors аnd set them
     await checkResponseVote(response);
@@ -146,17 +148,17 @@ const Article = ({
   const checkResponseVote = async (response) => {
     console.log(response);
 
-    const data = await response.json();
-    const { count } = data;
-
-    if (
-      response.status === CREATED_RESPONSE_CODE ||
-      response.status === REMOVED_RESPONSE_CODE
-    ) {
-      setUpvotesCount(() => count);
-    } else if (response.status === UNAUTHORIZED_RESPONSE_CODE) {
-      setShouldRedirect(() => true);
-    }
+    // const data = await response.json();
+    // const { count } = data;
+    //
+    // if (
+    //   response.status === CREATED_RESPONSE_CODE ||
+    //   response.status === REMOVED_RESPONSE_CODE
+    // ) {
+    //   setUpvotesCount(() => count);
+    // } else if (response.status === UNAUTHORIZED_RESPONSE_CODE) {
+    //   setShouldRedirect(() => true);
+    // }
   };
 
   // presentation logic
@@ -227,7 +229,7 @@ const Article = ({
         ) : null}
 
         <div
-          onClick={() => upvote(ENDPOINT)}
+          onClick={() => upvote(ENDPOINT, cookies)}
           className={`${styles.article__votes} ${styles.article__small__text}`}
         >
           <FontAwesomeIcon

@@ -87,37 +87,42 @@ async function patchPost(req, res) {
 
 async function vote(req, res) {
   const post = req.post;
-  const user = req.user;
+  // const user = req.user;
+
+  const userId = req.user.sub;
+  console.log('VUV VOTE: userId');
+  console.log(userId);
 
   //check if upvote exists
   let upvoteExists = !!(await Post.findOne({
     _id: post._id,
-    upvoters: { $elemMatch: { userId: user._id } },
+    // upvoters: { $elemMatch: { userId: user._id } },
+    upvoters: { $elemMatch: { userId: userId } },
   }));
 
   try {
     if (upvoteExists) {
       //remove the upvote
       await Post.updateOne(post, {
-        $pull: { upvoters: { userId: user._id } },
+        $pull: { upvoters: { userId: userId } },
       });
       await post.save();
 
       res.status(200).json({
         count: post.upvoters.length - 1,
         // count: post.upvoters.length,
-        message: `removed ${user.username}`,
+        message: `Removed user with Id ${userId}`,
       });
     } else {
       //Add the upvote
-      post.upvoters.push({ userId: user._id });
+      post.upvoters.push({ userId: userId });
       await post.save();
       // post.save();
 
       res.status(201).json({
         // count: post.upvoters.length + 1,
         count: post.upvoters.length,
-        message: `added ${user.username}`,
+        message: `Added user with Id ${userId}`,
       });
     }
   } catch (err) {

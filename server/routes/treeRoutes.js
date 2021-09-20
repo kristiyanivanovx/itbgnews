@@ -16,11 +16,21 @@ router.get('/:parentPostId', async (req, res) => {
   res.json({
     tree: treeData,
   });
-
-  return;
 });
 
 // this is for caching tree
-
+// async function cache(req, res, next) {
+//   redisClient.get('tree', (err, data) => {
+//     if (err) {
+//       throw err;
+//     } else if (data !== null) {
+//       res.json({
+//         tree: JSON.parse(data),
+//       });
+//     } else {
+//       next();
+//     }
+//   });
+// }
 
 module.exports = router;

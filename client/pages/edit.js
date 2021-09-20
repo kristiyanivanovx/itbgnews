@@ -12,8 +12,10 @@ import { CREATED_RESPONSE_CODE, getEnvironmentInfo } from '../utilities/common';
 import { useCookies } from 'react-cookie';
 import { useRouter } from 'next/router';
 import Modal from '../components/Modal';
+import withTokens from '../helpers/withTokens';
+import withAuth from '../helpers/withAuth';
 
-const Edit = () => {
+const EditBase = () => {
   const router = useRouter();
 
   const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
@@ -26,20 +28,6 @@ const Edit = () => {
 
   // todo: critical - do not use hardcoded value
   const userId = '6145698390a1897378449cd5';
-
-  // todo: use getServerSideProps / hoc
-  // if user doesnt have cookies, make him login
-  useEffect(() => {
-    if (!cookies || !router) {
-      return;
-    }
-
-    const { accessToken } = cookies;
-
-    if (accessToken === undefined) {
-      router.push('/login');
-    }
-  }, [cookies, router]);
 
   // todo: add checks and error validation
   const checkResponse = (response) => {
@@ -106,6 +94,8 @@ const Edit = () => {
   );
 };
 
+// let Edit = withAuth(EditBase);
+let Edit = withTokens(EditBase);
 Edit.getLayout = getDefaultLayout;
 
 export default Edit;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import FormTitle from '../components/FormTitle';
@@ -16,9 +16,9 @@ import {
 import Modal from '../components/Modal';
 import { useCookies } from 'react-cookie';
 import Router, { useRouter } from 'next/router';
-import jwt from 'jsonwebtoken';
+import withTokens from '../helpers/withTokens';
 
-const Login = () => {
+const LoginBase = () => {
   const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -26,7 +26,6 @@ const Login = () => {
   const [modalMessage, setModalMessage] = useState('');
   const [shouldDisplay, setShouldDisplay] = useState(false);
   const [cookies, setCookie] = useCookies(['accessToken']);
-  const [userId, setUserId] = useState(null);
 
   const toggleModal = () => {
     setShouldDisplay((shouldDisplay) => !shouldDisplay);
@@ -38,33 +37,6 @@ const Login = () => {
       maxAge: JWT_ACCESS_TIME,
     });
   };
-
-  useEffect(() => {
-    if (cookies.accessToken) {
-      const res = jwt.decode(cookies.accessToken);
-      setUserId(() => res.sub);
-
-      if (userId) {
-        fetch(ENDPOINT + '/token', {
-          method: 'POST',
-          body: JSON.stringify({ userId }),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-          .then((data) => data.json())
-          .then((data) => {
-            if (data.accessToken) {
-              setCookie('accessToken', data.accessToken, {
-                path: '/',
-                maxAge: JWT_ACCESS_TIME,
-              });
-              setUserId(() => jwt.decode(cookies.accessToken).sub);
-            }
-          });
-      }
-    }
-  }, [cookies.accessToken, ENDPOINT, userId, setCookie]);
 
   const checkResult = async (result) => {
     if (result.message === USER_NOT_FOUND_ERROR_MESSAGE) {
@@ -136,6 +108,8 @@ const Login = () => {
   );
 };
 
+// ?
+let Login = withTokens(LoginBase);
 Login.getLayout = getDefaultLayout;
 
 export default Login;

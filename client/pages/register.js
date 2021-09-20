@@ -28,8 +28,6 @@ const Register = () => {
 
   const [cookies, setCookie] = useCookies(['accessToken']);
 
-  // TODO CRITICAL : add option to just login
-
   const handleTokens = (accessToken) => {
     setCookie('accessToken', accessToken, {
       path: '/',

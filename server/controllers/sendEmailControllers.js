@@ -40,6 +40,14 @@ async function passwordReset(req, res) {
 
 async function forgottenPassword(req, res) {
   let code = crypto.randomBytes(8).toString('hex');
+  userSchema.findOne({email}, (err, currentUser) => {
+    if err throw err
+    if(!currentUser){
+      return res.status(401).json({
+        message : "This email doesn't exist"
+      })
+    }
+  })
 
   let user = new verifySchema({
     token: code,
