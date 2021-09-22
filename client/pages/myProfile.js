@@ -4,7 +4,6 @@ import SideNav from '../components/SideNav';
 import Profile from '../components/Profile';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../helpers/getDefaultLayout';
-import { useCookies } from 'react-cookie';
 import { getEndpoint } from '../utilities/common';
 import Article from '../components/Article';
 import InfiniteScroll from 'react-infinite-scroll-component';
