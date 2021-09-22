@@ -1,5 +1,4 @@
 import { publicRuntimeConfig } from '../next.config';
-import cookie from 'cookie';
 
 module.exports = {
   SUCCESSFUL_REGISTRATION_MESSAGE: 'Registered successfully.',
@@ -15,20 +14,14 @@ module.exports = {
   REMOVED_RESPONSE_CODE: 200,
   UNAUTHORIZED_RESPONSE_CODE: 401,
   JWT_ACCESS_TIME: 60 * 60 * 24 * 7, // 7 days
-  parseCookies: (req) => {
-    return cookie.parse(req ? req.headers.cookie || '' : document.cookie);
-  },
 
-  getEnvironmentInfo: () => {
+  getEndpoint: () => {
     const ENV = process.env.NODE_ENV || 'development';
 
     const isProduction = ENV === 'production';
 
-    const ENDPOINT =
-      ENV === 'production'
-        ? publicRuntimeConfig.REMOTE_BACKEND_HOST
-        : publicRuntimeConfig.LOCAL_BACKEND_HOST;
-
-    return [ENV, isProduction, ENDPOINT];
+    return isProduction
+      ? publicRuntimeConfig.REMOTE_BACKEND_HOST
+      : publicRuntimeConfig.LOCAL_BACKEND_HOST;
   },
 };

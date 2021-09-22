@@ -4,7 +4,7 @@ const router = app.Router();
 const {
   passwordReset,
   forgottenPassword,
-} = require('../controllers/sendEmailControllers');
+} = require('../controllers/sendEmailsController');
 
 const dotenv = require('dotenv');
 

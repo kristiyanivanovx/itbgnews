@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import FormContainer from '../components/FormContainer';
 import FormTitle from '../components/FormTitle';
 import Form from '../components/Form';
@@ -6,19 +6,17 @@ import Input from '../components/Input';
 import Button from '../components/Button';
 import HeadComponent from '../components/HeadComponent';
 import Modal from '../components/Modal';
-import getDefaultLayout from '../utilities/getDefaultLayout';
+import getDefaultLayout from '../helpers/getDefaultLayout';
 import {
   EXISTING_USER_ERROR_CODE,
-  getEnvironmentInfo,
+  getEndpoint,
   SUCCESSFUL_REGISTRATION_MESSAGE,
-  JWT_ACCESS_TIME,
 } from '../utilities/common';
 import Router from 'next/router';
-import { useCookies } from 'react-cookie';
+import renewCookie from '../utilities/renewCookie';
 
 const Register = () => {
-  let [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
-
+  const ENDPOINT = getEndpoint();
   const [modalMessage, setModalMessage] = useState('');
   const [shouldDisplay, setShouldDisplay] = useState(false);
   const [errors, setErrors] = useState({});
@@ -26,25 +24,16 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const [cookies, setCookie] = useCookies(['accessToken']);
-
-  const handleTokens = (accessToken) => {
-    setCookie('accessToken', accessToken, {
-      path: '/',
-      maxAge: JWT_ACCESS_TIME,
-    });
-  };
-
   function toggleModal() {
     setShouldDisplay((shouldDisplay) => !shouldDisplay);
   }
 
-  const checkResponse = (result) => {
+  const checkResponse = async (result) => {
     if (result.message === SUCCESSFUL_REGISTRATION_MESSAGE) {
       setModalMessage(() => 'Регистрирахте се успешно!');
 
       let { accessToken } = result.data;
-      handleTokens(accessToken);
+      await renewCookie(accessToken);
 
       toggleModal();
       setTimeout(() => Router.push('/'), 2000);
@@ -68,8 +57,7 @@ const Register = () => {
 
     let result = await response.json();
     setErrors(() => result);
-
-    checkResponse(result);
+    await checkResponse(result);
   };
 
   return (

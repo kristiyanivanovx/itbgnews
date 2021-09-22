@@ -1,22 +1,23 @@
 const express = require('express');
 const router = express.Router();
 const getter = require('../functions/getters');
-const controller = require('../controllers/comments');
-<<<<<<< HEAD
-const {cache, rebaseRedis} = require("../middlewares/cache")
-
-//Create a comment ✔
-router.post('/', controller.postComment, rebaseRedis, cache);
-=======
 const auth = require('../middlewares/authMiddleware');
-
+const controller = require('../controllers/commentsController');
 //Create a comment ✔
 router.post('/', auth.verifyToken, controller.postComment);
->>>>>>> origin/chris
+
+
+//Create a comment ✔
+router.post(
+  '/create',
+  auth.verifyToken,
+  getter.userGetter,
+  controller.postComment,
+);
 
 //Adding/removing an upvote ✔
 router.patch(
-  '/upvote',
+  '/upvote/:commentId',
   auth.verifyToken,
   getter.commentGetter,
   getter.userGetter,
@@ -24,25 +25,20 @@ router.patch(
 );
 
 //Updating a comment ✔
-<<<<<<< HEAD
-router.patch('/', getter.commentGetter, controller.patchComment, rebaseRedis, cache);
-=======
 router.patch(
-  '/',
+  '/update/:commentId',
   auth.verifyToken,
   getter.commentGetter,
   controller.patchComment,
 );
->>>>>>> origin/chris
 
 //'Deletes' a comment (does not remove it from the database) ✔
 router.delete(
-  '/',
+  '/delete/:postId/:commentId',
   auth.verifyToken,
   getter.commentGetter,
   getter.postGetter,
   controller.deleteComment,
-  rebaseRedis, cache
 );
 
 module.exports = router;

@@ -1,7 +1,12 @@
+const  validator = require('validator');
+
+
 function validateEmail(email) {
-  const re =
-    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return re.test(email.toLowerCase());
+  return validator.isEmail(email)
+}
+
+function validateUrl(url) {
+  return validator.isUrl(url)
 }
 
 function validatePassword(password) {
@@ -12,4 +17,5 @@ function validatePassword(password) {
 module.exports = {
   validateEmail,
   validatePassword,
+  validateUrl,
 };

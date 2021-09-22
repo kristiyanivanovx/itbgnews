@@ -3,12 +3,11 @@ const Comment = require('../models/comment');
 const User = require('../models/user');
 
 async function postGetter(req, res, next) {
-  // const postId = req.params.postId ?? req.body.postId;
   const postId = req.params.postId;
   let post;
 
   try {
-    post = await Post.findById(postId);
+    post = await Post.findById(postId).exec();
 
     if (!post) {
       return await res.status(404).json({
@@ -24,12 +23,11 @@ async function postGetter(req, res, next) {
 }
 
 async function userGetter(req, res, next) {
-  // const userId = req.params.userId ?? req.body.userId;
-  const userId = req.user.sub;
+  const userId = req.user?.sub || req.params.userId;
   let user;
 
   try {
-    user = await User.findById(userId);
+    user = await User.findById(userId).exec();
 
     if (!user) {
       res.status(404).json({
@@ -43,7 +41,7 @@ async function userGetter(req, res, next) {
     return;
   }
 
-  req.userData = user;
+  req.userObject = user;
   next();
 }
 
@@ -51,11 +49,11 @@ async function commentGetter(req, res, next) {
   let comment;
 
   try {
-    comment = await Comment.findById(req.body.commentId);
+    comment = await Comment.findById(req.params.commentId).exec();
 
     if (!comment) {
       res.status(404).json({
-        message: `Cannot find comment with id: ${req.body.commentId}`,
+        message: `Cannot find comment with id: ${req.params.commentId}`,
       });
 
       return;
@@ -69,10 +67,10 @@ async function commentGetter(req, res, next) {
   next();
 }
 
-async function commentsGetter(req) {
+async function commentsGetter(postId) {
   return Comment.find({
-    parentPostId: req.params.postId,
-  });
+    parentPostId: postId,
+  }).exec();
 }
 
 async function getSearch(req, res) {
@@ -84,7 +82,7 @@ async function getSearch(req, res) {
 
       const posts = await Post.find({
         text: { $regex: regex },
-      });
+      }).exec();
 
       res.json({
         posts: posts,

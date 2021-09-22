@@ -3,7 +3,7 @@ const { hash } = require('bcrypt');
 const verifySchema = require('../models/verifySchema');
 const userSchema = require('../models/user');
 const crypto = require('crypto');
-const { createMessage, mail } = require('../models/mailMessage');
+const { createMessage, mail } = require('../models/emailMessage');
 
 async function passwordReset(req, res) {
   const { token, email, password } = req.body;
@@ -21,11 +21,7 @@ async function passwordReset(req, res) {
   let dbToken = await verifySchema.findOne({ token: token });
   if (dbToken != null) {
     await userSchema
-<<<<<<< HEAD
-      .updateOne({ token : dbToken }, { password: encryptedPassword })
-=======
-      .updateOne({ token }, { password: encryptedPassword })
->>>>>>> origin/chris
+      .updateOne({ email }, { password: encryptedPassword })
       .then((res) => {
         console.log(res);
       })
