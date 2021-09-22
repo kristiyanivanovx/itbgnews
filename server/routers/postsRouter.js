@@ -1,19 +1,26 @@
 const express = require('express');
 const router = express.Router();
 const getters = require('../functions/getters');
-const controllers = require('../controllers/postControllers');
+const controllers = require('../controllers/postsController');
 const auth = require('../middlewares/authMiddleware');
 
 //Getting all Posts by page ✔
 router.get('/', controllers.getPost);
 
+//Getting results by a search query
 router.get('/search', getters.getSearch);
 
 //Getting comments and post by post id ✔
 router.get('/comments/:postId', getters.postGetter, controllers.getComments);
 
 //Creating a Post ✔
-router.post('/create', auth.verifyToken, controllers.postPost);
+router.post(
+  '/create',
+  auth.verifyToken,
+  getters.userGetter,
+  controllers.postPost,
+);
+// router.post('/create', getters.userGetter, controllers.postPost);
 
 //Updating a Post ✔
 router.patch(

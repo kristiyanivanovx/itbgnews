@@ -3,6 +3,7 @@ const Post = require('../models/post');
 const User = require('../models/user');
 const { validateUrl } = require('../utilities/validation');
 const { isEmpty } = require('../utilities/common');
+const { upvoteComment } = require('./commentsController');
 
 async function getPost(req, res) {
   const { skip, limit } = req.query;
@@ -25,8 +26,10 @@ async function getPost(req, res) {
 }
 
 async function getComments(req, res) {
+  const postId = req.params.postId;
+
   try {
-    let comments = await getters.commentsGetter(req);
+    let comments = await getters.commentsGetter(postId);
     res.status(200).json({ post: req.post, comments });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -34,8 +37,9 @@ async function getComments(req, res) {
 }
 
 async function postPost(req, res) {
-  const { text, url, authorId } = req.body;
-  const user = await User.findById({ _id: authorId });
+  const { text, url } = req.body;
+  const user = req.userObject;
+
   let errors = {};
 
   if (text.length < 6 || text.length > 250) {
@@ -55,14 +59,18 @@ async function postPost(req, res) {
   const newPost = new Post({
     text,
     url,
-    authorId,
+    authorId: user._id,
     authorName: user.username,
     lastEditDate: Date.now(),
     creationDate: Date.now(),
   });
 
   try {
+    user.postsCount += 1;
+
     await newPost.save();
+    await user.save();
+
     res.status(201).json(newPost);
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -104,7 +112,8 @@ async function patchPost(req, res) {
 async function vote(req, res) {
   const userId = req.user.sub;
   const post = req.post;
-  // const user = req.user;
+
+  const user = await User.findOne({ userId });
 
   //check if upvote exists
   let upvoteExists = !!(await Post.findOne({
@@ -119,7 +128,11 @@ async function vote(req, res) {
       await Post.updateOne(post, {
         $pull: { upvoters: { userId: userId } },
       });
+
+      user.committedLikes -= 1;
+
       await post.save();
+      await user.save();
 
       res.status(200).json({
         count: post.upvoters.length - 1,
@@ -129,8 +142,10 @@ async function vote(req, res) {
     } else {
       //Add the upvote
       post.upvoters.push({ userId: userId });
+      user.committedLikes += 1;
+
       await post.save();
-      // post.save();
+      await user.save();
 
       res.status(201).json({
         // count: post.upvoters.length + 1,
@@ -149,13 +164,25 @@ async function deletePost(req, res) {
 
   if (String(post.authorId) === String(userId)) {
     try {
+      //get all comments
+      //connected to the post and delete them too
+      let comments = await getters.commentsGetter(req);
+      const deletionsCount = comments.count;
+
+      for (let i = 0; i < comments.count; i++) {
+        await comments[i].delete();
+      }
       await post.delete();
 
-      const user = await User.findOne({ userId }).exec();
+      const user = await User.findOne({ userId });
+
       user.postsCount -= 1;
+      user.commentsCount -= deletionsCount;
       await user.save();
 
-      res.status(200).json({ message: 'Post has been deleted successfully!' });
+      res
+        .status(200)
+        .json({ message: 'Post and comments have been deleted successfully!' });
       return;
     } catch (err) {
       res.status(500).json({ message: err.message });

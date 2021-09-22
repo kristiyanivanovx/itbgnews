@@ -5,7 +5,7 @@ const router = express.Router();
 
 //get info about each user
 router.get('/:userId', auth.verifyToken, getters.userGetter, (req, res) => {
-  res.json(req.userData);
+  res.json(req.userObject);
 });
 
 module.exports = router;

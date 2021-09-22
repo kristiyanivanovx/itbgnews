@@ -1,35 +1,32 @@
 require('dotenv').config();
 
-const ENV = process.env.NODE_ENV || 'development';
-const isProduction = ENV === 'production';
+const authRouter = require('./routers/authRouter');
+const resetRouter = require('./routers/resetPasswordRouter');
+const treeRouter = require('./routers/treeRouter');
+const postsRouter = require('./routers/postsRouter');
+const commentsRouter = require('./routers/commentsRouter');
+const usersRouter = require('./routers/usersRouter');
+const { getEnvironmentInfo } = require('./utilities/common');
+
+const [ENV, isProduction] = getEnvironmentInfo();
 const PORT = isProduction ? process.env.PORT : process.env.BACKEND_PORT;
 
-console.log(`Starting API server on ${ENV} at ${PORT}.`);
-
-//const mongoose = require("mongoose");
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
 const app = express();
 
-const authRoutes = require('./routes/authRoute');
-const resetRoutes = require('./routes/resetPassword');
-const postsRouter = require('./routes/posts');
-const commentRouter = require('./routes/comments');
-const userRouter = require('./routes/users');
-const treeRoutes = require('./routes/treeRoutes');
-
 app
   .use(cors())
   .use(cookieParser())
   .use(express.json())
-  .use('', authRoutes)
-  .use('', resetRoutes)
-  .use('/tree', treeRoutes)
+  .use('', authRouter)
+  .use('', resetRouter)
+  .use('/tree', treeRouter)
   .use('/posts', postsRouter)
-  .use('/comments', commentRouter)
-  .use('/user', userRouter)
+  .use('/comments', commentsRouter)
+  .use('/users', usersRouter)
   .listen(PORT, () => {
     console.log(`Listening on port ${PORT} in ${ENV}...`);
   });

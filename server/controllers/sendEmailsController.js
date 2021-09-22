@@ -3,7 +3,7 @@ const { hash } = require('bcrypt');
 const verifySchema = require('../models/verifySchema');
 const userSchema = require('../models/user');
 const crypto = require('crypto');
-const { createMessage, mail } = require('../models/mailMessage');
+const { createMessage, mail } = require('../models/emailMessage');
 
 async function passwordReset(req, res) {
   const { token, email, password } = req.body;

@@ -15,6 +15,9 @@ const commentSchema = new mongoose.Schema({
     type: String,
     ref: 'Comment',
   },
+  authorName: {
+    type: String,
+  },
   text: {
     type: String,
   },

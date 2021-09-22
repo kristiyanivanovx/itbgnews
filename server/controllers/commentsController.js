@@ -1,20 +1,26 @@
 const Comment = require('../models/comment');
 
 async function postComment(req, res) {
-  console.log(req.body);
+  const user = req.userObject;
 
-  const { parentPostId, authorId, parentCommentId, text } = req.body;
+  const { parentPostId, parentCommentId, text } = req.body;
+
   const newComment = new Comment({
     parentCommentId,
-    authorId,
+    authorId: user._id,
     parentPostId,
     text,
+    authorName: user.username,
     creationDate: Date.now(),
     lastEditDate: Date.now(),
   });
 
   try {
     await newComment.save();
+
+    user.commentsCount += 1;
+    await user.save();
+
     res.status(201).json(newComment);
   } catch (err) {
     console.log(err);
@@ -28,16 +34,19 @@ async function upvoteComment(req, res) {
 
   //check if upvote exists
   const upvoteExists = !!(await Comment.findOne({
-    comment,
-    upvoters: { $elemMatch: { userId: req.user._id } },
+    _id: comment._id,
+    upvoters: { $elemMatch: { userId: user._id } },
   }));
 
   try {
     if (upvoteExists) {
       //remove the upvote
       await Comment.updateOne(comment, {
-        $pull: { upvoters: { userId: req.user._id } },
+        $pull: { upvoters: { userId: user._id } },
       });
+
+      user.committedLikes -= 1;
+      user.save();
 
       res.status(200).json({
         count: comment.upvoters.length - 1,
@@ -46,7 +55,10 @@ async function upvoteComment(req, res) {
     } else {
       //Add the upvote
       comment.upvoters.push({ userId: user._id });
+      user.committedLikes += 1;
+
       await comment.save();
+      await user.save();
 
       res.status(201).json({
         count: comment.upvoters.length,
@@ -86,12 +98,16 @@ async function patchComment(req, res) {
 
 async function deleteComment(req, res) {
   const comment = req.comment;
-  const user = req.user;
+  const user = req.userObject;
 
   if (String(comment.authorId) === String(user._id)) {
     try {
       comment.text = 'Deleted';
+      user.commentCount -= 1;
+
       await comment.save();
+      await user.save();
+
       res.status(200).json({ message: 'comment deleted!' });
       return;
     } catch (err) {

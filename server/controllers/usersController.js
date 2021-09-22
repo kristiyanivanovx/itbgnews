@@ -24,8 +24,6 @@ async function register(req, res) {
         accessToken,
       },
     });
-
-    return;
   } catch (error) {
     if (error.code === 1100) {
       res.status(409).json({

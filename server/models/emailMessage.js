@@ -1,13 +1,13 @@
 const dotenv = require('dotenv');
 const mail = require('@sendgrid/mail');
+const { getEnvironmentInfo } = require('../utilities/common');
 
 dotenv.config();
 
 // mail.setApiKey(process.env.MAIL_API);
 mail.setApiKey(process.env.MAIL_API_KRIS);
 
-const ENV = process.env.NODE_ENV || 'development';
-const isProduction = ENV === 'production';
+const [_, isProduction] = getEnvironmentInfo();
 
 const HOST = isProduction
   ? process.env.REMOTE_FRONTEND_HOST
