@@ -23,7 +23,7 @@ async function postGetter(req, res, next) {
 }
 
 async function userGetter(req, res, next) {
-  const userId = req.user.sub;
+  const userId = req.user?.sub || req.params.userId;
   let user;
 
   try {

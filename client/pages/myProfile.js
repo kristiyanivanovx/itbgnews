@@ -18,10 +18,9 @@ import renewCookie from '../utilities/renewCookie';
 
 export const getServerSideProps = requireAuthentication(async (context) => {
   const ENDPOINT = getEndpoint();
-  const response = await fetch(ENDPOINT + '/posts?skip=0&limit=10');
-  const data = await response.json();
 
-  let accessToken = getUserToken(context.req?.headers.cookie).split('=')[1];
+  const posts = await fetch(ENDPOINT + '/posts?skip=0&limit=10');
+  const data = await posts.json();
 
   if (!data) {
     return {
@@ -29,22 +28,31 @@ export const getServerSideProps = requireAuthentication(async (context) => {
     };
   }
 
+  let accessToken = getUserToken(context.req?.headers.cookie).split('=')[1];
+  const userId = jwt.decode(accessToken).sub;
+
+  const userInformation = await fetch(ENDPOINT + '/users/info/' + userId);
+  const userData = await userInformation.json();
+
   return {
     props: {
       data,
+      userId,
+      userData,
       accessToken,
       ENDPOINT,
     },
   };
 });
 
-const MyProfile = ({ data, accessToken, ENDPOINT }) => {
-  const [userId, setUserId] = useState(null);
-  const [articlesCount, setArticlesCount] = useState(data.postsCount);
+const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
   const [articles, setArticles] = useState(data.posts);
   const [hasMore, setHasMore] = useState(true);
   const [shouldRedirect, setShouldRedirect] = useState(false);
   const router = useRouter();
+
+  console.log('user data');
+  console.log(userData);
 
   // articles
   useEffect(() => {
@@ -57,7 +65,7 @@ const MyProfile = ({ data, accessToken, ENDPOINT }) => {
 
   // todo: improve cookie sending
   const submitLogoutForm = async () => {
-    let userId = jwt.decode(accessToken).sub;
+    // let userId = jwt.decode(accessToken).sub;
     let isExpired = isTokenExpired(accessToken);
 
     let updatedToken = isExpired
@@ -79,7 +87,7 @@ const MyProfile = ({ data, accessToken, ENDPOINT }) => {
       },
     });
 
-    let result = await cookieRemoveResponse.json();
+    let result = await logoutResponse.json();
     setShouldRedirect(() => true);
     // if (result.status === SUCCESS_RESPONSE_CODE) { }
   };
@@ -112,8 +120,9 @@ const MyProfile = ({ data, accessToken, ENDPOINT }) => {
             triggerConfirmation={async () => await submitLogoutForm()}
             image={image}
             // todo: get these props dynamically
-            username={'Никола'}
-            bio={'Да жиевее българия.'}
+            username={userData.username}
+            bio={userData?.bio ?? 'Да жиевее България.'}
+            email={userData.email}
             commentsCount={50}
             likesCount={1920}
             articlesCount={3}

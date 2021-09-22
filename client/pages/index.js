@@ -35,15 +35,14 @@ export async function getServerSideProps(context) {
 
 const Home = ({ data, accessToken, ENDPOINT }) => {
   const [articles, setArticles] = useState(data.posts);
-  const [articlesCount, setArticlesCount] = useState(data.postsCount);
   const [hasMore, setHasMore] = useState(true);
   const [userId, setUserId] = useState(
     jwt.decode(accessToken ?? null)?.sub ?? null,
   );
 
   useEffect(() => {
-    setHasMore(articlesCount > articles.length);
-  }, [articles, articlesCount]);
+    setHasMore(data.postsCount > articles.length);
+  }, [articles, data.postsCount]);
 
   const getMoreArticles = async () => {
     const response = await fetch(

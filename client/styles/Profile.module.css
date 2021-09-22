@@ -79,6 +79,34 @@
     margin-left: 20px;
 }
 
+.blurred {
+    color: transparent;
+    text-shadow: 0 0 20px var(--clr-white);
+}
+
+.clear {
+    color: transparent;
+    text-shadow: 0 0 0px var(--clr-white);
+}
+
+.user__email {
+    font-size: larger;
+}
+
+/*.email__container {*/
+/*    display:inline-block;*/
+/*    margin-right:10px;*/
+/*}*/
+
+.blurry__container {
+    margin-top: 10px;
+    display: flex;
+}
+
+.eye__container{
+    margin-left: 10px;
+}
+
 .top__info {
     display: flex;
     justify-content: space-between;
