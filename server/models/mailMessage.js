@@ -15,10 +15,10 @@ const HOST = isProduction
 function createMessage(email, code) {
   return {
     to: email,
-    from: 'itbghackernews@gmail.com',
+    from: 'welearnbg@gmail.com',
     subject: 'Reset password email',
     text: 'Your email for password reset at IT-BG News',
-    html: `<a href="${HOST}/verify?token=${code}&email=${email}">Click here to reset your password.</a>`,
+    html: `<a href='${HOST}/verify?token=${code}&email=${email}'>Click here to reset your password.</a>`,
   };
 }
 

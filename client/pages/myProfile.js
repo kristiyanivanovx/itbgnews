@@ -133,7 +133,7 @@ const MyProfileBase = ({ data, ENDPOINT }) => {
                   // todo: use username instead of author id
                   username={article.authorName}
                   // todo: improve date displaying
-                  date={article.creationDate.split('T')[0]}
+                  date={article.creationDate}
                   // todo: show real comments count
                   comments={index}
                   link={article.url}

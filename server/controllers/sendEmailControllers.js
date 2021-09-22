@@ -20,7 +20,7 @@ async function passwordReset(req, res) {
   let dbToken = await verifySchema.findOne({ token: token });
   if (dbToken != null) {
     await userSchema
-      .updateOne({ email }, { password: encryptedPassword })
+      .updateOne({ token : dbToken }, { password: encryptedPassword })
       .then((res) => {
         console.log(res);
       })
@@ -39,9 +39,13 @@ async function passwordReset(req, res) {
 }
 
 async function forgottenPassword(req, res) {
+  const email = req.body.email
   let code = crypto.randomBytes(8).toString('hex');
   userSchema.findOne({email}, (err, currentUser) => {
-    if err throw err
+    if (err) {
+      throw err
+    }
+
     if(!currentUser){
       return res.status(401).json({
         message : "This email doesn't exist"
