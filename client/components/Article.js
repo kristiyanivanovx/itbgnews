@@ -48,6 +48,7 @@ const Article = ({
   const [shouldRotate, setShouldRotate] = useState(false);
   const [hasDeleteOption, setHasDeleteOption] = useState(false);
   const [shouldRedirectLogin, setShouldRedirectLogin] = useState(false);
+  const [shouldRedirectProfile, setShouldRedirectProfile] = useState(false);
   const [shouldRedirectIndex, setShouldRedirectIndex] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [upvotesCount, setUpvotesCount] = useState(upvotes);
@@ -58,12 +59,19 @@ const Article = ({
   useEffect(() => {
     if (shouldRedirectLogin) {
       router.push('/login');
+      setShouldRedirectLogin((prev) => !prev);
     }
 
     if (shouldRedirectIndex) {
       router.push('/');
+      setShouldRedirectIndex((prev) => !prev);
     }
-  }, [shouldRedirectLogin, router, shouldRedirectIndex]);
+
+    if (shouldRedirectProfile) {
+      router.push('/myProfile');
+      setShouldRedirectProfile((prev) => !prev);
+    }
+  }, [shouldRedirectLogin, router, shouldRedirectIndex, shouldRedirectProfile]);
 
   const toggleModalDelete = (message) => {
     setHasDeleteOption(() => true);
@@ -147,6 +155,7 @@ const Article = ({
   const checkResponseEdit = (response) => {
     if (response.status === EDITED_RESPONSE_CODE) {
       setShouldRedirectIndex(() => true);
+      // setShouldRedirectProfile(() => true);
     }
   };
 

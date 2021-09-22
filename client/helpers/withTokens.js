@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import { getEndpoint, JWT_ACCESS_TIME } from '../utilities/common';
-import jwt from 'jsonwebtoken';
+import { getEndpoint } from '../utilities/common';
 import refreshToken from '../utilities/refreshToken';
 import isTokenExpired from '../utilities/isTokenExpired';
 
+// Deprecated, do not use.
 function withTokens(Component) {
   return function AuthComponent({ ...props }) {
     const ENDPOINT = getEndpoint();
     const [userId, setUserId] = useState(null);
-    // const [cookies, setCookie] = useCookies(['accessToken']);
 
     useEffect(() => {
       if (!'cookies' || !'cookies'.accessToken) {
@@ -34,10 +32,8 @@ function withTokens(Component) {
 
       // setUserId(() => jwt.decode(cookies.accessToken).sub);
     }, [ENDPOINT, userId]);
-  // }, [ENDPOINT, cookies, cookies.accessToken, setCookie, userId]);
+    // }, [ENDPOINT, cookies, cookies.accessToken, setCookie, userId]);
 
     return <Component {...props} />;
   };
 }
-
-export default withTokens;

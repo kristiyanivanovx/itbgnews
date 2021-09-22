@@ -15,11 +15,17 @@ import isTokenExpired from '../utilities/isTokenExpired';
 import renewToken from '../utilities/refreshToken';
 import getUserToken from '../utilities/getUserToken';
 import renewCookie from '../utilities/renewCookie';
+import INDEX_PATH from '../next.config';
 
 export const getServerSideProps = requireAuthentication(async (context) => {
   const ENDPOINT = getEndpoint();
 
-  const posts = await fetch(ENDPOINT + '/posts?skip=0&limit=10');
+  const accessToken = getUserToken(context.req?.headers.cookie).split('=')[1];
+  const userId = jwt.decode(accessToken).sub;
+
+  const posts = await fetch(
+    ENDPOINT + '/posts/by/' + userId + '?skip=0&limit=10',
+  );
   const data = await posts.json();
 
   if (!data) {
@@ -27,9 +33,6 @@ export const getServerSideProps = requireAuthentication(async (context) => {
       notFound: true,
     };
   }
-
-  let accessToken = getUserToken(context.req?.headers.cookie).split('=')[1];
-  const userId = jwt.decode(accessToken).sub;
 
   const userInformation = await fetch(ENDPOINT + '/users/info/' + userId);
   const userData = await userInformation.json();
@@ -58,6 +61,7 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
   useEffect(() => {
     if (shouldRedirect) {
       router.push('/login');
+      setShouldRedirect((prev) => !prev);
     }
 
     setHasMore(data.postsCount > articles.length);
@@ -95,7 +99,7 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
   // todo: get the articles by this user
   const getMoreArticles = async () => {
     const response = await fetch(
-      ENDPOINT + `/posts?skip=${articles.length}&limit=10`,
+      ENDPOINT + '/posts/by/' + userId + `?skip=${articles.length}&limit=10`,
     );
 
     const { posts } = await response.json();
@@ -123,9 +127,9 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
             username={userData.username}
             bio={userData?.bio ?? 'Да жиевее България.'}
             email={userData.email}
-            commentsCount={50}
-            likesCount={1920}
-            articlesCount={3}
+            commentsCount={userData.commentsCount}
+            upvotesCount={userData.upvotesCount}
+            articlesCount={userData.postsCount}
           >
             <InfiniteScroll
               dataLength={articles.length}
@@ -150,6 +154,11 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
                   // todo: show real comments count
                   comments={index}
                   link={article.url}
+                  authorId={article.authorId}
+                  userId={userId}
+                  shouldDisplayEditOptions={userId === article.authorId}
+                  accessToken={accessToken}
+                  // redirectUrl={INDEX_PATH}
                   redirectUrl={MY_PROFILE_PATH}
                 />
               ))}

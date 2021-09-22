@@ -7,6 +7,9 @@ const auth = require('../middlewares/authMiddleware');
 //Getting all Posts by page ✔
 router.get('/', controllers.getPost);
 
+//Getting all Posts by specific user ✔
+router.get('/by/:userId', getters.userGetter, controllers.getPosts);
+
 //Getting results by a search query
 router.get('/search', getters.getSearch);
 

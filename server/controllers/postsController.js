@@ -5,6 +5,27 @@ const { validateUrl } = require('../utilities/validation');
 const { isEmpty } = require('../utilities/common');
 const { upvoteComment } = require('./commentsController');
 
+async function getPosts(req, res) {
+  const { skip, limit } = req.query;
+  const userId = req.params.userId;
+
+  try {
+    const posts = await Post.find({ authorId: userId })
+      .sort({ upvoters: -1, creationDate: -1 })
+      .skip(Number(skip))
+      .limit(Number(limit));
+
+    const count = await Post.find({ authorId: userId }).count();
+
+    res.json({
+      posts: posts,
+      postsCount: count,
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
+
 async function getPost(req, res) {
   const { skip, limit } = req.query;
 
@@ -113,7 +134,7 @@ async function vote(req, res) {
   const userId = req.user.sub;
   const post = req.post;
 
-  const user = await User.findOne({ userId });
+  const user = await User.findOne({ _id: userId });
 
   //check if upvote exists
   let upvoteExists = !!(await Post.findOne({
@@ -177,7 +198,7 @@ async function deletePost(req, res) {
 
       await post.delete();
 
-      const user = await User.findOne({ userId });
+      const user = await User.findOne({ _id: userId });
 
       user.postsCount -= 1;
       user.commentsCount -= deletionsCount;
@@ -199,6 +220,7 @@ async function deletePost(req, res) {
 
 module.exports = {
   getPost,
+  getPosts,
   getComments,
   postPost,
   patchPost,

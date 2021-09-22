@@ -11,7 +11,7 @@ const Profile = ({
   bio,
   email,
   commentsCount,
-  likesCount,
+  upvotesCount,
   articlesCount,
   triggerConfirmation,
   children,
@@ -74,7 +74,7 @@ const Profile = ({
           <div className={styles.user__bio}>{bio}</div>
           <div className={styles.user__activities}>
             <div className={styles.user__activity}>
-              <div>{likesCount}</div>
+              <div>{upvotesCount}</div>
               <div>харесвания</div>
             </div>
             <div className={styles.user__activity}>
