@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import FormTitle from '../components/FormTitle';
@@ -7,8 +7,8 @@ import Form from '../components/Form';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../utilities/getDefaultLayout';
 import { getEnvironmentInfo } from '../utilities/common';
-import styles from '../styles/Form.module.css';
 
+// verify that this works
 const Forgotten = () => {
   let [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
   const [email, setEmail] = useState('');

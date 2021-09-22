@@ -1,5 +1,5 @@
-export default function refreshToken(ENDPOINT, userId) {
-  return fetch(ENDPOINT + '/token', {
+export default async function refreshToken(ENDPOINT, userId) {
+  return await fetch(ENDPOINT + '/token', {
     method: 'POST',
     body: JSON.stringify({ userId }),
     headers: {
@@ -8,7 +8,7 @@ export default function refreshToken(ENDPOINT, userId) {
   })
     .then((data) => data.json())
     .then((data) => {
-      if (!data || !data.accessToken) {
+      if (!data) {
         console.log(
           'An unexpected error has occurred when renewing the access token.',
         );
@@ -17,6 +17,11 @@ export default function refreshToken(ENDPOINT, userId) {
         return;
       }
 
+      console.log('dATA, TOKENS');
+      console.log(data);
+      console.log(data.accessToken);
+
       return data.accessToken;
-    });
+    })
+    .catch((err) => console.log(err));
 }

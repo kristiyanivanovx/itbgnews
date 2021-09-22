@@ -17,7 +17,7 @@ import { useCookies } from 'react-cookie';
 import { useRouter } from 'next/router';
 import Modal from '../components/Modal';
 import withTokens from '../helpers/withTokens';
-import isTokenValid from '../utilities/isTokenValid';
+import isTokenExpired from '../utilities/isTokenExpired';
 import renewToken from '../utilities/refreshToken';
 import jwt from 'jsonwebtoken';
 import requireAuthentication from '../helpers/withAuth';
@@ -30,7 +30,7 @@ export const getServerSideProps = requireAuthentication((context) => {
   };
 });
 
-const CreateBase = () => {
+const Create = () => {
   const router = useRouter();
   const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
   const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
@@ -38,13 +38,10 @@ const CreateBase = () => {
   const [modalMessage, setModalMessage] = useState('');
   const [text, setText] = useState('');
   const [url, setUrl] = useState('');
-  const [userId, setUserId] = useState(null);
+  // const [userId, setUserId] = useState(jwt.decode(cookies.accessToken).sub);
 
   // todo: add checks and error validation
   const checkResponse = (response) => {
-    console.log('response');
-    console.log(response);
-
     if (response.status === CREATED_RESPONSE_CODE) {
       setModalMessage(() => 'Новината беше успешно създадена!');
       toggleModal();
@@ -59,18 +56,13 @@ const CreateBase = () => {
   }
 
   const submitForm = async () => {
-    let isValid = isTokenValid(cookies.accessToken);
+    let userId = jwt.decode(cookies.accessToken).sub;
+    let isExpired = isTokenExpired(cookies.accessToken);
 
-    // presumably we have the userId in jwt
-    console.log(jwt.decode(cookies.accessToken));
-    console.log(jwt.decode(cookies.accessToken).sub);
-    setUserId(() => jwt.decode(cookies.accessToken).sub);
+    // if token is valid, generate a ne w one
+    if (isExpired) {
+      let newAccessToken = await renewToken(ENDPOINT, userId);
 
-    // if token is valid, generate a new one
-    if (!isValid || !userId) {
-      let newAccessToken = renewToken(ENDPOINT, userId);
-      console.log('newAccessToken');
-      console.log(newAccessToken);
       setCookie('accessToken', newAccessToken, {
         path: '/',
         maxAge: JWT_ACCESS_TIME,
@@ -90,7 +82,7 @@ const CreateBase = () => {
     });
 
     // todo: check for errors аnd set them
-    console.log(response.status);
+    // console.log(response.status);
     // setErrors(() => result);
     checkResponse(response);
   };
@@ -127,7 +119,7 @@ const CreateBase = () => {
   );
 };
 
-let Create = withTokens(CreateBase);
+// let Create = withTokens(CreateBase);
 Create.getLayout = getDefaultLayout;
 
 export default Create;

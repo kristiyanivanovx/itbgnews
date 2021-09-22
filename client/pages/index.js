@@ -8,8 +8,6 @@ import { getEnvironmentInfo, JWT_ACCESS_TIME } from '../utilities/common';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import INDEX_PATH from '../next.config';
 import { useCookies } from 'react-cookie';
-import withTokens from '../helpers/withTokens';
-import Create from './create';
 const jwt = require('jsonwebtoken');
 
 export async function getServerSideProps(context) {
@@ -25,7 +23,7 @@ export async function getServerSideProps(context) {
   return { props: { data, ENDPOINT } };
 }
 
-const HomeBase = ({ data, ENDPOINT }) => {
+const Home = ({ data, ENDPOINT }) => {
   const [articles, setArticles] = useState(data.posts);
   console.log(data)
   const [articlesCount, setArticlesCount] = useState(data.postsCount);
@@ -33,11 +31,6 @@ const HomeBase = ({ data, ENDPOINT }) => {
   const [hasMore, setHasMore] = useState(true);
   const [cookies, setCookie] = useCookies(['accessToken']);
   const [userId, setUserId] = useState(null);
-
-  const getInitialArticles = async () => {
-    const response = await fetch(ENDPOINT + '/posts?skip=0&limit=10');
-    return await response.json();
-  };
 
   useEffect(() => {
     setHasMore(articlesCount > articles.length);
@@ -100,7 +93,7 @@ const HomeBase = ({ data, ENDPOINT }) => {
   );
 };
 
-let Home = withTokens(HomeBase);
+// let Home = withTokens(HomeBase);
 Home.getLayout = getDefaultLayout;
 
 export default Home;

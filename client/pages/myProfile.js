@@ -30,7 +30,7 @@ export const getServerSideProps = requireAuthentication(async (context) => {
   };
 });
 
-const MyProfileBase = ({ data, ENDPOINT }) => {
+const MyProfile = ({ data, ENDPOINT }) => {
   const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
   const [userId, setUserId] = useState(null);
   const [articlesCount, setArticlesCount] = useState(data.postsCount);
@@ -42,8 +42,7 @@ const MyProfileBase = ({ data, ENDPOINT }) => {
   // articles
   useEffect(() => {
     if (shouldRedirect) {
-      console.log('shouldRedirect?');
-      console.log(shouldRedirect);
+      removeCookie('accessToken');
       router.push('/login');
     }
 
@@ -54,6 +53,7 @@ const MyProfileBase = ({ data, ENDPOINT }) => {
     cookies.accessToken,
     data.postsCount,
     router,
+    removeCookie,
   ]);
 
   // logout
@@ -74,7 +74,6 @@ const MyProfileBase = ({ data, ENDPOINT }) => {
     });
 
     let result = await response.json();
-    removeCookie('accessToken');
     setShouldRedirect(() => true);
 
     // if (result.status === SUCCESS_RESPONSE_CODE) {
@@ -148,7 +147,7 @@ const MyProfileBase = ({ data, ENDPOINT }) => {
   );
 };
 
-let MyProfile = withTokens(MyProfileBase);
+// let MyProfile = withTokens(MyProfileBase);
 MyProfile.getLayout = getDefaultLayout;
 
 export default MyProfile;

@@ -15,7 +15,7 @@ import Modal from '../components/Modal';
 import withTokens from '../helpers/withTokens';
 import withAuth from '../helpers/withAuth';
 
-const EditBase = () => {
+const Edit = () => {
   const router = useRouter();
 
   const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
@@ -25,9 +25,6 @@ const EditBase = () => {
   const [modalMessage, setModalMessage] = useState('');
   const [text, setText] = useState('');
   const [url, setUrl] = useState('');
-
-  // todo: critical - do not use hardcoded value
-  const userId = '6145698390a1897378449cd5';
 
   // todo: add checks and error validation
   const checkResponse = (response) => {
@@ -95,7 +92,7 @@ const EditBase = () => {
 };
 
 // let Edit = withAuth(EditBase);
-let Edit = withTokens(EditBase);
+// let Edit = withTokens(EditBase);
 Edit.getLayout = getDefaultLayout;
 
 export default Edit;

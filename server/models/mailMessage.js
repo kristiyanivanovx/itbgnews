@@ -3,7 +3,8 @@ const mail = require('@sendgrid/mail');
 
 dotenv.config();
 
-mail.setApiKey(process.env.MAIL_API);
+// mail.setApiKey(process.env.MAIL_API);
+mail.setApiKey(process.env.MAIL_API_KRIS);
 
 const ENV = process.env.NODE_ENV || 'development';
 const isProduction = ENV === 'production';

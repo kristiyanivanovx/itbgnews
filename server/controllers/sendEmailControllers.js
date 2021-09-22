@@ -17,10 +17,15 @@ async function passwordReset(req, res) {
 
   const encryptedPassword = await hash(password, 10);
 
+  // todo email === dbToken.email
   let dbToken = await verifySchema.findOne({ token: token });
   if (dbToken != null) {
     await userSchema
+<<<<<<< HEAD
       .updateOne({ token : dbToken }, { password: encryptedPassword })
+=======
+      .updateOne({ token }, { password: encryptedPassword })
+>>>>>>> origin/chris
       .then((res) => {
         console.log(res);
       })
@@ -36,6 +41,8 @@ async function passwordReset(req, res) {
       }
     });
   }
+
+  res.json({ data: 'success' });
 }
 
 async function forgottenPassword(req, res) {
