@@ -299,7 +299,7 @@ const Article = ({
             className={styles.article__information__icon}
           />
           <Link href={{ pathname: '/view', query: { name: text, postId } }}>
-            <a>{date}</a>
+            <a>{new Date(date).toLocaleDateString('bg-BGgit switc')}</a>
           </Link>
         </div>
         <div>
