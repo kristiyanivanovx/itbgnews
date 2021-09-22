@@ -21,7 +21,7 @@ async function passwordReset(req, res) {
   let dbToken = await verifySchema.findOne({ token: token });
   if (dbToken != null) {
     await userSchema
-      .updateOne({ token }, { password: encryptedPassword })
+      .updateOne({ email }, { password: encryptedPassword })
       .then((res) => {
         console.log(res);
       })

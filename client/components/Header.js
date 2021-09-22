@@ -6,11 +6,11 @@ import { faSearch, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import MobileNav from './MobileNav';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { getEnvironmentInfo } from '../utilities/common';
+import { getEndpoint } from '../utilities/common';
 import { useRouter } from 'next/router';
 
-const Header = () => {
-  const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
+const Header = ({ shouldHideSearchBar }) => {
+  const ENDPOINT = getEndpoint();
   const [shouldDisplay, setShouldDisplay] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
@@ -61,7 +61,7 @@ const Header = () => {
           </div>
           {shouldDisplay ? (
             <MobileNav />
-          ) : (
+          ) : shouldHideSearchBar ? null : (
             <div
               className={
                 results?.length > 0

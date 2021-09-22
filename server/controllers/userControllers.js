@@ -93,7 +93,7 @@ async function logout(req, res) {
 
   await redisClient.del(userId.toString());
 
-  res.status(200).json({ status: true, message: 'success.' });
+  res.status(200).json({ status: true, message: 'Logout successful.' });
 }
 
 function getAccess(req, res) {

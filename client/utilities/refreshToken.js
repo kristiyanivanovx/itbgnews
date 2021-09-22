@@ -1,3 +1,8 @@
+/**
+ * @param {string} ENDPOINT - The endpoint where the request should be made
+ * @param {string} userId - The userId's token to refresh
+ * @returns {object} - An object with accessToken property
+ */
 export default async function refreshToken(ENDPOINT, userId) {
   return await fetch(ENDPOINT + '/token', {
     method: 'POST',
@@ -17,11 +22,7 @@ export default async function refreshToken(ENDPOINT, userId) {
         return;
       }
 
-      console.log('dATA, TOKENS');
-      console.log(data);
-      console.log(data.accessToken);
-
-      return data.accessToken;
+      return data;
     })
     .catch((err) => console.log(err));
 }

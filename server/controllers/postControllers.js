@@ -1,6 +1,8 @@
 const getters = require('../functions/getters');
 const Post = require('../models/post');
 const User = require('../models/user');
+const { validateUrl } = require('../utilities/validation');
+const { isEmpty } = require('../utilities/common');
 
 async function getPost(req, res) {
   const { skip, limit } = req.query;
@@ -34,6 +36,21 @@ async function getComments(req, res) {
 async function postPost(req, res) {
   const { text, url, authorId } = req.body;
   const user = await User.findById({ _id: authorId });
+  let errors = {};
+
+  if (text.length < 6 || text.length > 250) {
+    errors.errorTitle = 'The title must be at least 6 letters and at most 250.';
+  }
+
+  if (!validateUrl(url)) {
+    errors.errorUrl =
+      'The url must be valid hyperlink and have 1 character at least and at most 1024.';
+  }
+
+  if (!isEmpty(errors)) {
+    res.json(errors);
+    return;
+  }
 
   const newPost = new Post({
     text,
@@ -85,12 +102,9 @@ async function patchPost(req, res) {
 }
 
 async function vote(req, res) {
+  const userId = req.user.sub;
   const post = req.post;
   // const user = req.user;
-
-  const userId = req.user.sub;
-  console.log('VUV VOTE: userId');
-  console.log(userId);
 
   //check if upvote exists
   let upvoteExists = !!(await Post.findOne({
@@ -131,15 +145,17 @@ async function vote(req, res) {
 
 async function deletePost(req, res) {
   const post = req.post;
-  const user = req.user;
+  const userId = req.user.sub;
 
-  if (String(post.authorId) === String(user._id)) {
+  if (String(post.authorId) === String(userId)) {
     try {
       await post.delete();
+
+      const user = await User.findOne({ userId }).exec();
       user.postsCount -= 1;
       await user.save();
 
-      res.status(200).json({ message: 'post deleted!' });
+      res.status(200).json({ message: 'Post has been deleted successfully!' });
       return;
     } catch (err) {
       res.status(500).json({ message: err.message });

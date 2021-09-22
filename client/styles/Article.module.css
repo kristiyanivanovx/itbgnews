@@ -8,6 +8,7 @@
 }
 
 .article__votes {
+
     display: flex;
     flex-direction: column;
     text-align: center;
@@ -15,10 +16,15 @@
 }
 
 .article__votes svg {
+
     padding: 4px;
     margin-bottom: 5px;
     width: 25px !important;
     height: 25px !important;
+}
+
+.rotated {
+    transform:  rotateX(180deg);
 }
 
 

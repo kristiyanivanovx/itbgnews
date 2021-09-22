@@ -5,13 +5,13 @@ import FormTitle from '../components/FormTitle';
 import FormContainer from '../components/FormContainer';
 import Form from '../components/Form';
 import HeadComponent from '../components/HeadComponent';
-import getDefaultLayout from '../utilities/getDefaultLayout';
+import getDefaultLayout from '../helpers/getDefaultLayout';
 import { useRouter } from 'next/router';
-import { getEnvironmentInfo } from '../utilities/common';
+import { getEndpoint } from '../utilities/common';
 
 // verify that this works
 const Verify = () => {
-  const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
+  const ENDPOINT = getEndpoint();
   const [password, setPassword] = useState('');
   const router = useRouter();
 

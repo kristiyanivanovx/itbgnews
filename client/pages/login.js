@@ -6,36 +6,26 @@ import AuthLinks from '../components/AuthLinks';
 import FormContainer from '../components/FormContainer';
 import Form from '../components/Form';
 import HeadComponent from '../components/HeadComponent';
-import getDefaultLayout from '../utilities/getDefaultLayout';
+import getDefaultLayout from '../helpers/getDefaultLayout';
 import {
-  JWT_ACCESS_TIME,
-  getEnvironmentInfo,
+  getEndpoint,
   INCORRECT_PASSWORD_ERROR_MESSAGE,
   USER_NOT_FOUND_ERROR_MESSAGE,
 } from '../utilities/common';
 import Modal from '../components/Modal';
-import { useCookies } from 'react-cookie';
-import Router, { useRouter } from 'next/router';
-import withTokens from '../helpers/withTokens';
+import Router from 'next/router';
+import renewCookie from '../utilities/renewCookie';
 
 const Login = () => {
-  const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
+  const ENDPOINT = getEndpoint();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
   const [modalMessage, setModalMessage] = useState('');
   const [shouldDisplay, setShouldDisplay] = useState(false);
-  const [cookies, setCookie] = useCookies(['accessToken']);
 
   const toggleModal = () => {
     setShouldDisplay((shouldDisplay) => !shouldDisplay);
-  };
-
-  const handleTokens = (accessToken) => {
-    setCookie('accessToken', accessToken, {
-      path: '/',
-      maxAge: JWT_ACCESS_TIME,
-    });
   };
 
   const checkResult = async (result) => {
@@ -46,8 +36,10 @@ const Login = () => {
       setModalMessage(() => 'Грешна парола');
       toggleModal();
     } else {
+      console.log('result.data');
+      console.log(result);
       const { accessToken } = result.data;
-      handleTokens(accessToken);
+      await renewCookie(accessToken);
 
       setModalMessage(() => 'Влязохте успешно.');
       toggleModal();
@@ -59,11 +51,9 @@ const Login = () => {
   };
 
   const submitForm = async () => {
-    let jsonData = JSON.stringify({ email, password });
-
     const response = await fetch(ENDPOINT + '/login', {
       method: 'POST',
-      body: jsonData,
+      body: JSON.stringify({ email, password }),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -90,11 +80,13 @@ const Login = () => {
             onChange={(e) => setEmail(e.target.value)}
             placeholder={'Имейл'}
             type={'text'}
+            errorMessage={errors?.email}
           />
           <Input
             onChange={(e) => setPassword(e.target.value)}
             placeholder={'Парола'}
             type={'password'}
+            errorMessage={errors?.password}
           />
           <Button onClick={async () => await submitForm()} text={'Влез'} />
 
@@ -108,8 +100,6 @@ const Login = () => {
   );
 };
 
-// ?
-// let Login = withTokens(LoginBase);
 Login.getLayout = getDefaultLayout;
 
 export default Login;

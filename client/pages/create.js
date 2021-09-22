@@ -5,43 +5,41 @@ import Button from '../components/Button';
 import FormTitle from '../components/FormTitle';
 import Form from '../components/Form';
 import HeadComponent from '../components/HeadComponent';
-import getDefaultLayout from '../utilities/getDefaultLayout';
+import getDefaultLayout from '../helpers/getDefaultLayout';
 import FormContainer from '../components/FormContainer';
 import SideNav from '../components/SideNav';
-import {
-  CREATED_RESPONSE_CODE,
-  getEnvironmentInfo,
-  JWT_ACCESS_TIME,
-} from '../utilities/common';
-import { useCookies } from 'react-cookie';
+import { CREATED_RESPONSE_CODE, getEndpoint } from '../utilities/common';
 import { useRouter } from 'next/router';
 import Modal from '../components/Modal';
-import withTokens from '../helpers/withTokens';
 import isTokenExpired from '../utilities/isTokenExpired';
 import renewToken from '../utilities/refreshToken';
 import jwt from 'jsonwebtoken';
-import requireAuthentication from '../helpers/withAuth';
+import requireAuthentication from '../helpers/requireAuthentication';
+import getUserToken from '../utilities/getUserToken';
+import renewCookie from '../utilities/renewCookie';
 
 export const getServerSideProps = requireAuthentication((context) => {
-  // Your normal `getServerSideProps` code here
+  let accessToken = getUserToken(context.req?.headers.cookie).split('=')[1];
 
   return {
-    props: {},
+    props: {
+      accessToken,
+    },
   };
 });
 
-const Create = () => {
+const Create = ({ accessToken }) => {
+  const [errors, setErrors] = useState({});
   const router = useRouter();
-  const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
-  const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
+  const ENDPOINT = getEndpoint();
   const [shouldDisplay, setShouldDisplay] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [text, setText] = useState('');
   const [url, setUrl] = useState('');
-  // const [userId, setUserId] = useState(jwt.decode(cookies.accessToken).sub);
 
-  // todo: add checks and error validation
-  const checkResponse = (response) => {
+  const checkResponse = async (response, result) => {
+    console.log(errors);
+
     if (response.status === CREATED_RESPONSE_CODE) {
       setModalMessage(() => 'Новината беше успешно създадена!');
       toggleModal();
@@ -52,45 +50,36 @@ const Create = () => {
 
   function toggleModal() {
     setShouldDisplay((shouldDisplay) => !shouldDisplay);
-    console.log(shouldDisplay);
   }
 
   const submitForm = async () => {
-    let userId = jwt.decode(cookies.accessToken).sub;
-    let isExpired = isTokenExpired(cookies.accessToken);
+    let userId = jwt.decode(accessToken).sub;
+    let isExpired = isTokenExpired(accessToken);
 
-    // if token is valid, generate a ne w one
-    if (isExpired) {
-      let newAccessToken = await renewToken(ENDPOINT, userId);
+    let updatedToken = isExpired
+      ? (await renewToken(ENDPOINT, userId)).accessToken
+      : accessToken;
 
-      setCookie('accessToken', newAccessToken, {
-        path: '/',
-        maxAge: JWT_ACCESS_TIME,
-      });
-    }
-
-    let authorId = userId;
-    let jsonData = JSON.stringify({ text, url, authorId });
+    isExpired ? await renewCookie(updatedToken) : null;
 
     const response = await fetch(ENDPOINT + '/posts/create', {
       method: 'POST',
-      body: jsonData,
+      body: JSON.stringify({ text, url, authorId: userId }),
       headers: {
-        Authorization: `Bearer ${cookies.accessToken}`,
+        Authorization: `Bearer ${updatedToken}`,
         'Content-Type': 'application/json',
       },
     });
 
-    // todo: check for errors аnd set them
-    // console.log(response.status);
-    // setErrors(() => result);
-    checkResponse(response);
+    let result = await response.json();
+    setErrors(() => result);
+    await checkResponse(response, result);
   };
 
   return (
     <div className="container">
       <HeadComponent currentPageName={'Създай Статия'} />
-      <Header />
+      <Header shouldHideSearchBar={true} />
       <div className={'col'}>
         <SideNav />
         <FormContainer>
@@ -105,11 +94,13 @@ const Create = () => {
               onChange={(e) => setText(e.target.value)}
               type={'text'}
               placeholder={'Заглавие'}
+              errorMessage={errors?.errorTitle}
             />
             <Input
               onChange={(e) => setUrl(e.target.value)}
               type={'url'}
               placeholder={'Линк'}
+              errorMessage={errors?.errorUrl}
             />
             <Button onClick={async () => await submitForm()} text={'Създай'} />
           </Form>
@@ -119,7 +110,6 @@ const Create = () => {
   );
 };
 
-// let Create = withTokens(CreateBase);
 Create.getLayout = getDefaultLayout;
 
 export default Create;

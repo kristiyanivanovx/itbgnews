@@ -3,21 +3,26 @@ import Header from '../components/Header';
 import SideNav from '../components/SideNav';
 import Profile from '../components/Profile';
 import HeadComponent from '../components/HeadComponent';
-import getDefaultLayout from '../utilities/getDefaultLayout';
+import getDefaultLayout from '../helpers/getDefaultLayout';
 import { useCookies } from 'react-cookie';
-import { getEnvironmentInfo } from '../utilities/common';
+import { getEndpoint } from '../utilities/common';
 import Article from '../components/Article';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import MY_PROFILE_PATH from '../next.config';
 import { useRouter } from 'next/router';
-import withAuth from '../helpers/withAuth';
-import withTokens from '../helpers/withTokens';
-import requireAuthentication from '../helpers/withAuth';
+import requireAuthentication from '../helpers/requireAuthentication';
+import jwt from 'jsonwebtoken';
+import isTokenExpired from '../utilities/isTokenExpired';
+import renewToken from '../utilities/refreshToken';
+import getUserToken from '../utilities/getUserToken';
+import renewCookie from '../utilities/renewCookie';
 
 export const getServerSideProps = requireAuthentication(async (context) => {
-  const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
+  const ENDPOINT = getEndpoint();
   const response = await fetch(ENDPOINT + '/posts?skip=0&limit=10');
   const data = await response.json();
+
+  let accessToken = getUserToken(context.req?.headers.cookie).split('=')[1];
 
   if (!data) {
     return {
@@ -26,12 +31,15 @@ export const getServerSideProps = requireAuthentication(async (context) => {
   }
 
   return {
-    props: { data, ENDPOINT },
+    props: {
+      data,
+      accessToken,
+      ENDPOINT,
+    },
   };
 });
 
-const MyProfile = ({ data, ENDPOINT }) => {
-  const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
+const MyProfile = ({ data, accessToken, ENDPOINT }) => {
   const [userId, setUserId] = useState(null);
   const [articlesCount, setArticlesCount] = useState(data.postsCount);
   const [articles, setArticles] = useState(data.posts);
@@ -42,44 +50,42 @@ const MyProfile = ({ data, ENDPOINT }) => {
   // articles
   useEffect(() => {
     if (shouldRedirect) {
-      removeCookie('accessToken');
       router.push('/login');
     }
 
     setHasMore(data.postsCount > articles.length);
-  }, [
-    articles.length,
-    shouldRedirect,
-    cookies.accessToken,
-    data.postsCount,
-    router,
-    removeCookie,
-  ]);
-
-  // logout
-  const triggerLogoutConfirmation = async (e) => {
-    // setConfirmation((confirmation) => confirmation + 1);
-    await submitLogoutForm();
-
-    // todo: improve logout
-    // if user has clicked more than one time, remove the cookies
-    // if (confirmation > 1) { await submitForm(); /* await Router.push('/'); */ }
-  };
+  }, [articles.length, shouldRedirect, data.postsCount, router]);
 
   // todo: improve cookie sending
   const submitLogoutForm = async () => {
-    const response = await fetch(ENDPOINT + '/logout', {
-      headers: { authorization: `Bearer ${cookies.accessToken}` },
+    let userId = jwt.decode(accessToken).sub;
+    let isExpired = isTokenExpired(accessToken);
+
+    let updatedToken = isExpired
+      ? (await renewToken(ENDPOINT, userId)).accessToken
+      : accessToken;
+
+    isExpired ? await renewCookie(updatedToken) : null;
+
+    const logoutResponse = await fetch(ENDPOINT + '/logout', {
+      headers: { authorization: `Bearer ${updatedToken}` },
       method: 'POST',
     });
 
-    let result = await response.json();
-    setShouldRedirect(() => true);
+    const cookieRemoveResponse = await fetch('/api/removeCookie', {
+      method: 'POST',
+      body: JSON.stringify({}),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
-    // if (result.status === SUCCESS_RESPONSE_CODE) {
-    // }
+    let result = await cookieRemoveResponse.json();
+    setShouldRedirect(() => true);
+    // if (result.status === SUCCESS_RESPONSE_CODE) { }
   };
 
+  // todo: get the articles by this user
   const getMoreArticles = async () => {
     const response = await fetch(
       ENDPOINT + `/posts?skip=${articles.length}&limit=10`,
@@ -104,7 +110,7 @@ const MyProfile = ({ data, ENDPOINT }) => {
         <div className={'col'}>
           <SideNav />
           <Profile
-            triggerConfirmation={(e) => triggerLogoutConfirmation(e)}
+            triggerConfirmation={async () => await submitLogoutForm()}
             image={image}
             // todo: get these props dynamically
             username={'Никола'}
@@ -147,7 +153,6 @@ const MyProfile = ({ data, ENDPOINT }) => {
   );
 };
 
-// let MyProfile = withTokens(MyProfileBase);
 MyProfile.getLayout = getDefaultLayout;
 
 export default MyProfile;

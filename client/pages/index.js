@@ -3,32 +3,46 @@ import Article from '../components/Article';
 import SideNav from '../components/SideNav';
 import Header from '../components/Header';
 import HeadComponent from '../components/HeadComponent';
-import getDefaultLayout from '../utilities/getDefaultLayout';
-import { getEnvironmentInfo, JWT_ACCESS_TIME } from '../utilities/common';
+import getDefaultLayout from '../helpers/getDefaultLayout';
+import { getEndpoint } from '../utilities/common';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import INDEX_PATH from '../next.config';
-import { useCookies } from 'react-cookie';
-const jwt = require('jsonwebtoken');
+import getUserToken from '../utilities/getUserToken';
+import jwt from 'jsonwebtoken';
 
 export async function getServerSideProps(context) {
-  const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
-
+  const ENDPOINT = getEndpoint();
   const response = await fetch(ENDPOINT + '/posts?skip=0&limit=10');
   const data = await response.json();
 
+  const userToken = getUserToken(context.req?.headers.cookie);
+  const accessToken = userToken ? userToken.split('=')[1] : null;
+
   if (!data) {
-    return { notFound: true };
+    return {
+      notFound: true,
+    };
   }
 
-  return { props: { data, ENDPOINT } };
+  return {
+    props: {
+      data,
+      accessToken,
+      ENDPOINT,
+    },
+  };
 }
 
-const Home = ({ data, ENDPOINT }) => {
+const Home = ({ data, accessToken, ENDPOINT }) => {
   const [articles, setArticles] = useState(data.posts);
   const [articlesCount, setArticlesCount] = useState(data.postsCount);
   const [hasMore, setHasMore] = useState(true);
-  const [cookies, setCookie] = useCookies(['accessToken']);
-  const [userId, setUserId] = useState(null);
+  const [userId, setUserId] = useState(
+    jwt.decode(accessToken ?? null)?.sub ?? null,
+  );
+
+  console.log('home');
+  console.log(userId);
 
   useEffect(() => {
     setHasMore(articlesCount > articles.length);
@@ -70,16 +84,17 @@ const Home = ({ data, ENDPOINT }) => {
                       isFirstArticle={index === 0}
                       title={article.text}
                       upvotes={article.upvoters.length}
-                      // todo: use username instead of author id
                       username={article.authorName}
                       // todo: improve date displaying
-                      date={article.creationDate.split('T')[0]}
+                      date={article.creationDate.toString()}
                       // todo: show real comments count
                       comments={index}
                       link={article.url}
                       redirectUrl={INDEX_PATH}
-                      shouldDisplayModifyButtons={userId === article.authorId}
+                      authorId={article.authorId}
                       userId={userId}
+                      shouldDisplayEditOptions={userId === article.authorId}
+                      accessToken={accessToken}
                     />
                   ))
                 : null}
@@ -91,7 +106,6 @@ const Home = ({ data, ENDPOINT }) => {
   );
 };
 
-// let Home = withTokens(HomeBase);
 Home.getLayout = getDefaultLayout;
 
 export default Home;

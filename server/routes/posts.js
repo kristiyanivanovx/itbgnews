@@ -17,10 +17,10 @@ router.post('/create', auth.verifyToken, controllers.postPost);
 
 //Updating a Post ✔
 router.patch(
-  '/update/:postId/:userId',
+  '/update/:postId/',
   auth.verifyToken,
-  getters.postGetter,
   getters.userGetter,
+  getters.postGetter,
   controllers.patchPost,
 );
 
@@ -35,10 +35,10 @@ router.patch(
 
 //'Deletes' a Post (does not remove it from the database) ✔
 router.delete(
-  '/:userId/:postId',
+  '/:postId',
   auth.verifyToken,
-  getters.postGetter,
   getters.userGetter,
+  getters.postGetter,
   controllers.deletePost,
 );
 

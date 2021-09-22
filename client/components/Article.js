@@ -19,48 +19,51 @@ import {
   CREATED_RESPONSE_CODE,
   DELETED_RESPONSE_CODE,
   EDITED_RESPONSE_CODE,
-  getEnvironmentInfo,
-  JWT_ACCESS_TIME,
+  getEndpoint,
 } from '../utilities/common';
-import { useCookies } from 'react-cookie';
 import Input from './Input';
-import jwt from 'jsonwebtoken';
 import isTokenExpired from '../utilities/isTokenExpired';
 import renewToken from '../utilities/refreshToken';
+import jwt from 'jsonwebtoken';
+import renewCookie from '../utilities/renewCookie';
 
 const Article = ({
   postId,
+  isFirstArticle,
   title,
-  link,
+  upvotes,
   username,
   date,
   comments,
-  upvotes,
-  isFirstArticle,
-  shouldDisplayModifyButtons,
+  link,
   redirectUrl,
   userId,
+  authorId,
+  shouldDisplayEditOptions,
+  accessToken,
 }) => {
-  const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
+  const ENDPOINT = getEndpoint();
   const [shouldDisplayEditInputs, setShouldDisplayEditInputs] = useState(false);
   const [shouldDisplayModal, setShouldDisplayModal] = useState(false);
+  const [shouldRotate, setShouldRotate] = useState(false);
   const [hasDeleteOption, setHasDeleteOption] = useState(false);
-  const [shouldRedirect, setShouldRedirect] = useState(false);
+  const [shouldRedirectLogin, setShouldRedirectLogin] = useState(false);
+  const [shouldRedirectIndex, setShouldRedirectIndex] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [upvotesCount, setUpvotesCount] = useState(upvotes);
-
   const [text, setText] = useState(title);
   const [url, setUrl] = useState(link);
-
-  const [cookies, setCookie] = useCookies(['accessToken']);
-
   const router = useRouter();
 
   useEffect(() => {
-    if (shouldRedirect) {
+    if (shouldRedirectLogin) {
       router.push('/login');
     }
-  }, [shouldRedirect, router]);
+
+    if (shouldRedirectIndex) {
+      router.push('/');
+    }
+  }, [shouldRedirectLogin, router, shouldRedirectIndex]);
 
   const toggleModalDelete = (message) => {
     setHasDeleteOption(() => true);
@@ -68,17 +71,23 @@ const Article = ({
     setShouldDisplayModal((shouldDisplay) => !shouldDisplay);
   };
 
-  // delete
-  // todo: delete the specific post, then redirect
-  const confirmDelete = async (ENDPOINT) => {
-    const jsonData = JSON.stringify({ userId });
+  const confirmDelete = async () => {
+    if (!accessToken) {
+      setShouldRedirectLogin(() => true);
+      return;
+    }
 
-    // /posts/comments
-    const response = await fetch(ENDPOINT + '/posts/' + userId + '/' + postId, {
+    let userId = jwt.decode(accessToken).sub;
+    let isExpired = isTokenExpired(accessToken);
+
+    let updatedToken = isExpired
+      ? (await renewToken(ENDPOINT, userId)).accessToken
+      : accessToken;
+
+    const response = await fetch(ENDPOINT + '/posts/' + postId, {
       method: 'DELETE',
-      body: jsonData,
       headers: {
-        'Content-Type': 'application/json',
+        Authorization: `Bearer ${updatedToken}`,
       },
     });
 
@@ -92,7 +101,8 @@ const Article = ({
     if (response.status === DELETED_RESPONSE_CODE) {
       setHasDeleteOption((hasDeleteOption) => !hasDeleteOption);
       setModalMessage(() => 'Новината беше успешно изтрита.');
-      setTimeout(() => Router.push('/'), 2000);
+      setShouldRedirectIndex(() => true);
+      // setTimeout(() => Router.push('/'), 2000);
     }
   };
 
@@ -103,19 +113,30 @@ const Article = ({
     );
   };
 
-  const confirmEdit = async (ENDPOINT) => {
-    const json = JSON.stringify({ text, url });
+  const confirmEdit = async () => {
+    if (!accessToken) {
+      setShouldRedirectLogin(() => true);
+      return;
+    }
 
-    const response = await fetch(
-      ENDPOINT + '/posts/update/' + postId + '/' + userId,
-      {
-        method: 'PATCH',
-        body: json,
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    let userId = jwt.decode(accessToken).sub;
+    let isExpired = isTokenExpired(accessToken);
+
+    // if token is not valid, generate a new one, else take the previous value
+    let updatedToken = isExpired
+      ? (await renewToken(ENDPOINT, userId)).accessToken
+      : accessToken;
+
+    isExpired ? await renewCookie(updatedToken) : null;
+
+    const response = await fetch(ENDPOINT + '/posts/update/' + postId, {
+      method: 'PATCH',
+      body: JSON.stringify({ text, url }),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${updatedToken}`,
       },
-    );
+    });
 
     // todo: check for errors аnd set them
     // setErrors(() => result);
@@ -124,41 +145,35 @@ const Article = ({
 
   const checkResponseEdit = (response) => {
     if (response.status === EDITED_RESPONSE_CODE) {
-      setTimeout(() => Router.push(redirectUrl));
+      setShouldRedirectIndex(() => true);
     }
   };
 
   // voting
   const upvote = async () => {
-    // ?
-    if (!cookies || !cookies.accessToken) {
-      setShouldRedirect(() => true);
+    if (!accessToken) {
+      setShouldRedirectLogin(() => true);
       return;
     }
 
-    let userId = jwt.decode(cookies.accessToken).sub;
-    let isExpired = isTokenExpired(cookies.accessToken);
+    let userId = jwt.decode(accessToken).sub;
+    let isExpired = isTokenExpired(accessToken);
 
-    if (isExpired) {
-      let newAccessToken = await renewToken(ENDPOINT, userId);
+    // if token is not valid, generate a new one, else take the previous value
+    let updatedToken = isExpired
+      ? (await renewToken(ENDPOINT, userId)).accessToken
+      : accessToken;
 
-      setCookie('accessToken', newAccessToken, {
-        path: '/',
-        maxAge: JWT_ACCESS_TIME,
-      });
-    }
+    isExpired ? await renewCookie(updatedToken) : null;
 
     const response = await fetch(ENDPOINT + '/posts/upvote/' + postId, {
       method: 'PATCH',
-      // body: JSON.stringify({ postId, userId }),
-      // body: JSON.stringify({ postId }),
       headers: {
-        Authorization: `Bearer ${cookies.accessToken}`,
-        // 'Content-Type': 'application/json',
+        Authorization: `Bearer ${updatedToken}`,
       },
     });
 
-    // todo: check for errors аnd set them
+    setShouldRotate(() => !shouldRotate);
     await checkResponseVote(response);
   };
 
@@ -173,7 +188,7 @@ const Article = ({
     ) {
       setUpvotesCount(() => count);
     } else if (response.status === UNAUTHORIZED_RESPONSE_CODE) {
-      setShouldRedirect(() => true);
+      setShouldRedirectLogin(() => true);
     }
   };
 
@@ -223,7 +238,7 @@ const Article = ({
           confirmDelete={() => confirmDelete(ENDPOINT)}
         />
 
-        {shouldDisplayModifyButtons ? (
+        {shouldDisplayEditOptions ? (
           <>
             <div
               className={styles.article__modify}
@@ -245,18 +260,19 @@ const Article = ({
         ) : null}
 
         <div
-          onClick={() => upvote()}
-          className={`${styles.article__votes} ${styles.article__small__text}`}
+          onClick={async () => await upvote()}
+          className={`${styles.article__votes} ${styles.article__small__text} `}
         >
           <FontAwesomeIcon
-            className={styles.article__votes__icon}
+            className={`${styles.article__votes__icon} ${
+              shouldRotate ? styles.rotated : ''
+            }`}
             icon={faChevronUp}
           />
           {upvotesCount} гласа
         </div>
       </div>
 
-      {/* article additional information */}
       <div
         className={`${styles.article__information} ${styles.article__small__text}`}
       >
