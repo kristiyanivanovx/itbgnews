@@ -12,7 +12,7 @@ import {
   faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import Modal from './Modal';
-import Router, { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import {
   UNAUTHORIZED_RESPONSE_CODE,
   REMOVED_RESPONSE_CODE,
@@ -71,6 +71,7 @@ const Article = ({
     setShouldDisplayModal((shouldDisplay) => !shouldDisplay);
   };
 
+  // delete
   const confirmDelete = async () => {
     if (!accessToken) {
       setShouldRedirectLogin(() => true);
@@ -84,7 +85,7 @@ const Article = ({
       ? (await renewToken(ENDPOINT, userId)).accessToken
       : accessToken;
 
-    const response = await fetch(ENDPOINT + '/posts/' + postId, {
+    const response = await fetch(ENDPOINT + '/posts/delete/' + postId, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${updatedToken}`,

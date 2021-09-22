@@ -40,9 +40,9 @@ router.patch(
   controllers.vote,
 );
 
-//'Deletes' a Post (does not remove it from the database) ✔
+//'Deletes' a Post ✔
 router.delete(
-  '/:postId',
+  '/delete/:postId',
   auth.verifyToken,
   getters.userGetter,
   getters.postGetter,

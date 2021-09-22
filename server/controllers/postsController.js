@@ -129,7 +129,7 @@ async function vote(req, res) {
         $pull: { upvoters: { userId: userId } },
       });
 
-      user.committedLikes -= 1;
+      user.upvotesCount -= 1;
 
       await post.save();
       await user.save();
@@ -142,7 +142,7 @@ async function vote(req, res) {
     } else {
       //Add the upvote
       post.upvoters.push({ userId: userId });
-      user.committedLikes += 1;
+      user.upvotesCount += 1;
 
       await post.save();
       await user.save();
@@ -162,16 +162,19 @@ async function deletePost(req, res) {
   const post = req.post;
   const userId = req.user.sub;
 
+  console.log(post);
+  console.log(userId);
+
   if (String(post.authorId) === String(userId)) {
     try {
-      //get all comments
-      //connected to the post and delete them too
-      let comments = await getters.commentsGetter(req);
-      const deletionsCount = comments.count;
+      //get all comments connected to the post and delete them too
+      let comments = await getters.commentsGetter(post._id);
+      const deletionsCount = comments.length;
 
-      for (let i = 0; i < comments.count; i++) {
+      for (let i = 0; i < comments.length; i++) {
         await comments[i].delete();
       }
+
       await post.delete();
 
       const user = await User.findOne({ userId });
@@ -183,6 +186,7 @@ async function deletePost(req, res) {
       res
         .status(200)
         .json({ message: 'Post and comments have been deleted successfully!' });
+
       return;
     } catch (err) {
       res.status(500).json({ message: err.message });

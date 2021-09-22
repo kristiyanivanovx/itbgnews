@@ -8,7 +8,7 @@ const userSchema = new Schema({
   date: Date,
   postsCount: { type: Number, default: 0 },
   commentsCount: { type: Number, default: 0 },
-  committedLikes: { type: Number, default: 0 },
+  upvotesCount: { type: Number, default: 0 },
 });
 
 userSchema.index(

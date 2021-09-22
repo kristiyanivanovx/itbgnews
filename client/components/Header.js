@@ -28,17 +28,17 @@ const Header = ({ shouldHideSearchBar }) => {
     // todo: set search term to be query parameter
   };
 
-  let data = null;
   useEffect(() => {
-    (async () => {
-      const response = await fetch(
-        ENDPOINT + '/posts/search?searchTerm=' + searchTerm,
-      );
-
-      const json = await response.json();
-      setResults(() => json.posts);
-    })();
-  }, [ENDPOINT, data, router, searchTerm]);
+    if (searchTerm) {
+      fetch(ENDPOINT + '/posts/search?searchTerm=' + searchTerm)
+        .then((data) => data.json())
+        .then((data) => {
+          setResults(() => data.posts);
+        });
+    } else {
+      setResults(() => []);
+    }
+  }, [ENDPOINT, router, searchTerm]);
 
   return (
     <>

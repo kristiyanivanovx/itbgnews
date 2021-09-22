@@ -41,9 +41,6 @@ const Home = ({ data, accessToken, ENDPOINT }) => {
     jwt.decode(accessToken ?? null)?.sub ?? null,
   );
 
-  console.log('home');
-  console.log(userId);
-
   useEffect(() => {
     setHasMore(articlesCount > articles.length);
   }, [articles, articlesCount]);

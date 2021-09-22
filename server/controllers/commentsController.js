@@ -45,7 +45,7 @@ async function upvoteComment(req, res) {
         $pull: { upvoters: { userId: user._id } },
       });
 
-      user.committedLikes -= 1;
+      user.upvotesCount -= 1;
       user.save();
 
       res.status(200).json({
@@ -55,7 +55,7 @@ async function upvoteComment(req, res) {
     } else {
       //Add the upvote
       comment.upvoters.push({ userId: user._id });
-      user.committedLikes += 1;
+      user.upvotesCount += 1;
 
       await comment.save();
       await user.save();
