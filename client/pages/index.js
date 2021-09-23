@@ -81,8 +81,7 @@ const Home = ({ data, accessToken, ENDPOINT }) => {
                       title={article.text}
                       upvotes={article.upvoters.length}
                       username={article.authorName}
-                      // todo: improve date displaying
-                      date={article}
+                      date={article.creationDate}
                       // todo: show real comments count
                       comments={index}
                       link={article.url}

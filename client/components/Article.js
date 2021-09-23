@@ -9,6 +9,7 @@ import {
   faComment,
   faUser,
   faEdit,
+  faReply,
   faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import Modal from './Modal';
@@ -39,8 +40,10 @@ const Article = ({
   redirectUrl,
   userId,
   authorId,
+  shouldDisplayReplyIcon,
   shouldDisplayEditOptions,
   accessToken,
+  changeReplyingTo,
 }) => {
   const ENDPOINT = getEndpoint();
   const [shouldDisplayEditInputs, setShouldDisplayEditInputs] = useState(false);
@@ -188,7 +191,6 @@ const Article = ({
   };
 
   const checkResponseVote = async (response) => {
-    console.log(response);
     const data = await response.json();
     const { count } = data;
 
@@ -237,7 +239,6 @@ const Article = ({
             <a href={link}>{title}</a>
           </h2>
         )}
-
         <Modal
           text={modalMessage}
           shouldDisplay={shouldDisplayModal}
@@ -247,7 +248,6 @@ const Article = ({
           cancelOptionText={'Не'}
           confirmDelete={() => confirmDelete(ENDPOINT)}
         />
-
         {shouldDisplayEditOptions ? (
           <>
             <div
@@ -268,7 +268,11 @@ const Article = ({
             </div>
           </>
         ) : null}
-
+        {shouldDisplayReplyIcon ? (
+          <div onClick={() => changeReplyingTo(postId, true)}>
+            <FontAwesomeIcon icon={faReply} />{' '}
+          </div>
+        ) : null}
         <div
           onClick={async () => await upvote()}
           className={`${styles.article__votes} ${styles.article__small__text} `}
@@ -293,13 +297,14 @@ const Article = ({
           />
           от {username}
         </div>
+
         <div>
           <FontAwesomeIcon
             icon={faClock}
             className={styles.article__information__icon}
           />
           <Link href={{ pathname: '/view', query: { name: text, postId } }}>
-            <a>{new Date(date).toLocaleDateString('bg-BGgit switc')}</a>
+            <a>{new Date(date).toLocaleDateString('bg-BG')}</a>
           </Link>
         </div>
         <div>

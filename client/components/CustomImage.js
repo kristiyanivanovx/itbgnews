@@ -19,13 +19,15 @@ async function imageUpload(ev) {
 function revealButton(){
     return (
       <button onClick={imageUpload}>Click here to upload</button>
-
     )
 }
 
-const CustomImage = () => {
+const CustomImage = ({image}) => {
+  const modalImage = {
+    backgroundImage : image
+  }
   return (
-    <input type="file" onClick={revealButton}/>
+    <input type="file" onClick={revealButton} style={modalImage}/>
   )
 };
 

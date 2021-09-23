@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon server.js",
     "nodemon-deploy": "nodemon server.js -p $PORT",
-    "pm2-deploy": "pm2 start server.js --port $PORT --watch"
+    "pm2-deploy": "pm2 start server.js -f --watch -- --port $PORT"
   },
   "license": "MIT",
   "dependencies": {

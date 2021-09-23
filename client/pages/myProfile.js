@@ -15,7 +15,6 @@ import isTokenExpired from '../utilities/isTokenExpired';
 import renewToken from '../utilities/refreshToken';
 import getUserToken from '../utilities/getUserToken';
 import renewCookie from '../utilities/renewCookie';
-import INDEX_PATH from '../next.config';
 
 export const getServerSideProps = requireAuthentication(async (context) => {
   const ENDPOINT = getEndpoint();
@@ -125,7 +124,8 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
             image={image}
             // todo: get these props dynamically
             username={userData.username}
-            bio={userData?.bio ?? 'Да жиевее България.'}
+            // bio={userData?.bio ?? 'Да жиевее България.'}
+            bio={userData?.bio ?? ''}
             email={userData.email}
             commentsCount={userData.commentsCount}
             upvotesCount={userData.upvotesCount}
@@ -147,9 +147,7 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
                   isFirstArticle={index === 0}
                   title={article.text}
                   upvotes={article.upvoters.length}
-                  // todo: use username instead of author id
                   username={article.authorName}
-                  // todo: improve date displaying
                   date={article.creationDate}
                   // todo: show real comments count
                   comments={index}
