@@ -37,15 +37,8 @@ const Profile = ({
 
       <div className={styles.profile__information}>
         <div className={styles.user__profile__pic}>
-          <Image
-            className={styles.profile__pic}
-            // src={profile}
-            // src={img}
-            width={100}
-            height={100}
-            src={image}
-            alt={'profile picture'}
-          />
+          <input type="text" style={}/>
+
         </div>
         <div className={styles.user__information}>
           <div className={styles.profile__top}>
