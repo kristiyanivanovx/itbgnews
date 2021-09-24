@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import styles from '../styles/SingleArticle.module.css';
+import styles from '../styles/Articles.module.css';
 import Article from '../components/Article';
 import Comment from '../components/Comment';
 import Header from '../components/Header';
@@ -95,7 +95,7 @@ const View = ({ postId, data, ENDPOINT }) => {
         </div>
         <div className={'col'}>
           <SideNav />
-          <main className={'articles'}>
+          <main className={styles.articles}>
             <section className="article__wrapper">
               {singleArticle}
               {comments}

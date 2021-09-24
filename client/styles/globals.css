@@ -1,148 +1,144 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200;400;700&display=swap');
 
 * {
-    margin: 0;
-    box-sizing: border-box;
-    padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  padding: 0;
 }
 
 :root {
-    --ff-primary: 'Nunito', sans-serif;
+  --ff-primary: 'Nunito', sans-serif;
 
-    --fw-reg: 200;
-    --fw-bold: 700;
+  --fw-reg: 200;
+  --fw-bold: 700;
 
-    --clr-background: #302636;
-    --clr-main: #554360;
-    --clr-grey: #51515b;
-    --clr-red: #51515b;
-    --clr-green: #72a772;
-    --clr-purple: #d03ad2;
-    --clr-white: #ffffff;
-    --clr-comment: #755a85;
+  --clr-background: #302636;
+  --clr-main: #554360;
+  --clr-grey: #51515b;
+  --clr-red: #51515b;
+  --clr-green: #72a772;
+  --clr-purple: #d03ad2;
+  --clr-white: #ffffff;
+  --clr-comment: #755a85;
 
-    --fs-h2: 3rem;
-    --fs-h3: 2.5rem;
-    --fs-h4: 2rem;
+  --fs-h2: 3rem;
+  --fs-h3: 2.5rem;
+  --fs-h4: 2rem;
 
-    --fs-body: 1.25rem;
-    --fs-small: 0.5rem;
-    --fs-footer: 1rem;
+  --fs-body: 1.25rem;
+  --fs-small: 0.5rem;
+  --fs-footer: 1rem;
 }
 
 body {
-    background: var(--clr-background);
-    font-family: var(--ff-primary);
-    font-size: var(--fs-body);
-    color: var(--clr-white);
+  background: var(--clr-background);
+  font-family: var(--ff-primary);
+  font-size: var(--fs-body);
+  color: var(--clr-white);
 
-    /* center content */
-    display: grid;
-    min-height: 100%;
+  /* center content */
+  display: grid;
+  min-height: 100%;
 
-    /* sticky footer*/
-    grid-template-rows: 1fr auto;
+  /* sticky footer*/
+  grid-template-rows: 1fr auto;
 }
 
 html {
-    height: 100%;
+  height: 100%;
 }
 
 button,
 input {
-    color: inherit;
-    background-color: inherit;
-    font-size: inherit;
-    font-family: inherit;
-    border: 0;
-    padding: 0;
-    cursor: pointer;
+  color: inherit;
+  background-color: inherit;
+  font-size: inherit;
+  font-family: inherit;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
 }
 
 a {
-    color: #ffffff;
-    text-decoration: none;
+  color: #ffffff;
+  text-decoration: none;
 }
 
 a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 h2,
 h3,
 h4 {
-    line-height: 1;
-    margin: 0;
-    font-weight: var(--fw-bold);
+  line-height: 1;
+  margin: 0;
+  font-weight: var(--fw-bold);
 }
 
 h2 {
-    font-size: clamp(30px, 5vw, var(--fs-h2));
+  font-size: clamp(30px, 5vw, var(--fs-h2));
 }
 
 h3 {
-    font-size: var(--fs-h3);
+  font-size: var(--fs-h3);
 }
 
 h4 {
-    font-size: var(--fs-h4);
+  font-size: var(--fs-h4);
 }
 
 image {
-    width: 0;
-    height: 0;
+  width: 0;
+  height: 0;
 }
 
 a {
-    color: #ffffff;
-    text-decoration: none;
+  color: #ffffff;
+  text-decoration: none;
 }
 
 a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .container {
-    width: 90%;
-    max-width: 1600px;
-    margin: 40px auto 0 auto;
+  width: 90%;
+  max-width: 1600px;
+  margin: 40px auto 0 auto;
 }
 
 .col {
-    display: flex;
-    justify-content: space-between;
-    /*margin: 40px 0 40px 0;*/
-    margin-bottom: 40px;
-}
-
-.articles {
-    width: 70%;
+  display: flex;
+  justify-content: space-between;
+  /*margin: 40px 0 40px 0;*/
+  margin-bottom: 40px;
 }
 
 .svg-inline--fa :global {
-    font-size: unset;
+  font-size: unset;
 }
 
 @media (max-width: 600px) {
-    .container {
-        margin-top: 25px;
-    }
+  .container {
+    margin-top: 25px;
+  }
 
-    .articles {
-        width: 100%;
-    }
+  .articles {
+    width: 100%;
+  }
 
-    .col {
-        margin-bottom: 20px;
-    }
+  .col {
+    margin-bottom: 20px;
+  }
 
-    .search__bar {
-        margin-top: 10px;
-    }
+  .search__bar {
+    margin-top: 10px;
+  }
 }
 
 .center {
-    text-align: center;
+  text-align: center;
 }
 
 /*#__next {*/

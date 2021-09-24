@@ -1,3 +1,9 @@
+.comment__wrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .articles {
-    width: 70%;
+  width: 70%;
+  max-width: 1100px;
 }
