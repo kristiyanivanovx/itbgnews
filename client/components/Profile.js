@@ -4,23 +4,25 @@ import styles from '../styles/Profile.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import { faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-
+import CustomImage from "../components/CustomImage"
+import {useRef} from "react"
 const Profile = ({
-  image,
-  username,
-  bio,
-  email,
-  commentsCount,
-  upvotesCount,
-  articlesCount,
-  triggerConfirmation,
-  children,
-}) => {
+                   image,
+                   username,
+                   bio,
+                   email,
+                   commentsCount,
+                   upvotesCount,
+                   articlesCount,
+                   triggerConfirmation,
+                   children,
+                 }) => {
   const [shouldBlurEmail, setShouldBlurEmail] = useState(true);
-
   const toggleDisplayEmail = () => {
     setShouldBlurEmail((shouldBlurEmail) => !shouldBlurEmail);
   };
+
+
 
   return (
     <main className={styles.profile}>
@@ -37,8 +39,15 @@ const Profile = ({
 
       <div className={styles.profile__information}>
         <div className={styles.user__profile__pic}>
-          <input type="text" style={}/>
-
+          <CustomImage
+            className={styles.profile__pic}
+            // src={profile}
+            // src={img}
+            width={100}
+            height={100}
+            image={image}
+            alt={'profile picture'}
+          />
         </div>
         <div className={styles.user__information}>
           <div className={styles.profile__top}>
