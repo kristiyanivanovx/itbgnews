@@ -11,12 +11,10 @@ import SideNav from '../components/SideNav';
 import { CREATED_RESPONSE_CODE, getEndpoint } from '../utilities/common';
 import { useRouter } from 'next/router';
 import Modal from '../components/Modal';
-import isTokenExpired from '../utilities/isTokenExpired';
-import renewToken from '../utilities/refreshToken';
 import jwt from 'jsonwebtoken';
 import requireAuthentication from '../helpers/requireAuthentication';
 import getUserToken from '../utilities/getUserToken';
-import renewCookie from '../utilities/renewCookie';
+import ensureValidCookie from '../utilities/ensureValidCookie';
 
 export const getServerSideProps = requireAuthentication((context) => {
   let accessToken = getUserToken(context.req?.headers.cookie).split('=')[1];
@@ -54,19 +52,12 @@ const Create = ({ accessToken }) => {
 
   const submitForm = async () => {
     let userId = jwt.decode(accessToken).sub;
-    let isExpired = isTokenExpired(accessToken);
-
-    let updatedToken = isExpired
-      ? (await renewToken(ENDPOINT, userId)).accessToken
-      : accessToken;
-
-    isExpired ? await renewCookie(updatedToken) : null;
 
     const response = await fetch(ENDPOINT + '/posts/create', {
       method: 'POST',
       body: JSON.stringify({ text, url, authorId: userId }),
       headers: {
-        Authorization: `Bearer ${updatedToken}`,
+        Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
         'Content-Type': 'application/json',
       },
     });

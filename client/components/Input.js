@@ -19,7 +19,6 @@ export default function Input({
     <span className={styles.user__input__error__text}>{errorMessage}</span>
   ) : null;
 
-  // className={styles.user__input}
   return (
     <>
       <input

@@ -1,3 +1,14 @@
+.comment__wrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .articles {
-    width: 70%;
+  width: 70%;
+}
+
+@media (max-width: 600px) {
+  .articles {
+    width: 100%;
+  }
 }

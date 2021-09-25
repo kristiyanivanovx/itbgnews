@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styles from '../styles/Article.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
@@ -23,10 +23,8 @@ import {
   getEndpoint,
 } from '../utilities/common';
 import Input from './Input';
-import isTokenExpired from '../utilities/isTokenExpired';
-import renewToken from '../utilities/refreshToken';
-import jwt from 'jsonwebtoken';
-import renewCookie from '../utilities/renewCookie';
+import ensureValidCookie from '../utilities/ensureValidCookie';
+import { route } from 'next/dist/server/router';
 
 const Article = ({
   postId,
@@ -37,7 +35,6 @@ const Article = ({
   date,
   comments,
   link,
-  redirectUrl,
   userId,
   authorId,
   shouldDisplayReplyIcon,
@@ -51,12 +48,13 @@ const Article = ({
   const [shouldRotate, setShouldRotate] = useState(false);
   const [hasDeleteOption, setHasDeleteOption] = useState(false);
   const [shouldRedirectLogin, setShouldRedirectLogin] = useState(false);
-  const [shouldRedirectProfile, setShouldRedirectProfile] = useState(false);
-  const [shouldRedirectIndex, setShouldRedirectIndex] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [upvotesCount, setUpvotesCount] = useState(upvotes);
-  const [text, setText] = useState(title);
-  const [url, setUrl] = useState(link);
+  const [formText, setFormText] = useState(title);
+  const [formUrl, setFormUrl] = useState(link);
+  const [originalText, setOriginalText] = useState(title);
+  const [originalUrl, setOriginalUrl] = useState(link);
+  const [isDeleted, setIsDeleted] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -64,17 +62,7 @@ const Article = ({
       router.push('/login');
       setShouldRedirectLogin((prev) => !prev);
     }
-
-    if (shouldRedirectIndex) {
-      router.push('/');
-      setShouldRedirectIndex((prev) => !prev);
-    }
-
-    if (shouldRedirectProfile) {
-      router.push('/myProfile');
-      setShouldRedirectProfile((prev) => !prev);
-    }
-  }, [shouldRedirectLogin, router, shouldRedirectIndex, shouldRedirectProfile]);
+  }, [shouldRedirectLogin, router]);
 
   const toggleModalDelete = (message) => {
     setHasDeleteOption(() => true);
@@ -89,22 +77,14 @@ const Article = ({
       return;
     }
 
-    let userId = jwt.decode(accessToken).sub;
-    let isExpired = isTokenExpired(accessToken);
-
-    let updatedToken = isExpired
-      ? (await renewToken(ENDPOINT, userId)).accessToken
-      : accessToken;
-
     const response = await fetch(ENDPOINT + '/posts/delete/' + postId, {
       method: 'DELETE',
       headers: {
-        Authorization: `Bearer ${updatedToken}`,
+        Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
       },
     });
 
     // todo: check for errors аnd set them
-    // console.log(response.status);
     // setErrors(() => result);
     checkResponseDelete(response);
   };
@@ -113,8 +93,9 @@ const Article = ({
     if (response.status === DELETED_RESPONSE_CODE) {
       setHasDeleteOption((hasDeleteOption) => !hasDeleteOption);
       setModalMessage(() => 'Новината беше успешно изтрита.');
-      setShouldRedirectIndex(() => true);
-      // setTimeout(() => Router.push('/'), 2000);
+      setTimeout(() => {
+        setIsDeleted(() => true);
+      }, 1000);
     }
   };
 
@@ -131,58 +112,42 @@ const Article = ({
       return;
     }
 
-    let userId = jwt.decode(accessToken).sub;
-    let isExpired = isTokenExpired(accessToken);
-
-    // if token is not valid, generate a new one, else take the previous value
-    let updatedToken = isExpired
-      ? (await renewToken(ENDPOINT, userId)).accessToken
-      : accessToken;
-
-    isExpired ? await renewCookie(updatedToken) : null;
-
     const response = await fetch(ENDPOINT + '/posts/update/' + postId, {
       method: 'PATCH',
-      body: JSON.stringify({ text, url }),
+      body: JSON.stringify({ text: formText, url: formUrl }),
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${updatedToken}`,
+        Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
       },
     });
 
     // todo: check for errors аnd set them
     // setErrors(() => result);
-    checkResponseEdit(response);
+    await checkResponseEdit(response);
   };
 
-  const checkResponseEdit = (response) => {
+  const checkResponseEdit = async (response) => {
     if (response.status === EDITED_RESPONSE_CODE) {
-      setShouldRedirectIndex(() => true);
-      // setShouldRedirectProfile(() => true);
+      const data = await response.json();
+
+      setOriginalText(() => data.text);
+      setOriginalUrl(() => data.url);
+      setFormText(() => data.text);
+      setFormUrl(() => data.url);
     }
   };
 
-  // voting
+  // vote
   const upvote = async () => {
     if (!accessToken) {
       setShouldRedirectLogin(() => true);
       return;
     }
 
-    let userId = jwt.decode(accessToken).sub;
-    let isExpired = isTokenExpired(accessToken);
-
-    // if token is not valid, generate a new one, else take the previous value
-    let updatedToken = isExpired
-      ? (await renewToken(ENDPOINT, userId)).accessToken
-      : accessToken;
-
-    isExpired ? await renewCookie(updatedToken) : null;
-
     const response = await fetch(ENDPOINT + '/posts/upvote/' + postId, {
       method: 'PATCH',
       headers: {
-        Authorization: `Bearer ${updatedToken}`,
+        Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
       },
     });
 
@@ -204,39 +169,35 @@ const Article = ({
     }
   };
 
-  // presentation logic
   const articleClasses = isFirstArticle
     ? `${styles.article__regular} ${styles.article__rounded}`
     : `${styles.article__regular}`;
 
   return (
-    <article className={articleClasses}>
+    <article
+      className={articleClasses}
+      style={{ display: isDeleted ? 'none' : 'flex' }}
+    >
       <div className={styles.article__main}>
         {shouldDisplayEditInputs ? (
           <>
             <div className={styles.article__inputs__wrapper}>
               <Input
-                defaultValue={title}
-                onChange={(e) => setText(e.target.value)}
+                defaultValue={originalText}
+                onChange={(e) => setFormText(e.target.value)}
               />
               <Input
-                defaultValue={link}
-                onChange={(e) => setUrl(e.target.value)}
+                defaultValue={originalUrl}
+                onChange={(e) => setFormUrl(e.target.value)}
               />
             </div>
-            <div
-              className={styles.article__modify}
-              onClick={() => toggleEditInputs()}
-            >
-              <FontAwesomeIcon
-                icon={faSave}
-                onClick={() => confirmEdit(ENDPOINT)}
-              />
+            <div className={styles.article__modify} onClick={toggleEditInputs}>
+              <FontAwesomeIcon icon={faSave} onClick={confirmEdit} />
             </div>
           </>
         ) : (
           <h2 className={styles.article__title}>
-            <a href={link}>{title}</a>
+            <a href={originalUrl}>{originalText}</a>
           </h2>
         )}
         <Modal
@@ -246,14 +207,11 @@ const Article = ({
           hasDeleteOption={hasDeleteOption}
           confirmOptionText={'Да'}
           cancelOptionText={'Не'}
-          confirmDelete={() => confirmDelete(ENDPOINT)}
+          confirmDelete={confirmDelete}
         />
         {shouldDisplayEditOptions ? (
           <>
-            <div
-              className={styles.article__modify}
-              onClick={() => toggleEditInputs()}
-            >
+            <div className={styles.article__modify} onClick={toggleEditInputs}>
               <FontAwesomeIcon icon={faEdit} />
             </div>
             <div
@@ -269,7 +227,10 @@ const Article = ({
           </>
         ) : null}
         {shouldDisplayReplyIcon ? (
-          <div onClick={() => changeReplyingTo(postId, true)}>
+          <div
+            className={styles.article__modify}
+            onClick={() => changeReplyingTo(postId, true)}
+          >
             <FontAwesomeIcon icon={faReply} />{' '}
           </div>
         ) : null}
@@ -303,7 +264,7 @@ const Article = ({
             icon={faClock}
             className={styles.article__information__icon}
           />
-          <Link href={{ pathname: '/view', query: { name: text, postId } }}>
+          <Link href={{ pathname: '/view', query: { name: formText, postId } }}>
             <a>{new Date(date).toLocaleDateString('bg-BG')}</a>
           </Link>
         </div>

@@ -178,22 +178,24 @@
 
     .user__profile__pic {
         margin: 0 auto;
-        width: 150px;
+        /*width: 150px;*/
     }
 
     .user__information {
         width: 100%;
     }
 
-    .profile__top h3 {
+    .profile__top {
         width: 100%;
-        text-align: center;
+        justify-content: center;
     }
 
     .user__bio {
         text-align: center;
     }
-
+    .blurry__container{
+        justify-content: center;
+    }
     .user__activities {
         margin: 0;
     }

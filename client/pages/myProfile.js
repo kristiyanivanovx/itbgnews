@@ -15,6 +15,7 @@ import isTokenExpired from '../utilities/isTokenExpired';
 import renewToken from '../utilities/refreshToken';
 import getUserToken from '../utilities/getUserToken';
 import renewCookie from '../utilities/renewCookie';
+import ensureValidCookie from '../utilities/ensureValidCookie';
 
 export const getServerSideProps = requireAuthentication(async (context) => {
   const ENDPOINT = getEndpoint();
@@ -66,28 +67,18 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
     setHasMore(data.postsCount > articles.length);
   }, [articles.length, shouldRedirect, data.postsCount, router]);
 
-  // todo: improve cookie sending
   const submitLogoutForm = async () => {
-    // let userId = jwt.decode(accessToken).sub;
-    let isExpired = isTokenExpired(accessToken);
-
-    let updatedToken = isExpired
-      ? (await renewToken(ENDPOINT, userId)).accessToken
-      : accessToken;
-
-    isExpired ? await renewCookie(updatedToken) : null;
-
     const logoutResponse = await fetch(ENDPOINT + '/logout', {
-      headers: { authorization: `Bearer ${updatedToken}` },
+      headers: {
+        authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
+      },
       method: 'POST',
     });
 
     const cookieRemoveResponse = await fetch('/api/removeCookie', {
       method: 'POST',
       body: JSON.stringify({}),
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
     });
 
     let result = await logoutResponse.json();
@@ -95,7 +86,6 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
     // if (result.status === SUCCESS_RESPONSE_CODE) { }
   };
 
-  // todo: get the articles by this user
   const getMoreArticles = async () => {
     const response = await fetch(
       ENDPOINT + '/posts/by/' + userId + `?skip=${articles.length}&limit=10`,
@@ -122,9 +112,7 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
           <Profile
             triggerConfirmation={async () => await submitLogoutForm()}
             image={image}
-            // todo: get these props dynamically
             username={userData.username}
-            // bio={userData?.bio ?? 'Да жиевее България.'}
             bio={userData?.bio ?? ''}
             email={userData.email}
             commentsCount={userData.commentsCount}
@@ -156,8 +144,6 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
                   userId={userId}
                   shouldDisplayEditOptions={userId === article.authorId}
                   accessToken={accessToken}
-                  // redirectUrl={INDEX_PATH}
-                  redirectUrl={MY_PROFILE_PATH}
                 />
               ))}
             </InfiniteScroll>

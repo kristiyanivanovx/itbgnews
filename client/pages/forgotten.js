@@ -14,11 +14,9 @@ const Forgotten = () => {
   const [email, setEmail] = useState('');
 
   const submitForm = async () => {
-    let jsonData = JSON.stringify({ email });
-
     const response = await fetch(ENDPOINT + '/forgotten', {
       method: 'POST',
-      body: jsonData,
+      body: JSON.stringify({ email }),
       headers: {
         'Content-Type': 'application/json',
       },
