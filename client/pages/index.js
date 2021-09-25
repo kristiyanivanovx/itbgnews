@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Article from '../components/Article';
 import SideNav from '../components/SideNav';
 import Header from '../components/Header';
@@ -9,6 +9,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import INDEX_PATH from '../next.config';
 import getUserToken from '../utilities/getUserToken';
 import jwt from 'jsonwebtoken';
+import { useRouter } from 'next/router';
 
 export async function getServerSideProps(context) {
   const ENDPOINT = getEndpoint();
@@ -34,11 +35,19 @@ export async function getServerSideProps(context) {
 }
 
 const Home = ({ data, accessToken, ENDPOINT }) => {
+  const router = useRouter();
   const [articles, setArticles] = useState(data.posts);
   const [hasMore, setHasMore] = useState(true);
   const [userId, setUserId] = useState(
     jwt.decode(accessToken ?? null)?.sub ?? null,
   );
+
+  // function useRouterRefresh() {
+  //   const { asPath } = useRouter();
+  //
+  //   console.log(' useRouterRefresh');
+  //   return useCallback(() => router.replace(asPath), [asPath]);
+  // }
 
   useEffect(() => {
     setHasMore(data.postsCount > articles.length);
@@ -88,6 +97,7 @@ const Home = ({ data, accessToken, ENDPOINT }) => {
                       redirectUrl={INDEX_PATH}
                       authorId={article.authorId}
                       userId={userId}
+                      // refreshData={refreshData}
                       shouldDisplayEditOptions={userId === article.authorId}
                       accessToken={accessToken}
                     />

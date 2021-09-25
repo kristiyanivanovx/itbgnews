@@ -1,7 +1,7 @@
 # example deployment script, modify to suit your needs
 
 heroku container:login
-cd "D:\Projects\GitHub repos\hackernews-clone" || exit
+cd "D:\Projects\GitHub repos\itbgnews" || exit
 echo "$PWD"
 docker build -t "itbgnews-client" ./client/ --no-cache
 docker tag itbgnews-client registry.heroku.com/itbgnews/web

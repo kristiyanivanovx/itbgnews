@@ -18,11 +18,9 @@ const Verify = () => {
   const { token, email } = router.query;
 
   const submitForm = async () => {
-    let jsonData = JSON.stringify({ token, email, password });
-
     const response = await fetch(ENDPOINT + '/password-reset', {
       method: 'POST',
-      body: jsonData,
+      body: JSON.stringify({ token, email, password }),
       headers: {
         'Content-Type': 'application/json',
       },

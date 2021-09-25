@@ -4,10 +4,9 @@ const { getEnvironmentInfo } = require('../utilities/common');
 
 dotenv.config();
 
-// mail.setApiKey(process.env.MAIL_API);
-mail.setApiKey(process.env.MAIL_API_KRIS);
+mail.setApiKey(process.env.MAIL_API);
 
-const [_, isProduction] = getEnvironmentInfo();
+const [ENV, isProduction] = getEnvironmentInfo();
 
 const HOST = isProduction
   ? process.env.REMOTE_FRONTEND_HOST

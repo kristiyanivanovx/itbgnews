@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import styles from '../styles/SingleArticle.module.css';
 import Article from '../components/Article';
 import Comment from '../components/Comment';
 import Header from '../components/Header';
@@ -12,16 +11,14 @@ import {
   getEndpoint,
 } from '../utilities/common';
 import INDEX_PATH from '../next.config';
-import { useRouter } from 'next/router';
+import Router, { useRouter } from 'next/router';
 import getUserToken from '../utilities/getUserToken';
 import jwt from 'jsonwebtoken';
 import countChildren from '../utilities/countChildren';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faReply, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faSave } from '@fortawesome/free-regular-svg-icons';
-import isTokenExpired from '../utilities/isTokenExpired';
-import renewToken from '../utilities/refreshToken';
-import renewCookie from '../utilities/renewCookie';
+import ensureValidCookie from '../utilities/ensureValidCookie';
 
 export async function getServerSideProps(context) {
   const postId = context.query.postId;
@@ -55,7 +52,8 @@ export async function getServerSideProps(context) {
 // todo: finish up here, get current post + comments by the post's id
 const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
   const [shouldShowInput, setShouldShowInput] = useState(false);
-  const [shouldRedirect, setShouldRedirect] = useState(false);
+  // const [shouldRedirect, setShouldRedirect] = useState(false);
+  const [shouldRedirectLogin, setShouldRedirectLogin] = useState(false);
   const [iconsDisplay, setIconsDisplay] = useState(false);
   const [replyingTo, setReplyingTo] = useState({ id: postId, isPost: true });
   const [text, setText] = useState('');
@@ -81,7 +79,17 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
     if (isNotFound || isNotValidId) {
       router.push('/');
     }
-  }, [isNotFound, isNotValidId, router]);
+
+    if (shouldRedirectLogin) {
+      console.log(shouldRedirectLogin);
+      router.push('/login');
+    }
+  }, [isNotFound, isNotValidId, router, shouldRedirectLogin]);
+
+  const refreshData = () => {
+    console.log('refreshing in parent ...');
+    router.replace(router.asPath);
+  };
 
   useEffect(() => {
     if (!shouldShowInput && text) {
@@ -96,6 +104,10 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
   const article = data.post;
 
   const changeReplyingTo = (replyToId, isPost) => {
+    if (!accessToken) {
+      setShouldRedirectLogin(() => true);
+    }
+
     setReplyingTo(() => ({ id: replyToId, isPost: isPost }));
     setShouldShowInput(() => true);
     console.log(replyingTo);
@@ -107,16 +119,6 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
       return;
     }
 
-    let userId = jwt.decode(accessToken).sub;
-    let isExpired = isTokenExpired(accessToken);
-
-    // if token is not valid, generate a new one, else take the previous value
-    let updatedToken = isExpired
-      ? (await renewToken(ENDPOINT, userId)).accessToken
-      : accessToken;
-
-    isExpired ? await renewCookie(updatedToken) : null;
-
     const response = await fetch(ENDPOINT + '/comments/create', {
       method: 'POST',
       body: JSON.stringify({
@@ -126,7 +128,7 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
       }),
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${updatedToken}`,
+        Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
       },
     });
 
@@ -135,6 +137,9 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
     // todo: check for errors аnd set them
     // setErrors(() => result);
     // checkResponseEdit(response);
+
+    setShouldShowInput((prev) => !prev);
+    Router.reload(window.location.pathname);
   };
 
   const singleArticle = (
@@ -198,6 +203,10 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
                     childrenComments={comment.children}
                     changeReplyingTo={changeReplyingTo}
                     shouldDisplayReplyIcon={true}
+                    postId={postId}
+                    replyingTo={replyingTo}
+                    accessToken={accessToken}
+                    ENDPOINT={ENDPOINT}
                   />
                 );
               })}

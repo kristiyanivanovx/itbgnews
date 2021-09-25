@@ -9,6 +9,16 @@ import {
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import countChildren from '../utilities/countChildren';
+import jwt from 'jsonwebtoken';
+import isTokenExpired from '../utilities/isTokenExpired';
+import renewToken from '../utilities/refreshToken';
+import renewCookie from '../utilities/renewCookie';
+import {
+  CREATED_RESPONSE_CODE,
+  REMOVED_RESPONSE_CODE,
+  UNAUTHORIZED_RESPONSE_CODE,
+} from '../utilities/common';
+import ensureValidCookie from '../utilities/ensureValidCookie';
 
 const Comment = ({
   commentId,
@@ -22,10 +32,86 @@ const Comment = ({
   changeReplyingTo,
   shouldDisplayReplyIcon,
   childrenComments,
+  postId,
+  replyingTo,
+  accessToken,
+  ENDPOINT,
 }) => {
+  const [upvotesCount, setUpvotesCount] = useState(upvotes);
+  const [shouldShowInput, setShouldShowInput] = useState(false);
+  // const [shouldRedirect, setShouldRedirect] = useState(false);
+  const [shouldRedirectLogin, setShouldRedirectLogin] = useState(false);
+  const [iconsDisplay, setIconsDisplay] = useState(false);
+  const [text, setText] = useState('');
+  // const router = useRouter();
+
+  const [userId, setUserId] = useState(
+    jwt.decode(accessToken ?? null)?.sub ?? null,
+  );
+
   // if (!childrenComments) {
   //   return <></>;
   // }
+
+  // todo: validate
+  const confirmEdit = async () => {
+    if (!accessToken) {
+      setShouldRedirectLogin(() => true);
+      return;
+    }
+
+    const response = await fetch(
+      ENDPOINT + '/comments/update/' + replyingTo.id,
+      {
+        method: 'PATCH',
+        body: JSON.stringify({ text }),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
+        },
+      },
+    );
+    console.log(response);
+    console.log(response.json());
+
+    // todo: check for errors аnd set them
+    // setErrors(() => result);
+    // checkResponseEdit(response);
+  };
+
+  // voting
+  const upvote = async () => {
+    if (!accessToken) {
+      setShouldRedirectLogin(() => true);
+      return;
+    }
+
+    const response = await fetch(ENDPOINT + '/comments/upvote/' + commentId, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
+      },
+    });
+
+    // setShouldRotate(() => !shouldRotate);
+    await checkResponseVote(response);
+  };
+
+  const checkResponseVote = async (response) => {
+    console.log(response);
+    const data = await response.json();
+    console.log(data);
+    const { count } = data;
+
+    if (
+      response.status === CREATED_RESPONSE_CODE ||
+      response.status === REMOVED_RESPONSE_CODE
+    ) {
+      setUpvotesCount(() => count);
+    } else if (response.status === UNAUTHORIZED_RESPONSE_CODE) {
+      setShouldRedirectLogin(() => true);
+    }
+  };
 
   return (
     <div className={styles.comment__flex}>
@@ -45,11 +131,13 @@ const Comment = ({
                     <FontAwesomeIcon icon={faReply} />{' '}
                   </div>
                 ) : null}
-                <FontAwesomeIcon
-                  className={styles.comment__votes__icon}
-                  icon={faChevronUp}
-                />
-                {upvotes} гласа
+                <div onLoad={upvote}>
+                  <FontAwesomeIcon
+                    className={styles.comment__votes__icon}
+                    icon={faChevronUp}
+                  />
+                </div>
+                {upvotesCount} гласа
               </div>
             </div>
             <div
@@ -83,6 +171,9 @@ const Comment = ({
         {childrenComments?.map((comment) => {
           const childrenCount = countChildren(comment);
 
+          {
+            /* validate that passing postId, replyingTo, accessToken works */
+          }
           return (
             <Comment
               key={comment._id}
@@ -95,6 +186,10 @@ const Comment = ({
               date={comment.creationDate}
               shouldDisplayReplyIcon={true}
               changeReplyingTo={changeReplyingTo}
+              postId={postId}
+              replyingTo={replyingTo}
+              accessToken={accessToken}
+              ENDPOINT={ENDPOINT}
             />
           );
         })}

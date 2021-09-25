@@ -183,9 +183,6 @@ async function deletePost(req, res) {
   const post = req.post;
   const userId = req.user.sub;
 
-  console.log(post);
-  console.log(userId);
-
   if (String(post.authorId) === String(userId)) {
     try {
       //get all comments connected to the post and delete them too

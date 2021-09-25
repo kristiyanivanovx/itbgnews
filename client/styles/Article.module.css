@@ -31,9 +31,15 @@
 .article__delete svg {
     margin: 0 .5rem;
 }
+
 .article__modify svg {
     margin: 0 7px;
 }
+
+.article__reply svg {
+    margin: 0 7px;
+}
+
 .article__delete svg:hover {
     color: var(--clr-background);
     /*color: #a59d9d;*/
@@ -48,6 +54,12 @@
     cursor: pointer;
     color: var(--clr-background);
 }
+
+.article__reply svg:hover {
+    cursor: pointer;
+    color: var(--clr-background);
+}
+
 
 .article__rounded {
     border-top-right-radius: 15px;

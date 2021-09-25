@@ -45,11 +45,9 @@ const Register = () => {
   };
 
   const submitForm = async () => {
-    let jsonData = JSON.stringify({ username, email, password });
-
     const response = await fetch(ENDPOINT + '/register', {
       method: 'POST',
-      body: jsonData,
+      body: JSON.stringify({ username, email, password }),
       headers: {
         'Content-Type': 'application/json',
       },
