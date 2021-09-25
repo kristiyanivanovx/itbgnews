@@ -3,81 +3,46 @@ import Article from '../components/Article';
 import SideNav from '../components/SideNav';
 import Header from '../components/Header';
 import HeadComponent from '../components/HeadComponent';
-import getDefaultLayout from '../utilities/getDefaultLayout';
-import {
-  hasAccess,
-  refresh,
-  getEnvironmentInfo,
-  JWT_ACCESS_TIME,
-  JWT_REFRESH_TIME,
-} from '../utilities/common';
+import getDefaultLayout from '../helpers/getDefaultLayout';
+import { getEndpoint } from '../utilities/common';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import INDEX_PATH from '../next.config';
-import { useCookies } from 'react-cookie';
+import getUserToken from '../utilities/getUserToken';
+import jwt from 'jsonwebtoken';
 
-// export async function getServerSideProps(context) {
-//   const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
-//
-//   const response = await fetch(ENDPOINT + '/posts?skip=0&limit=10');
-//   const data = await response.json();
-//
-//   if (!data) {
-//     return {
-//       notFound: true,
-//     };
-//   }
-//
-//   return {
-//     props: { data, ENDPOINT },
-//   };
-// }
+export async function getServerSideProps(context) {
+  const ENDPOINT = getEndpoint();
+  const response = await fetch(ENDPOINT + '/posts?skip=0&limit=10');
+  const data = await response.json();
 
-const Home = () => {
-  const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
-  const [articles, setArticles] = useState({});
-  const [articlesCount, setArticlesCount] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
-  const [shouldFetch, setShouldFetch] = useState(true);
-  const [shouldAuth, setShouldAuth] = useState(true);
-  const [cookies, setCookie, removeCookie] = useCookies([
-    'accessToken',
-    'refreshToken',
-  ]);
+  const userToken = getUserToken(context.req?.headers.cookie);
+  const accessToken = userToken ? userToken.split('=')[1] : null;
 
-  const getInitialArticles = async () => {
-    const response = await fetch(ENDPOINT + '/posts?skip=0&limit=10');
-    return await response.json();
+  if (!data) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      data,
+      accessToken,
+      ENDPOINT,
+    },
   };
+}
 
-  // only fetch the articles one time, then set the boolean to false
-  if (shouldFetch) {
-    getInitialArticles().then((data) => {
-      setArticles((prev) => data.posts);
-      setArticlesCount((articlesCount) => data.postsCount);
-      setShouldFetch((prev) => false);
-    });
-  }
-
-  let user = null;
-
-  if (shouldAuth) {
-    user = hasAccess(cookies.accessToken, cookies.refreshToken, ENDPOINT);
-
-    user.then((accessToken) => {
-      if (accessToken) {
-        setCookie('accessToken', accessToken, {
-          path: '/',
-          maxAge: JWT_ACCESS_TIME,
-        });
-      }
-    });
-
-    setShouldAuth(() => false);
-  }
+const Home = ({ data, accessToken, ENDPOINT }) => {
+  const [articles, setArticles] = useState(data.posts);
+  const [hasMore, setHasMore] = useState(true);
+  const [userId, setUserId] = useState(
+    jwt.decode(accessToken ?? null)?.sub ?? null,
+  );
 
   useEffect(() => {
-    setHasMore(articlesCount > articles.length);
-  }, [articles, articlesCount]);
+    setHasMore(data.postsCount > articles.length);
+  }, [articles, data.postsCount]);
 
   const getMoreArticles = async () => {
     const response = await fetch(
@@ -115,14 +80,16 @@ const Home = () => {
                       isFirstArticle={index === 0}
                       title={article.text}
                       upvotes={article.upvoters.length}
-                      // todo: use username instead of author id
                       username={article.authorName}
-                      // todo: improve date displaying
-                      date={article.creationDate.split('T')[0]}
+                      date={article.creationDate}
                       // todo: show real comments count
                       comments={index}
                       link={article.url}
                       redirectUrl={INDEX_PATH}
+                      authorId={article.authorId}
+                      userId={userId}
+                      shouldDisplayEditOptions={userId === article.authorId}
+                      accessToken={accessToken}
                     />
                   ))
                 : null}

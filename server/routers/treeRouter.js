@@ -3,11 +3,14 @@ const redisClient = require('../config/redisConfig');
 const comments = require('../models/comment');
 const { makeTree } = require('../utilities/makeTree');
 
-router.get('/', cache, async (req, res) => {
-  const allData = await comments.find({}).lean();
+router.get('/:parentPostId', async (req, res) => {
+  const allData = await comments
+    .find({ parentPostId: req.params.parentPostId })
+    .lean();
+
   const treeData = makeTree(allData);
 
-  redisClient.set('tree', JSON.stringify(allData));
+  // redisClient.set('tree', JSON.stringify(allData));
 
   res.json({
     tree: treeData,
@@ -23,8 +26,6 @@ async function cache(req, res, next) {
       res.json({
         tree: JSON.parse(data),
       });
-
-      return;
     } else {
       next();
     }

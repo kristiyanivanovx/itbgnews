@@ -3,11 +3,11 @@ const Comment = require('../models/comment');
 const User = require('../models/user');
 
 async function postGetter(req, res, next) {
-  const postId = req.params.postId ?? req.body.postId;
+  const postId = req.params.postId;
   let post;
 
   try {
-    post = await Post.findById(postId);
+    post = await Post.findById(postId).exec();
 
     if (!post) {
       return await res.status(404).json({
@@ -23,22 +23,25 @@ async function postGetter(req, res, next) {
 }
 
 async function userGetter(req, res, next) {
-  const userId = req.params.userId ?? req.body.userId;
+  const userId = req.user?.sub || req.params.userId;
   let user;
 
   try {
-    user = await User.findById(userId);
+    user = await User.findById(userId).exec();
 
     if (!user) {
-      return res.status(404).json({
+      res.status(404).json({
         message: `Cannot find user with id: ${userId}`,
       });
+
+      return;
     }
   } catch (err) {
-    return res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err.message });
+    return;
   }
 
-  req.user = user;
+  req.userObject = user;
   next();
 }
 
@@ -46,25 +49,28 @@ async function commentGetter(req, res, next) {
   let comment;
 
   try {
-    comment = await Comment.findById(req.body.commentId);
+    comment = await Comment.findById(req.params.commentId).exec();
 
     if (!comment) {
-      return res.status(404).json({
-        message: `Cannot find comment with id: ${req.body.commentId}`,
+      res.status(404).json({
+        message: `Cannot find comment with id: ${req.params.commentId}`,
       });
+
+      return;
     }
   } catch (err) {
-    return res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err.message });
+    return;
   }
 
   req.comment = comment;
   next();
 }
 
-async function commentsGetter(req) {
+async function commentsGetter(postId) {
   return Comment.find({
-    parentPostId: req.params.postId,
-  });
+    parentPostId: postId,
+  }).exec();
 }
 
 async function getSearch(req, res) {
@@ -76,7 +82,7 @@ async function getSearch(req, res) {
 
       const posts = await Post.find({
         text: { $regex: regex },
-      });
+      }).exec();
 
       res.json({
         posts: posts,

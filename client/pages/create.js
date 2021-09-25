@@ -1,52 +1,45 @@
-import styles from '../styles/Header.module.css';
 import Header from '../components/Header';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import FormTitle from '../components/FormTitle';
 import Form from '../components/Form';
 import HeadComponent from '../components/HeadComponent';
-import getDefaultLayout from '../utilities/getDefaultLayout';
+import getDefaultLayout from '../helpers/getDefaultLayout';
 import FormContainer from '../components/FormContainer';
 import SideNav from '../components/SideNav';
-import { CREATED_RESPONSE_CODE, getEnvironmentInfo } from '../utilities/common';
-import { useCookies } from 'react-cookie';
+import { CREATED_RESPONSE_CODE, getEndpoint } from '../utilities/common';
 import { useRouter } from 'next/router';
 import Modal from '../components/Modal';
+import isTokenExpired from '../utilities/isTokenExpired';
+import renewToken from '../utilities/refreshToken';
+import jwt from 'jsonwebtoken';
+import requireAuthentication from '../helpers/requireAuthentication';
+import getUserToken from '../utilities/getUserToken';
+import renewCookie from '../utilities/renewCookie';
 
-const Create = () => {
+export const getServerSideProps = requireAuthentication((context) => {
+  let accessToken = getUserToken(context.req?.headers.cookie).split('=')[1];
+
+  return {
+    props: {
+      accessToken,
+    },
+  };
+});
+
+const Create = ({ accessToken }) => {
+  const [errors, setErrors] = useState({});
   const router = useRouter();
-
-  const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
-  const [cookies, setCookie, removeCookie] = useCookies([
-    'accessToken',
-    'refreshToken',
-  ]);
-
+  const ENDPOINT = getEndpoint();
   const [shouldDisplay, setShouldDisplay] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [text, setText] = useState('');
   const [url, setUrl] = useState('');
 
-  // todo: critical - do not use hardcoded value
-  const authorId = '614629f5d33952852417060a';
+  const checkResponse = async (response, result) => {
+    console.log(errors);
 
-  // todo: use getServerSideProps / hoc
-  // if user doesnt have cookies, make him login
-  useEffect(() => {
-    if (!cookies || !router) {
-      return;
-    }
-
-    const { refreshToken, accessToken } = cookies;
-    if (refreshToken === undefined || accessToken === undefined) {
-      router.push('/login');
-    }
-  }, [cookies, router]);
-
-  // todo: add checks and error validation
-  const checkResponse = (response) => {
-    console.log(response.status, CREATED_RESPONSE_CODE);
     if (response.status === CREATED_RESPONSE_CODE) {
       setModalMessage(() => 'Новината беше успешно създадена!');
       toggleModal();
@@ -57,31 +50,36 @@ const Create = () => {
 
   function toggleModal() {
     setShouldDisplay((shouldDisplay) => !shouldDisplay);
-    console.log(shouldDisplay);
   }
 
   const submitForm = async () => {
-    let jsonData = JSON.stringify({ text, url, authorId });
+    let userId = jwt.decode(accessToken).sub;
+    let isExpired = isTokenExpired(accessToken);
+
+    let updatedToken = isExpired
+      ? (await renewToken(ENDPOINT, userId)).accessToken
+      : accessToken;
+
+    isExpired ? await renewCookie(updatedToken) : null;
 
     const response = await fetch(ENDPOINT + '/posts/create', {
       method: 'POST',
-      body: jsonData,
+      body: JSON.stringify({ text, url, authorId: userId }),
       headers: {
+        Authorization: `Bearer ${updatedToken}`,
         'Content-Type': 'application/json',
       },
     });
 
-    // todo: check for errors аnd set them
-    console.log(response.status);
-
-    // setErrors(() => result);
-    checkResponse(response);
+    let result = await response.json();
+    setErrors(() => result);
+    await checkResponse(response, result);
   };
 
   return (
     <div className="container">
       <HeadComponent currentPageName={'Създай Статия'} />
-      <Header />
+      <Header shouldHideSearchBar={true} />
       <div className={'col'}>
         <SideNav />
         <FormContainer>
@@ -96,11 +94,13 @@ const Create = () => {
               onChange={(e) => setText(e.target.value)}
               type={'text'}
               placeholder={'Заглавие'}
+              errorMessage={errors?.errorTitle}
             />
             <Input
               onChange={(e) => setUrl(e.target.value)}
               type={'url'}
               placeholder={'Линк'}
+              errorMessage={errors?.errorUrl}
             />
             <Button onClick={async () => await submitForm()} text={'Създай'} />
           </Form>

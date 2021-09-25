@@ -14,7 +14,7 @@ async function register(req, res) {
   });
 
   try {
-    const [accessToken, refreshToken] = makeRefresh(user._id);
+    const accessToken = makeRefresh(user._id);
     const savedUser = await user.save();
 
     res.json({
@@ -22,7 +22,6 @@ async function register(req, res) {
       message: 'Registered successfully.',
       data: {
         accessToken,
-        refreshToken,
       },
     });
   } catch (error) {
@@ -30,6 +29,8 @@ async function register(req, res) {
       res.status(409).json({
         DuplicatedValue: 'The username or email is already user',
       });
+
+      return;
     }
 
     res.status(400).json({
@@ -53,6 +54,8 @@ async function login(req, res) {
         status: false,
         message: 'There is no such user in the database.',
       });
+
+      return;
     }
 
     const isValid = await bcrypt.compare(password, user.password);
@@ -61,45 +64,42 @@ async function login(req, res) {
       res.status(401).json({
         error: 'Incorrect password',
       });
-    }
-    const [accessToken, refreshToken] = makeRefresh(user._id);
 
-    return res.json({
+      return;
+    }
+
+    const accessToken = makeRefresh(user._id);
+
+    res.json({
       status: true,
       message: 'login success',
       data: {
         accessToken,
-        refreshToken,
       },
     });
   } catch (error) {
     console.log(error);
-    return res
+    res
       .status(401)
-      .json({ status: true, message: 'login fail', data: error });
+      .json({ status: true, message: 'login failed', data: error });
   }
 }
 
 async function logout(req, res) {
   // frontend must remove access token here [from cookie]
   const userId = req.user.sub;
-  console.log('userId');
-  console.log(userId);
 
   await redisClient.del(userId.toString());
 
-  return res.status(200).json({ status: true, message: 'success.' });
+  res.status(200).json({ status: true, message: 'Logout successful.' });
 }
 
 function getAccess(req, res) {
   const userId = req.user.sub;
-  const [accessToken, refreshToken] = makeRefresh(userId);
+  const accessToken = makeRefresh(userId);
 
   res.status(200).json({
-    data: {
-      accessToken,
-      refreshToken,
-    },
+    accessToken,
   });
 }
 

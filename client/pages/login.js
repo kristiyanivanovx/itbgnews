@@ -6,41 +6,27 @@ import AuthLinks from '../components/AuthLinks';
 import FormContainer from '../components/FormContainer';
 import Form from '../components/Form';
 import HeadComponent from '../components/HeadComponent';
-import getDefaultLayout from '../utilities/getDefaultLayout';
+import getDefaultLayout from '../helpers/getDefaultLayout';
 import {
-  getEnvironmentInfo,
+  getEndpoint,
   INCORRECT_PASSWORD_ERROR_MESSAGE,
   USER_NOT_FOUND_ERROR_MESSAGE,
 } from '../utilities/common';
 import Modal from '../components/Modal';
-import { useCookies } from 'react-cookie';
 import Router from 'next/router';
+import renewCookie from '../utilities/renewCookie';
 
 const Login = () => {
-  let [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
-
+  const ENDPOINT = getEndpoint();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
   const [modalMessage, setModalMessage] = useState('');
   const [shouldDisplay, setShouldDisplay] = useState(false);
-  const [cookies, setCookie] = useCookies(['accessToken', 'refreshToken']);
 
-  function toggleModal() {
+  const toggleModal = () => {
     setShouldDisplay((shouldDisplay) => !shouldDisplay);
-  }
-
-  // todo: set cookies for a reasonable time
-  function handleTokens(accessToken, refreshToken) {
-    setCookie('accessToken', accessToken, {
-      path: '/',
-      maxAge: 60 * 60 * 24,
-    }); // 1 day
-    setCookie('refreshToken', refreshToken, {
-      path: '/',
-      maxAge: 60 * 60 * 24 * 30,
-    }); // 30 days
-  }
+  };
 
   const checkResult = async (result) => {
     if (result.message === USER_NOT_FOUND_ERROR_MESSAGE) {
@@ -50,8 +36,10 @@ const Login = () => {
       setModalMessage(() => 'Грешна парола');
       toggleModal();
     } else {
-      const { accessToken, refreshToken } = result.data;
-      handleTokens(accessToken, refreshToken);
+      console.log('result.data');
+      console.log(result);
+      const { accessToken } = result.data;
+      await renewCookie(accessToken);
 
       setModalMessage(() => 'Влязохте успешно.');
       toggleModal();
@@ -63,11 +51,9 @@ const Login = () => {
   };
 
   const submitForm = async () => {
-    let jsonData = JSON.stringify({ email, password });
-
     const response = await fetch(ENDPOINT + '/login', {
       method: 'POST',
-      body: jsonData,
+      body: JSON.stringify({ email, password }),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -94,11 +80,13 @@ const Login = () => {
             onChange={(e) => setEmail(e.target.value)}
             placeholder={'Имейл'}
             type={'text'}
+            errorMessage={errors?.email}
           />
           <Input
             onChange={(e) => setPassword(e.target.value)}
             placeholder={'Парола'}
             type={'password'}
+            errorMessage={errors?.password}
           />
           <Button onClick={async () => await submitForm()} text={'Влез'} />
 

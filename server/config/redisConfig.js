@@ -1,8 +1,8 @@
-const redis = require('redis');
 require('dotenv').config();
+const redis = require('redis');
+const { getEnvironmentInfo } = require('../utilities/common');
 
-const ENV = process.env.NODE_ENV || 'development';
-const isProduction = ENV === 'production';
+const [ENV, isProduction] = getEnvironmentInfo();
 
 const host = isProduction ? process.env.REDIS_HOST : '127.0.0.1';
 const port = isProduction ? process.env.REDIS_PORT : 6379;
@@ -15,7 +15,7 @@ const redisClient = redis.createClient({
 });
 
 console.log(
-  `Attempting to connect Redis to host ${host}, port ${port}, ${password}`,
+  `Attempting to connect Redis to host ${host}, port ${port} in ${ENV}`,
 );
 
 redisClient.on('connect', function () {

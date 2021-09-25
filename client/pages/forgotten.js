@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import FormTitle from '../components/FormTitle';
 import FormContainer from '../components/FormContainer';
 import Form from '../components/Form';
 import HeadComponent from '../components/HeadComponent';
-import getDefaultLayout from '../utilities/getDefaultLayout';
-import { getEnvironmentInfo } from '../utilities/common';
-import styles from '../styles/Form.module.css';
+import getDefaultLayout from '../helpers/getDefaultLayout';
+import { getEndpoint } from '../utilities/common';
 
+// verify that this works
 const Forgotten = () => {
-  let [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
+  const ENDPOINT = getEndpoint();
   const [email, setEmail] = useState('');
 
   const submitForm = async () => {
@@ -25,7 +25,6 @@ const Forgotten = () => {
     });
 
     let result = await response.json();
-    console.log('result >' + JSON.parse(result));
 
     // setErrors(() => result);
     // checkResponse(result);

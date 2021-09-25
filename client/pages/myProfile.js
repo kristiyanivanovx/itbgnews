@@ -3,27 +3,29 @@ import Header from '../components/Header';
 import SideNav from '../components/SideNav';
 import Profile from '../components/Profile';
 import HeadComponent from '../components/HeadComponent';
-import getDefaultLayout from '../utilities/getDefaultLayout';
-import Footer from "../components/Footer";
-
-import { useCookies } from 'react-cookie';
-import {
-  JWT_ACCESS_TIME,
-  SUCCESS_RESPONSE_CODE,
-  getEnvironmentInfo,
-  hasAccess,
-} from '../utilities/common';
+import getDefaultLayout from '../helpers/getDefaultLayout';
+import { getEndpoint } from '../utilities/common';
 import Article from '../components/Article';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import MY_PROFILE_PATH from '../next.config';
-import { route } from 'next/dist/server/router';
 import { useRouter } from 'next/router';
+import requireAuthentication from '../helpers/requireAuthentication';
+import jwt from 'jsonwebtoken';
+import isTokenExpired from '../utilities/isTokenExpired';
+import renewToken from '../utilities/refreshToken';
+import getUserToken from '../utilities/getUserToken';
+import renewCookie from '../utilities/renewCookie';
 
-export async function getServerSideProps(context) {
-  const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
+export const getServerSideProps = requireAuthentication(async (context) => {
+  const ENDPOINT = getEndpoint();
 
-  const response = await fetch(ENDPOINT + '/posts?skip=0&limit=10');
-  const data = await response.json();
+  const accessToken = getUserToken(context.req?.headers.cookie).split('=')[1];
+  const userId = jwt.decode(accessToken).sub;
+
+  const posts = await fetch(
+    ENDPOINT + '/posts/by/' + userId + '?skip=0&limit=10',
+  );
+  const data = await posts.json();
 
   if (!data) {
     return {
@@ -31,92 +33,72 @@ export async function getServerSideProps(context) {
     };
   }
 
-  return {
-    props: { data, ENDPOINT },
-  };
-}
+  const userInformation = await fetch(ENDPOINT + '/users/info/' + userId);
+  const userData = await userInformation.json();
 
-const MyProfile = ({ data, ENDPOINT }) => {
-  const [shouldAuth, setShouldAuth] = useState(true);
+  return {
+    props: {
+      data,
+      userId,
+      userData,
+      accessToken,
+      ENDPOINT,
+    },
+  };
+});
+
+const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
   const [articles, setArticles] = useState(data.posts);
   const [hasMore, setHasMore] = useState(true);
-  const [confirmation, setConfirmation] = useState(1);
+  const [shouldRedirect, setShouldRedirect] = useState(false);
   const router = useRouter();
 
-  const [cookies, setCookie, removeCookie] = useCookies([
-    'accessToken',
-    'refreshToken',
-  ]);
-
-  let user;
-  if (shouldAuth) {
-    user = hasAccess(cookies.accessToken, cookies.refreshToken, ENDPOINT);
-
-    user.then((accessToken) => {
-      if (accessToken) {
-        setCookie('accessToken', accessToken, {
-          path: '/',
-          maxAge: JWT_ACCESS_TIME,
-        });
-      }
-    });
-
-    setShouldAuth(() => false);
-  }
+  console.log('user data');
+  console.log(userData);
 
   // articles
   useEffect(() => {
-    if (confirmation > 1) {
-      if (!cookies.refreshToken) {
-        router.push('/');
-      }
-    } else {
-      if (!cookies.refreshToken) {
-        router.push('/login');
-      }
+    if (shouldRedirect) {
+      router.push('/login');
+      setShouldRedirect((prev) => !prev);
     }
 
     setHasMore(data.postsCount > articles.length);
-  }, [
-    articles.length,
-    confirmation,
-    cookies.refreshToken,
-    data.postsCount,
-    router,
-  ]);
-
-  // todo: critical: do not hardcode value
-  const userId = '6146239ddb68b22e424946c6';
-
-  // logout
-  const triggerLogoutConfirmation = async (e) => {
-    setConfirmation((confirmation) => confirmation + 1);
-    await submitLogoutForm();
-
-    // todo: improve logout
-    // if user has clicked more than one time, remove the cookies
-    // if (confirmation > 1) { await submitForm(); /* await Router.push('/'); */ }
-  };
+  }, [articles.length, shouldRedirect, data.postsCount, router]);
 
   // todo: improve cookie sending
   const submitLogoutForm = async () => {
-    const response = await fetch(ENDPOINT + '/logout', {
-      headers: { authorization: `Bearer ${cookies.accessToken}` },
+    // let userId = jwt.decode(accessToken).sub;
+    let isExpired = isTokenExpired(accessToken);
+
+    let updatedToken = isExpired
+      ? (await renewToken(ENDPOINT, userId)).accessToken
+      : accessToken;
+
+    isExpired ? await renewCookie(updatedToken) : null;
+
+    const logoutResponse = await fetch(ENDPOINT + '/logout', {
+      headers: { authorization: `Bearer ${updatedToken}` },
       method: 'POST',
     });
 
-    let result = await response.json();
-    console.log(result);
-    removeCookie('accessToken');
-    removeCookie('refreshToken');
+    const cookieRemoveResponse = await fetch('/api/removeCookie', {
+      method: 'POST',
+      body: JSON.stringify({}),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
-    if (result.status === SUCCESS_RESPONSE_CODE) {
-    }
+    let result = await logoutResponse.json();
+    setShouldRedirect(() => true);
+    // if (result.status === SUCCESS_RESPONSE_CODE) { }
   };
 
+  // todo: get the articles by this user
   const getMoreArticles = async () => {
     const response = await fetch(
-      ENDPOINT + `/posts?skip=${articles.length}&limit=10`,
+      ENDPOINT + '/posts/by/' + userId + `?skip=${articles.length}&limit=10`,
     );
 
     const { posts } = await response.json();
@@ -138,14 +120,16 @@ const MyProfile = ({ data, ENDPOINT }) => {
         <div className={'col'}>
           <SideNav />
           <Profile
-            triggerConfirmation={(e) => triggerLogoutConfirmation(e)}
+            triggerConfirmation={async () => await submitLogoutForm()}
             image={image}
             // todo: get these props dynamically
-            username={'Никола'}
-            bio={'Да жиевее българия.'}
-            commentsCount={50}
-            likesCount={1920}
-            articlesCount={3}
+            username={userData.username}
+            // bio={userData?.bio ?? 'Да жиевее България.'}
+            bio={userData?.bio ?? ''}
+            email={userData.email}
+            commentsCount={userData.commentsCount}
+            upvotesCount={userData.upvotesCount}
+            articlesCount={userData.postsCount}
           >
             <InfiniteScroll
               dataLength={articles.length}
@@ -163,13 +147,16 @@ const MyProfile = ({ data, ENDPOINT }) => {
                   isFirstArticle={index === 0}
                   title={article.text}
                   upvotes={article.upvoters.length}
-                  // todo: use username instead of author id
                   username={article.authorName}
-                  // todo: improve date displaying
-                  date={article.creationDate.split('T')[0]}
+                  date={article.creationDate}
                   // todo: show real comments count
                   comments={index}
                   link={article.url}
+                  authorId={article.authorId}
+                  userId={userId}
+                  shouldDisplayEditOptions={userId === article.authorId}
+                  accessToken={accessToken}
+                  // redirectUrl={INDEX_PATH}
                   redirectUrl={MY_PROFILE_PATH}
                 />
               ))}

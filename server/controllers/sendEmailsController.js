@@ -3,7 +3,7 @@ const { hash } = require('bcrypt');
 const verifySchema = require('../models/verifySchema');
 const userSchema = require('../models/user');
 const crypto = require('crypto');
-const { createMessage, mail } = require('../models/mailMessage');
+const { createMessage, mail } = require('../models/emailMessage');
 
 async function passwordReset(req, res) {
   const { token, email, password } = req.body;
@@ -17,6 +17,7 @@ async function passwordReset(req, res) {
 
   const encryptedPassword = await hash(password, 10);
 
+  // todo email === dbToken.email
   let dbToken = await verifySchema.findOne({ token: token });
   if (dbToken != null) {
     await userSchema
@@ -36,6 +37,8 @@ async function passwordReset(req, res) {
       }
     });
   }
+
+  res.json({ data: 'success' });
 }
 
 async function forgottenPassword(req, res) {
@@ -55,7 +58,9 @@ async function forgottenPassword(req, res) {
     .then(() => {
       console.log(`${req.body.email} has been added successfully`);
     });
+
   const msg = createMessage(req.body.email, code);
+
   mail
     .send(msg)
     .then((response) => {

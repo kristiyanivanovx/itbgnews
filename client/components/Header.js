@@ -6,11 +6,11 @@ import { faSearch, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import MobileNav from './MobileNav';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { getEnvironmentInfo } from '../utilities/common';
+import { getEndpoint } from '../utilities/common';
 import { useRouter } from 'next/router';
 
-const Header = () => {
-  const [ENV, isProduction, ENDPOINT] = getEnvironmentInfo();
+const Header = ({ shouldHideSearchBar }) => {
+  const ENDPOINT = getEndpoint();
   const [shouldDisplay, setShouldDisplay] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
@@ -28,17 +28,17 @@ const Header = () => {
     // todo: set search term to be query parameter
   };
 
-  let data = null;
   useEffect(() => {
-    (async () => {
-      const response = await fetch(
-        ENDPOINT + '/posts/search?searchTerm=' + searchTerm,
-      );
-
-      const json = await response.json();
-      setResults(() => json.posts);
-    })();
-  }, [ENDPOINT, data, router, searchTerm]);
+    if (searchTerm) {
+      fetch(ENDPOINT + '/posts/search?searchTerm=' + searchTerm)
+        .then((data) => data.json())
+        .then((data) => {
+          setResults(() => data.posts);
+        });
+    } else {
+      setResults(() => []);
+    }
+  }, [ENDPOINT, router, searchTerm]);
 
   return (
     <>
@@ -61,10 +61,12 @@ const Header = () => {
           </div>
           {shouldDisplay ? (
             <MobileNav />
-          ) : (
+          ) : shouldHideSearchBar ? null : (
             <div
               className={
-                searchTerm ? styles.search__bar__edges : styles.search__bar
+                results?.length > 0
+                  ? `${styles.search__bar} ${styles.search__bar__edges}`
+                  : styles.search__bar
               }
             >
               <FontAwesomeIcon
