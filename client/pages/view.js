@@ -6,6 +6,8 @@ import Header from '../components/Header';
 import SideNav from '../components/SideNav';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../helpers/getDefaultLayout';
+import commentStyles from '../styles/Comment.module.css';
+
 import {
   CANNOT_FIND_POST_ERROR,
   INVALID_ID,
@@ -171,19 +173,25 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
           <main className={'articles'}>
             <section className="article__wrapper">
               {singleArticle}
-              {shouldShowInput ? (
-                <>
+              <div className={commentStyles.add__comment}>
+                {shouldShowInput ? (
+                <textarea className={commentStyles.write__comment} onChange={(e) => handleChange(e.target.value)} />
+                ) : null}
+                  <div className={commentStyles.comment__icons}>
+                    {shouldShowInput ? (
+                        <div onClick={toggleInput}>
+                          <FontAwesomeIcon icon={faTimes} />
+                        </div>
+                    ) : null}
+                {shouldShowInput ? (
                   <div onClick={async () => await confirmCreate()}>
                     <FontAwesomeIcon icon={faSave} />
                   </div>
-                  <textarea onChange={(e) => handleChange(e.target.value)} />
-                </>
               ) : null}
-              {shouldShowInput ? (
-                <div onClick={toggleInput}>
-                  <FontAwesomeIcon icon={faTimes} />
-                </div>
-              ) : null}
+
+                  </div>
+              </div>
+
               {tree.map((comment) => {
                 const childrenCount = countChildren(comment);
                 return (

@@ -269,7 +269,7 @@ const Article = ({
           </>
         ) : null}
         {shouldDisplayReplyIcon ? (
-          <div onClick={() => changeReplyingTo(postId, true)}>
+          <div  className={styles.article__modify} onClick={() => changeReplyingTo(postId, true)}>
             <FontAwesomeIcon icon={faReply} />{' '}
           </div>
         ) : null}
