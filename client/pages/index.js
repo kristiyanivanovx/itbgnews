@@ -10,6 +10,7 @@ import INDEX_PATH from '../next.config';
 import getUserToken from '../utilities/getUserToken';
 import jwt from 'jsonwebtoken';
 import { useRouter } from 'next/router';
+import styles from '../styles/Articles.module.css';
 
 export async function getServerSideProps(context) {
   const ENDPOINT = getEndpoint();
@@ -71,7 +72,7 @@ const Home = ({ data, accessToken, ENDPOINT }) => {
         </div>
         <div className={'col'}>
           <SideNav />
-          <main className={'articles'}>
+          <main className={styles.articles}>
             <InfiniteScroll
               dataLength={articles.length ?? 0}
               next={getMoreArticles}

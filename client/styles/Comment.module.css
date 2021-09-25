@@ -1,8 +1,35 @@
+.add__comment {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.write__comment {
+  margin: 0.1rem;
+  width: 95%;
+  outline: none;
+  padding: 0.3rem;
+  font-size: var(--fs-body);
+  background: rgba(249, 244, 255, 0.9);
+}
+
+.write__comment:focus {
+  outline: 3px solid var(--clr-main);
+  /*border: 5px solid var(--clr-purple);*/
+}
 .comment__flex {
   display: flex;
   justify-content: flex-end;
 }
 
+.comment__icons {
+  justify-content: space-between;
+  display: flex;
+  flex-direction: column;
+}
+
+.comment__icons svg:hover {
+  color: var(--clr-main);
+}
 .comment__wrapper {
   width: 97%;
 }
