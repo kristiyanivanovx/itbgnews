@@ -5,6 +5,6 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_KEY,
   api_secret: process.env.CLOUDINARY_SECRET,
   secure: true
-}).then(() => console.log("Successfully connected to Cloudinary"));
+}, (er) => console.log("Connected to Cloudinary"));
 
 module.exports = cloudinary

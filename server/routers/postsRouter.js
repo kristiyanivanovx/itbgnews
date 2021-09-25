@@ -3,6 +3,7 @@ const router = express.Router();
 const getters = require('../functions/getters');
 const controllers = require('../controllers/postsController');
 const auth = require('../middlewares/authMiddleware');
+const { cloudinary } = require('../config/cloudinaryConfig');
 
 //Getting all Posts by page ✔
 router.get('/', controllers.getPost);
@@ -15,6 +16,27 @@ router.get('/search', getters.getSearch);
 
 //Getting comments and post by post id ✔
 router.get('/comments/:postId', getters.postGetter, controllers.getComments);
+
+
+router.get('/myprofile/image', (req , res) => {
+  const {imageString , userId} = req.body
+
+  cloudinary.search.expression().excute()
+})
+router.post('/myprofile/image', getters.userGetter, async (req , res) => {
+  const {imageString , userId} = req.body
+  try {
+    const uploadResponse = await cloudinary.uploader.upload(imageString, {
+      upload_preset: 'images',
+      public_id : userId
+    });
+    console.log(uploadResponse);
+    res.json({ msg: 'Sucessfully uploaded image' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ err: 'Something went wrong' });
+  }
+})
 
 //Creating a Post ✔
 router.post(
