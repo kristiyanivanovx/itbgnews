@@ -198,7 +198,7 @@ async function deletePost(req, res) {
           console.log(comments[i].upvoters[j].userId);
 
           let upvoter = await User.findById(comments[i].upvoters[j].userId);
-          upvoter.commitedLikes -= 1;
+          upvoter.upvotesCount -= 1;
 
           upvoter.save();
         }
@@ -209,8 +209,8 @@ async function deletePost(req, res) {
         await comments[i].delete();
       }
       for (let i = 0; i < post.upvoters.length; i++) {
-        let author = await user.findById(post.upvoters[i].userId);
-        author.commitedLikes -= 1;
+        let author = await User.findById(post.upvoters[i].userId);
+        author.upvotesCount -= 1;
 
         author.save();
       }

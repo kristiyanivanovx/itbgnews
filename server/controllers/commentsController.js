@@ -110,7 +110,7 @@ async function deleteComment(req, res) {
         console.log(comment.upvoters[j].userId);
 
         let upvoter = await User.findById(comments.upvoters[j].userId);
-        upvoter.commitedLikes -= 1;
+        upvoter.upvotesCount -= 1;
 
         upvoter.save();
       }
