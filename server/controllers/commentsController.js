@@ -1,4 +1,5 @@
 const Comment = require('../models/comment');
+const User = require('../models/user');
 
 async function postComment(req, res) {
   const user = req.userObject;
@@ -104,6 +105,15 @@ async function deleteComment(req, res) {
     try {
       comment.text = 'Deleted';
       user.commentCount -= 1;
+
+      for (let j = 0; j < comment.upvoters.length; j++) {
+        console.log(comment.upvoters[j].userId);
+
+        let upvoter = await User.findById(comments.upvoters[j].userId);
+        upvoter.commitedLikes -= 1;
+
+        upvoter.save();
+      }
 
       await comment.save();
       await user.save();
