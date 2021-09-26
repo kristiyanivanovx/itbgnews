@@ -27,7 +27,6 @@ async function passwordReset(req, res) {
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-
   const dbToken = await verifyModel.findOne({ token: token });
 
   if (dbToken && dbToken.email === email) {

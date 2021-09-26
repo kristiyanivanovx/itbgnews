@@ -44,7 +44,11 @@ module.exports = {
     new Date().getFullYear() +
     ` •</p>
       <span class="caption">
-          <a href="${HOST}/verify?token=${code}&email=${email}">Натиснете тук, за да промените своята парола в IT-BG News.</a>
+        <a href="${HOST}/verify?token=${code}&email=${email}">Натиснете тук, за да промените своята парола в IT-BG News.</a>
+        Кодът е валиден 5 минути.
+      </span>
+      <span>
+        Ако не сте заявили промяна на паролата, изтрийте този имейл. Не са нужни по-нататъчни действия.
       </span>
   </div>
 </body>
