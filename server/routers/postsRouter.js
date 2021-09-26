@@ -4,6 +4,7 @@ const getters = require('../functions/getters');
 const controllers = require('../controllers/postsController');
 const auth = require('../middlewares/authMiddleware');
 const { cloudinary } = require('../config/cloudinaryConfig');
+const {verifyToken} = require("../middlewares/authMiddleware")
 
 //Getting all Posts by page ✔
 router.get('/', controllers.getPost);
@@ -18,17 +19,31 @@ router.get('/search', getters.getSearch);
 router.get('/comments/:postId', getters.postGetter, controllers.getComments);
 
 
-router.get('/myprofile/image', (req , res) => {
-  const {imageString , userId} = req.body
+router.get('/my-profile/image', verifyToken,async (req , res) => {
+  const userId = req.user.sub
+  console.log(userId + "This is the id ")
+  const { resources } = await cloudinary.search
+    .expression(`profile_pictures/public_id:${userId}`)
+    .execute();
+  if(resources.length > 0){
+    console.log(resources)
+    return res.json({
+      data : resources[0].secure_url
+    })
+  }
+  return res.status(404).json({
+    massage : "This image cannot be found"
+  })
 
-  cloudinary.search.expression().excute()
 })
-router.post('/myprofile/image', getters.userGetter, async (req , res) => {
+router.post('/my-profile/image', async (req , res) => {
   const {imageString , userId} = req.body
+  console.log(imageString , userId)
+
   try {
     const uploadResponse = await cloudinary.uploader.upload(imageString, {
-      upload_preset: 'images',
-      public_id : userId
+      public_id : userId,
+      folder: "profile_pictures"
     });
     console.log(uploadResponse);
     res.json({ msg: 'Sucessfully uploaded image' });

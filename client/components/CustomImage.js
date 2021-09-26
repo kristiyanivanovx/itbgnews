@@ -1,32 +1,43 @@
 import React from 'react';
 import {useState} from 'react';
 import {useRef} from "react"
-import {useEffect} from "react"
-import Modal from "../components/Modal"
+import getUserToken from '../utilities/getUserToken';
 
 
-const CustomImage = ({image}) => {
+const CustomImage = ({image, userId, ENDPOINT}) => {
   const inputFile = useRef(null)
+  const [currentImage , setCurrentImage] = useState(image)
 
   const onButtonClick = () => {
     inputFile.current.click();
   };
 
+  const previewFile =  (file) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function(e) {
+      setCurrentImage(() => reader.result)
+    };
+  };
+
   async function imageUpload(ev) {
     const files = inputFile.current.files
-    const data = new FormData()
-    data.append("file", files[0])
-    data.append("upload_preset", "darwin")
-    const response = await fetch("//n", {
+    previewFile(files[0])
+    const json = {
+      userId,
+      imageString: currentImage
+    }
+
+    const response = await fetch(`http://localhost:5000/posts/my-profile/image`, {
       method: "POST",
-      body: data
+      body: JSON.stringify(json),
+      headers: {'Content-Type': 'application/json'},
     })
-    const file = await response.json()
   }
 
   return (
     <div>
-      <img src={image}
+      <img src={currentImage}
            alt="There is no image"
            onClick={onButtonClick}
            style={{width: "100%"}}

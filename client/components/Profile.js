@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import Image from 'next/image';
+import React, {useState} from 'react';
 import styles from '../styles/Profile.module.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye } from '@fortawesome/free-solid-svg-icons';
-import { faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faEye} from '@fortawesome/free-solid-svg-icons';
+import {faEyeSlash} from '@fortawesome/free-solid-svg-icons';
 import CustomImage from "../components/CustomImage"
 import {useRef} from "react"
+
 const Profile = ({
                    image,
                    username,
@@ -16,12 +16,12 @@ const Profile = ({
                    articlesCount,
                    triggerConfirmation,
                    children,
+                  userId,
                  }) => {
   const [shouldBlurEmail, setShouldBlurEmail] = useState(true);
   const toggleDisplayEmail = () => {
     setShouldBlurEmail((shouldBlurEmail) => !shouldBlurEmail);
   };
-
 
 
   return (
@@ -32,7 +32,7 @@ const Profile = ({
           className={styles.exit__btn}
           onClick={(e) => triggerConfirmation(e)}
         >
-          <div className={styles.exit__btn__shadow}> </div>
+          <div className={styles.exit__btn__shadow}></div>
           <span className={styles.exit__btn__text}>Изход</span>
         </button>
       </div>
@@ -46,6 +46,7 @@ const Profile = ({
             width={100}
             height={100}
             image={image}
+            userId = {userId}
             alt={'profile picture'}
           />
         </div>
@@ -67,9 +68,9 @@ const Profile = ({
             </div>
             <div className={styles.eye__container} onClick={toggleDisplayEmail}>
               {shouldBlurEmail ? (
-                <FontAwesomeIcon icon={faEye} />
+                <FontAwesomeIcon icon={faEye}/>
               ) : (
-                <FontAwesomeIcon icon={faEyeSlash} />
+                <FontAwesomeIcon icon={faEyeSlash}/>
               )}
             </div>
           </div>

@@ -85,6 +85,18 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
     setShouldRedirect(() => true);
     // if (result.status === SUCCESS_RESPONSE_CODE) { }
   };
+  const getPicture = async () => {
+    const getPictureResponce = await fetch(`${ENDPOINT}/posts/my-profile/image`, {
+      method : "GET",
+      headers: {
+        authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
+      },
+    })
+    console.log(1)
+    console.log(getPictureResponce)
+  }
+
+  getPicture()
 
   const getMoreArticles = async () => {
     const response = await fetch(
@@ -111,6 +123,7 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
           <SideNav />
           <Profile
             triggerConfirmation={async () => await submitLogoutForm()}
+            userId = {userId}
             image={image}
             username={userData.username}
             bio={userData?.bio ?? ''}
