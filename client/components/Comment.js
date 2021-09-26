@@ -114,87 +114,103 @@ const Comment = ({
   };
 
   return (
-    <div className={styles.comment__flex}>
-      <div className={styles.comment__wrapper}>
-        <div className={styles.comment__border}>
-          <div className={styles.comment__regular}>
-            <div className={styles.comment__main}>
-              <p className={styles.comment__title}>
-                {/*<a href={link}> {title}</a>*/}
-                {title}
-              </p>
-              <div
-                className={`${styles.comment__votes} ${styles.comment__small__text}`}
-              >
-                {shouldDisplayReplyIcon ? (
-                  <div onClick={() => changeReplyingTo(commentId, false)}>
-                    <FontAwesomeIcon icon={faReply} />{' '}
-                  </div>
-                ) : null}
-                <div onLoad={upvote}>
-                  <FontAwesomeIcon
-                    className={styles.comment__votes__icon}
-                    icon={faChevronUp}
-                  />
-                </div>
-                {upvotesCount} гласа
-              </div>
-            </div>
-            <div
-              className={`${styles.comment__information} ${styles.comment__small__text}`}
-            >
-              <div>
-                <FontAwesomeIcon
-                  icon={faUser}
-                  className={styles.comment__information__icon}
-                />
-                от {username}
-              </div>
-              <div>
-                <FontAwesomeIcon
-                  icon={faClock}
-                  className={styles.comment__information__icon}
-                />
-                {new Date(date).toLocaleDateString('bg-BG')}
-              </div>
-              <div>
-                <FontAwesomeIcon
-                  icon={faComment}
-                  className={styles.comment__information__icon}
-                />
-                {comments} коментара
-              </div>
-            </div>
+    // <div className={styles.comment__flex}>
+    //   <div className={styles.comment__wrapper}>
+    //     <div className={styles.comment__border}>
+    //       <div className={styles.comment__regular}>
+    //         <div className={styles.comment__main}>
+    //           <p className={styles.comment__title}>
+    //             {/*<a href={link}> {title}</a>*/}
+    //             {title}
+    //           </p>
+    //           <div
+    //             className={`${styles.comment__votes} ${styles.comment__small__text}`}
+    //           >
+    //             {shouldDisplayReplyIcon ? (
+    //               <div onClick={() => changeReplyingTo(commentId, false)}>
+    //                 <FontAwesomeIcon icon={faReply} />{' '}
+    //               </div>
+    //             ) : null}
+    //             <div onLoad={upvote}>
+    //               <FontAwesomeIcon
+    //                 className={styles.comment__votes__icon}
+    //                 icon={faChevronUp}
+    //               />
+    //             </div>
+    //             {upvotesCount} гласа
+    //           </div>
+    //         </div>
+    //         <div
+    //           className={`${styles.comment__information} ${styles.comment__small__text}`}
+    //         >
+    //           <div>
+    //             <FontAwesomeIcon
+    //               icon={faUser}
+    //               className={styles.comment__information__icon}
+    //             />
+    //             от {username}
+    //           </div>
+    //           <div>
+    //             <FontAwesomeIcon
+    //               icon={faClock}
+    //               className={styles.comment__information__icon}
+    //             />
+    //             {new Date(date).toLocaleDateString('bg-BG')}
+    //           </div>
+    //           <div>
+    //             <FontAwesomeIcon
+    //               icon={faComment}
+    //               className={styles.comment__information__icon}
+    //             />
+    //             {comments} коментара
+    //           </div>
+    //         </div>
+    //       </div>
+    //     </div>
+    //
+    //     {childrenComments?.map((comment) => {
+    //       const childrenCount = countChildren(comment);
+    //
+    //       {
+    //         /* validate that passing postId, replyingTo, accessToken works */
+    //       }
+    //       return (
+    //         <Comment
+    //           key={comment._id}
+    //           commentId={comment._id}
+    //           title={comment.text}
+    //           childrenComments={comment.children}
+    //           comments={childrenCount}
+    //           upvotes={comment.upvoters.length}
+    //           username={comment.authorName}
+    //           date={comment.creationDate}
+    //           shouldDisplayReplyIcon={true}
+    //           changeReplyingTo={changeReplyingTo}
+    //           postId={postId}
+    //           replyingTo={replyingTo}
+    //           accessToken={accessToken}
+    //           ENDPOINT={ENDPOINT}
+    //         />
+    //       );
+    //     })}
+    //   </div>
+    // </div>
+
+      <div className={styles.comment}>
+        <div className={styles.comment__left}>
+          <div className={styles.comment__votes__count}>10</div>
+          <div className={styles.comment__line}></div>
+        </div>
+        <div className={styles.comment__right}>
+          <div className={styles.comment__data}>
+            <div className={styles.comment__author}>Петър</div>
+            <div className={styles.comment__created}>преди 5 часа</div>
+          </div>
+          <div className={styles.comment__body}>Някъв коментар
+            <div className={styles.comment__votes__icon}></div>
           </div>
         </div>
-
-        {childrenComments?.map((comment) => {
-          const childrenCount = countChildren(comment);
-
-          {
-            /* validate that passing postId, replyingTo, accessToken works */
-          }
-          return (
-            <Comment
-              key={comment._id}
-              commentId={comment._id}
-              title={comment.text}
-              childrenComments={comment.children}
-              comments={childrenCount}
-              upvotes={comment.upvoters.length}
-              username={comment.authorName}
-              date={comment.creationDate}
-              shouldDisplayReplyIcon={true}
-              changeReplyingTo={changeReplyingTo}
-              postId={postId}
-              replyingTo={replyingTo}
-              accessToken={accessToken}
-              ENDPOINT={ENDPOINT}
-            />
-          );
-        })}
       </div>
-    </div>
   );
 };
 
