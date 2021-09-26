@@ -8,8 +8,9 @@ import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../helpers/getDefaultLayout';
 import { useRouter } from 'next/router';
 import { getEndpoint } from '../utilities/common';
+import Header from '../components/Header';
+import Modal from '../components/Modal';
 
-// verify that this works
 const Verify = () => {
   const ENDPOINT = getEndpoint();
   const [password, setPassword] = useState('');
@@ -32,22 +33,30 @@ const Verify = () => {
   };
 
   return (
-    <>
+    <div className={'container'}>
       <HeadComponent currentPageName={'Забравена Парола'} />
-      <FormContainer>
-        <FormTitle text={'Моля, изберете нова парола'} />
-        <Form>
-          <p>Въведете желаната от вас нова парола</p>
-          <Input
-            onChange={(e) => setPassword(e.target.value)}
-            type={'password'}
-            placeholder={'Нова Парола'}
-            // errorMessage={errors.errorEmail}
-          />
-          <Button text={'Запази'} onClick={async () => await submitForm()} />
-        </Form>
-      </FormContainer>
-    </>
+      <Header shouldHideSearchBar={true} />
+      <div className={'col'}>
+        <FormContainer>
+          {/*<Modal*/}
+          {/*  text={modalMessage}*/}
+          {/*  shouldDisplay={shouldDisplay}*/}
+          {/*  toggleModal={(shouldDisplay) => setShouldDisplay(!shouldDisplay)}*/}
+          {/*/>*/}
+          <FormTitle text={'Моля, изберете нова парола'} />
+          <Form>
+            <p>Въведете желаната от вас нова парола</p>
+            <Input
+              onChange={(e) => setPassword(e.target.value)}
+              type={'password'}
+              placeholder={'Нова парола'}
+              // errorMessage={errors.errorEmail}
+            />
+            <Button text={'Запази'} onClick={async () => await submitForm()} />
+          </Form>
+        </FormContainer>
+      </div>
+    </div>
   );
 };
 

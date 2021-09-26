@@ -9,12 +9,16 @@ import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../helpers/getDefaultLayout';
 import {
   getEndpoint,
-  INCORRECT_PASSWORD_ERROR_MESSAGE,
-  USER_NOT_FOUND_ERROR_MESSAGE,
+  INCORRECT_PASSWORD_ERROR,
+  USER_NOT_FOUND_ERROR,
 } from '../utilities/common';
 import Modal from '../components/Modal';
 import Router from 'next/router';
 import renewCookie from '../utilities/renewCookie';
+import AuthLink from '../components/AuthLink';
+import Brand from '../components/Brand';
+import SideNav from '../components/SideNav';
+import Header from '../components/Header';
 
 const Login = () => {
   const ENDPOINT = getEndpoint();
@@ -29,10 +33,10 @@ const Login = () => {
   };
 
   const checkResult = async (result) => {
-    if (result.message === USER_NOT_FOUND_ERROR_MESSAGE) {
+    if (result.message === USER_NOT_FOUND_ERROR) {
       setModalMessage(() => 'Няма потребител с този имейл.');
       toggleModal();
-    } else if (result.error === INCORRECT_PASSWORD_ERROR_MESSAGE) {
+    } else if (result.error === INCORRECT_PASSWORD_ERROR) {
       setModalMessage(() => 'Грешна парола');
       toggleModal();
     } else {
@@ -64,37 +68,40 @@ const Login = () => {
   };
 
   return (
-    <>
+    <div className="container">
       <HeadComponent currentPageName={'Вход'} />
-      <FormContainer>
-        <Modal
-          text={modalMessage}
-          shouldDisplay={shouldDisplay}
-          toggleModal={(shouldDisplay) => setShouldDisplay(!shouldDisplay)}
-        />
-        <FormTitle text={'Вход'} />
-        <Form>
-          <Input
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder={'Имейл'}
-            type={'text'}
-            errorMessage={errors?.email}
+      <Header shouldHideSearchBar={true} />
+      <div className={'col'}>
+        <FormContainer>
+          <Modal
+            text={modalMessage}
+            shouldDisplay={shouldDisplay}
+            toggleModal={(shouldDisplay) => setShouldDisplay(!shouldDisplay)}
           />
-          <Input
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder={'Парола'}
-            type={'password'}
-            errorMessage={errors?.password}
-          />
-          <Button onClick={async () => await submitForm()} text={'Влез'} />
+          <FormTitle text={'Вход'} />
+          <Form>
+            <Input
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={'Имейл'}
+              type={'text'}
+              errorMessage={errors?.email}
+            />
+            <Input
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder={'Парола'}
+              type={'password'}
+              errorMessage={errors?.password}
+            />
+            <Button onClick={async () => await submitForm()} text={'Влез'} />
 
-          <AuthLinks
-            firstText={'Нямаш профил?'}
-            secondText={'Забравена парола?'}
-          />
-        </Form>
-      </FormContainer>
-    </>
+            <AuthLinks>
+              <AuthLink text={'Нямаш профил?'} link={'/register'} />
+              <AuthLink text={'Забравена парола?'} link={'/forgotten'} />
+            </AuthLinks>
+          </Form>
+        </FormContainer>
+      </div>
+    </div>
   );
 };
 

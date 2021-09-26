@@ -104,7 +104,7 @@ async function deleteComment(req, res) {
 
   if (String(comment.authorId) === String(user._id)) {
     try {
-      comment.text = '[deleted]';
+      comment.text = null;
       user.commentCount -= 1;
 
       for (let j = 0; j < comment.upvoters.length; j++) {

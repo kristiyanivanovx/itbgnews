@@ -11,6 +11,8 @@ export default function Input({
 }) {
   let hasError = errorMessage != null;
 
+  console.log(errorMessage);
+
   let errorMessageBorder = hasError
     ? `${styles.user__input} ${styles.user__input__error}`
     : styles.user__input;

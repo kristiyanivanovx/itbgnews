@@ -10,7 +10,7 @@ import commentStyles from '../styles/Comment.module.css';
 
 import {
   CANNOT_FIND_POST_ERROR,
-  INVALID_ID,
+  INVALID_ID_ERROR,
   getEndpoint,
 } from '../utilities/common';
 import INDEX_PATH from '../next.config';
@@ -67,7 +67,7 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
   );
 
   const isNotFound = data?.message?.includes(CANNOT_FIND_POST_ERROR);
-  const isNotValidId = data?.message?.includes(INVALID_ID);
+  const isNotValidId = data?.message?.includes(INVALID_ID_ERROR);
 
   const toggleInput = () => {
     setShouldShowInput((prev) => !prev);
@@ -102,6 +102,7 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
   const changeReplyingTo = (replyToId, isPost) => {
     if (!accessToken) {
       setShouldRedirectLogin(() => true);
+      return;
     }
 
     setReplyingTo(() => ({ id: replyToId, isPost: isPost }));
@@ -110,7 +111,7 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
 
   const confirmCreate = async () => {
     if (!accessToken) {
-      // setShouldRedirectLogin(() => true);
+      setShouldRedirectLogin(() => true);
       return;
     }
 
@@ -188,6 +189,9 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
 
               {tree.map((comment) => {
                 const childrenCount = countChildren(comment);
+                const shouldDisplayEditOption =
+                  comment.authorId === userId && comment.text;
+
                 return (
                   <Comment
                     key={comment._id}
@@ -204,8 +208,8 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
                     replyingTo={replyingTo}
                     accessToken={accessToken}
                     ENDPOINT={ENDPOINT}
-                    // todo: check if current user === comment creator
-                    shouldDisplayEditOptions={true}
+                    userId={userId}
+                    shouldDisplayEditOption={shouldDisplayEditOption}
                   />
                 );
               })}

@@ -9,7 +9,6 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import INDEX_PATH from '../next.config';
 import getUserToken from '../utilities/getUserToken';
 import jwt from 'jsonwebtoken';
-import { useRouter } from 'next/router';
 import styles from '../styles/Articles.module.css';
 
 export async function getServerSideProps(context) {
@@ -36,19 +35,11 @@ export async function getServerSideProps(context) {
 }
 
 const Home = ({ data, accessToken, ENDPOINT }) => {
-  const router = useRouter();
   const [articles, setArticles] = useState(data.posts);
   const [hasMore, setHasMore] = useState(true);
   const [userId, setUserId] = useState(
     jwt.decode(accessToken ?? null)?.sub ?? null,
   );
-
-  // function useRouterRefresh() {
-  //   const { asPath } = useRouter();
-  //
-  //   console.log(' useRouterRefresh');
-  //   return useCallback(() => router.replace(asPath), [asPath]);
-  // }
 
   useEffect(() => {
     setHasMore(data.postsCount > articles.length);
