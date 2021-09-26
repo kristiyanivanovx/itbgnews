@@ -127,14 +127,8 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
       },
     });
 
-    // console.log(response);
-    // console.log(await response.json());
-    // todo: check for errors аnd set them
-    // setErrors(() => result);
-    // checkResponseEdit(response);
-
     setShouldShowInput((prev) => !prev);
-    Router.reload(window.location.pathname);
+    router.replace(router.asPath);
   };
 
   const singleArticle = (
@@ -210,6 +204,8 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
                     replyingTo={replyingTo}
                     accessToken={accessToken}
                     ENDPOINT={ENDPOINT}
+                    // todo: check if current user === comment creator
+                    shouldDisplayEditOptions={true}
                   />
                 );
               })}

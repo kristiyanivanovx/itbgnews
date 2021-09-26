@@ -99,11 +99,12 @@ async function patchComment(req, res) {
 
 async function deleteComment(req, res) {
   const comment = req.comment;
-  const user = req.userObject;
+  const userId = req.user.sub;
+  const user = await User.findById(userId).exec();
 
   if (String(comment.authorId) === String(user._id)) {
     try {
-      comment.text = 'Deleted';
+      comment.text = '[deleted]';
       user.commentCount -= 1;
 
       for (let j = 0; j < comment.upvoters.length; j++) {

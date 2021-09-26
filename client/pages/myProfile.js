@@ -111,6 +111,7 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
             commentsCount={userData.commentsCount}
             upvotesCount={userData.upvotesCount}
             articlesCount={userData.postsCount}
+            userId={userId}
           >
             <InfiniteScroll
               dataLength={articles.length}

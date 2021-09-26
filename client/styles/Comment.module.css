@@ -1,8 +1,13 @@
+.rotated {
+  transform:  rotateX(180deg);
+}
+
 .add__comment {
   display: flex;
   justify-content: space-between;
   margin-bottom: 1rem;
 }
+
 .write__comment {
   margin: 0.1rem;
   width: 95%;
@@ -34,9 +39,50 @@
   width: 97%;
 }
 
+.comment__delete svg:hover {
+  color: var(--clr-background);
+  /*color: #a59d9d;*/
+  /*margin-bottom: 5px;*/
+  /*width: 2em !important;*/
+}
+
+.comment__edit svg:hover {
+  /*color: #3BA55D;*/
+}
+
+.comment__modify svg {
+  margin: 0 7px;
+}
+
+.comment__modify svg:hover {
+  cursor: pointer;
+  color: var(--clr-background);
+}
+
+.comment__reply svg {
+  margin: 0 7px;
+}
+
+.comment__reply svg:hover {
+  cursor: pointer;
+  color: var(--clr-background);
+}
+
+.comment__inputs__wrapper {
+  height: 100%;
+  flex: 1 1 auto;
+  margin: 0 auto;
+  display: block;
+}
+
+.comment__inputs__wrapper input {
+  display: block;
+}
+
 .comment__regular {
   background: var(--clr-comment);
   min-height: 125px;
+  /*max-height: 125px;*/
   margin-bottom: 0.1rem;
   display: flex;
   flex-direction: column;

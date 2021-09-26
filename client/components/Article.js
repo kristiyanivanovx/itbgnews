@@ -24,7 +24,6 @@ import {
 } from '../utilities/common';
 import Input from './Input';
 import ensureValidCookie from '../utilities/ensureValidCookie';
-import { route } from 'next/dist/server/router';
 
 const Article = ({
   postId,

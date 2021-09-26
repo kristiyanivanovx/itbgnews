@@ -1,24 +1,28 @@
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from '../styles/Comment.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faChevronUp,
   faClock,
   faComment,
+  faEdit,
   faReply,
+  faSave,
+  faTrashAlt,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import countChildren from '../utilities/countChildren';
-import jwt from 'jsonwebtoken';
-import isTokenExpired from '../utilities/isTokenExpired';
-import renewToken from '../utilities/refreshToken';
-import renewCookie from '../utilities/renewCookie';
 import {
   CREATED_RESPONSE_CODE,
+  DELETED_RESPONSE_CODE,
+  EDITED_RESPONSE_CODE,
   REMOVED_RESPONSE_CODE,
   UNAUTHORIZED_RESPONSE_CODE,
 } from '../utilities/common';
 import ensureValidCookie from '../utilities/ensureValidCookie';
+import Input from './Input';
+import Modal from './Modal';
+import { useRouter } from 'next/router';
 
 const Comment = ({
   commentId,
@@ -27,7 +31,6 @@ const Comment = ({
   date,
   comments,
   upvotes,
-  // tabs,
   shouldDisplayModifyButtons,
   changeReplyingTo,
   shouldDisplayReplyIcon,
@@ -36,24 +39,28 @@ const Comment = ({
   replyingTo,
   accessToken,
   ENDPOINT,
+  shouldDisplayEditOptions,
 }) => {
+  const [formText, setFormText] = useState(title);
+  const [shouldDisplayEditInputs, setShouldDisplayEditInputs] = useState(false);
   const [upvotesCount, setUpvotesCount] = useState(upvotes);
   const [shouldShowInput, setShouldShowInput] = useState(false);
-  // const [shouldRedirect, setShouldRedirect] = useState(false);
   const [shouldRedirectLogin, setShouldRedirectLogin] = useState(false);
   const [iconsDisplay, setIconsDisplay] = useState(false);
-  const [text, setText] = useState('');
-  // const router = useRouter();
+  const [originalText, setOriginalText] = useState(title);
+  const [shouldDisplayModal, setShouldDisplayModal] = useState(false);
+  const [shouldRotate, setShouldRotate] = useState(false);
+  const [hasDeleteOption, setHasDeleteOption] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [isDeleted, setIsDeleted] = useState(false);
+  const router = useRouter();
 
-  const [userId, setUserId] = useState(
-    jwt.decode(accessToken ?? null)?.sub ?? null,
-  );
+  useEffect(() => {
+    if (shouldRedirectLogin) {
+      router.push('/login');
+    }
+  }, [shouldRedirectLogin, router]);
 
-  // if (!childrenComments) {
-  //   return <></>;
-  // }
-
-  // todo: validate
   const confirmEdit = async () => {
     if (!accessToken) {
       setShouldRedirectLogin(() => true);
@@ -61,22 +68,29 @@ const Comment = ({
     }
 
     const response = await fetch(
-      ENDPOINT + '/comments/update/' + replyingTo.id,
+      ENDPOINT + '/comments/update/' + commentId, // replyingTo.id
       {
         method: 'PATCH',
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ text: formText }),
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
         },
       },
     );
-    console.log(response);
-    console.log(response.json());
 
     // todo: check for errors аnd set them
     // setErrors(() => result);
-    // checkResponseEdit(response);
+    await checkResponseEdit(response);
+  };
+
+  const checkResponseEdit = async (response) => {
+    if (response.status === EDITED_RESPONSE_CODE) {
+      const data = await response.json();
+
+      setOriginalText(() => data.text);
+      setFormText(() => data.text);
+    }
   };
 
   // voting
@@ -93,7 +107,7 @@ const Comment = ({
       },
     });
 
-    // setShouldRotate(() => !shouldRotate);
+    setShouldRotate((shouldRotate) => !shouldRotate);
     await checkResponseVote(response);
   };
 
@@ -113,27 +127,128 @@ const Comment = ({
     }
   };
 
+  // edit
+  const toggleEditInputs = () => {
+    setShouldDisplayEditInputs(
+      (shouldDisplayEditInputs) => !shouldDisplayEditInputs,
+    );
+  };
+
+  const toggleModalDelete = (message) => {
+    setHasDeleteOption(() => true);
+    setModalMessage(() => message);
+    setShouldDisplayModal((shouldDisplay) => !shouldDisplay);
+  };
+
+  // delete
+  const confirmDelete = async () => {
+    if (!accessToken) {
+      setShouldRedirectLogin(() => true);
+      return;
+    }
+
+    const response = await fetch(
+      ENDPOINT + '/comments/delete/' + postId + '/' + commentId,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
+        },
+      },
+    );
+
+    // todo: check for errors аnd set them
+    // setErrors(() => result);
+    checkResponseDelete(response);
+  };
+
+  const checkResponseDelete = (response) => {
+    if (response.status === DELETED_RESPONSE_CODE) {
+      setHasDeleteOption((hasDeleteOption) => !hasDeleteOption);
+      setModalMessage(() => 'Коментарът беше успешно изтрит.');
+      setTimeout(() => {
+        setIsDeleted(() => true);
+      }, 1000);
+    }
+  };
+
   return (
     <div className={styles.comment__flex}>
       <div className={styles.comment__wrapper}>
         <div className={styles.comment__border}>
           <div className={styles.comment__regular}>
             <div className={styles.comment__main}>
-              <p className={styles.comment__title}>
-                {/*<a href={link}> {title}</a>*/}
-                {title}
-              </p>
+              {shouldDisplayEditInputs ? (
+                <>
+                  <div className={styles.comment__inputs__wrapper}>
+                    <Input
+                      defaultValue={originalText}
+                      onChange={(e) => setFormText(e.target.value)}
+                    />
+                  </div>
+                  <div
+                    className={styles.comment__modify}
+                    onClick={toggleEditInputs}
+                  >
+                    <FontAwesomeIcon icon={faSave} onClick={confirmEdit} />
+                  </div>
+                </>
+              ) : (
+                // <a href={originalUrl}>{originalText}</a>
+                <p className={styles.comment__title}>
+                  {/*<a href={link}> {title}</a>*/}
+                  {originalText}
+                </p>
+              )}
+
+              <Modal
+                text={modalMessage}
+                shouldDisplay={shouldDisplayModal}
+                toggleModal={(shouldDisplay) =>
+                  setShouldDisplayModal(!shouldDisplay)
+                }
+                hasDeleteOption={hasDeleteOption}
+                confirmOptionText={'Да'}
+                cancelOptionText={'Не'}
+                confirmDelete={confirmDelete}
+              />
+
               <div
                 className={`${styles.comment__votes} ${styles.comment__small__text}`}
               >
+                {shouldDisplayEditOptions ? (
+                  <>
+                    <div
+                      className={styles.comment__modify}
+                      onClick={toggleEditInputs}
+                    >
+                      <FontAwesomeIcon icon={faEdit} />
+                    </div>
+                    <div
+                      className={styles.comment__modify}
+                      onClick={() =>
+                        toggleModalDelete(
+                          'Сигурни ли сте, че искате да изтриете този коментар?',
+                        )
+                      }
+                    >
+                      <FontAwesomeIcon icon={faTrashAlt} />
+                    </div>
+                  </>
+                ) : null}
                 {shouldDisplayReplyIcon ? (
-                  <div onClick={() => changeReplyingTo(commentId, false)}>
+                  <div
+                    className={styles.comment__reply}
+                    onClick={() => changeReplyingTo(commentId, false)}
+                  >
                     <FontAwesomeIcon icon={faReply} />{' '}
                   </div>
                 ) : null}
-                <div onLoad={upvote}>
+                <div onClick={upvote}>
                   <FontAwesomeIcon
-                    className={styles.comment__votes__icon}
+                    className={`${styles.comment__votes__icon} ${
+                      shouldRotate ? styles.rotated : ''
+                    }`}
                     icon={faChevronUp}
                   />
                 </div>
@@ -171,25 +286,25 @@ const Comment = ({
         {childrenComments?.map((comment) => {
           const childrenCount = countChildren(comment);
 
-          {
-            /* validate that passing postId, replyingTo, accessToken works */
-          }
+          // validate that passing postId, replyingTo, accessToken works
           return (
             <Comment
               key={comment._id}
               commentId={comment._id}
               title={comment.text}
-              childrenComments={comment.children}
-              comments={childrenCount}
+              date={comment.creationDate}
               upvotes={comment.upvoters.length}
               username={comment.authorName}
-              date={comment.creationDate}
-              shouldDisplayReplyIcon={true}
+              comments={childrenCount}
+              childrenComments={comment.children}
               changeReplyingTo={changeReplyingTo}
+              shouldDisplayReplyIcon={true}
               postId={postId}
               replyingTo={replyingTo}
               accessToken={accessToken}
               ENDPOINT={ENDPOINT}
+              // todo: check if current user === comment creator
+              shouldDisplayEditOptions={true}
             />
           );
         })}

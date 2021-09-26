@@ -15,6 +15,7 @@ const Profile = ({
   articlesCount,
   triggerConfirmation,
   children,
+  userId,
 }) => {
   const [shouldBlurEmail, setShouldBlurEmail] = useState(true);
 
