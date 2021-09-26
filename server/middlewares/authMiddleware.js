@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const redisClient = require('../config/redisConfig');
 const { isEmpty } = require('../utilities/common');
 const { validatePassword, validateEmail } = require('../utilities/validation');
+const validator = require('validator');
 
 function verifyToken(req, res, next) {
   try {
@@ -79,7 +80,8 @@ function validateInputData(req, res, next) {
       'Username must be at least 6 letters and at most 30.';
   }
 
-  if (!validateEmail(email)) {
+  // if (!validateEmail(email)) {
+  if (!validator.isEmail(email)) {
     errors.errorEmail = 'The provided email is not valid.';
   }
 

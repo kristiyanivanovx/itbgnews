@@ -7,14 +7,10 @@ import getDefaultLayout from '../helpers/getDefaultLayout';
 import { getEndpoint } from '../utilities/common';
 import Article from '../components/Article';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import MY_PROFILE_PATH from '../next.config';
 import { useRouter } from 'next/router';
 import requireAuthentication from '../helpers/requireAuthentication';
 import jwt from 'jsonwebtoken';
-import isTokenExpired from '../utilities/isTokenExpired';
-import renewToken from '../utilities/refreshToken';
 import getUserToken from '../utilities/getUserToken';
-import renewCookie from '../utilities/renewCookie';
 import ensureValidCookie from '../utilities/ensureValidCookie';
 
 export const getServerSideProps = requireAuthentication(async (context) => {

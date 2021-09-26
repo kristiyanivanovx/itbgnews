@@ -4,6 +4,7 @@ const User = require('../models/user');
 const { validateUrl } = require('../utilities/validation');
 const { isEmpty } = require('../utilities/common');
 const { upvoteComment } = require('./commentsController');
+const validator = require('validator');
 
 async function getPosts(req, res) {
   const { skip, limit } = req.query;
@@ -67,9 +68,11 @@ async function postPost(req, res) {
     errors.errorTitle = 'The title must be at least 6 letters and at most 250.';
   }
 
-  if (!validateUrl(url)) {
+  // if (!validateUrl(url)) {
+  if (!validator.isURL(url)) {
     errors.errorUrl =
-      'The url must be valid hyperlink and have 1 character at least and at most 1024.';
+      // 'The url must be a valid hyperlink and have 1 character at least and at most 1024.';
+      'The url must be a valid hyperlink.';
   }
 
   if (!isEmpty(errors)) {

@@ -31,7 +31,7 @@ async function postComment(req, res) {
 
 async function upvoteComment(req, res) {
   const comment = req.comment;
-  const user = req.user;
+  const user = req.userObject;
 
   //check if upvote exists
   const upvoteExists = !!(await Comment.findOne({

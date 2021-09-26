@@ -43,7 +43,6 @@ async function userGetter(req, res, next) {
     return;
   }
 
-  console.log('1 >> ' + user);
   req.userObject = user;
   next();
 }
