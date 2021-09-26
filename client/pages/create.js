@@ -36,8 +36,6 @@ const Create = ({ accessToken }) => {
   const [url, setUrl] = useState('');
 
   const checkResponse = async (response, result) => {
-    console.log(errors);
-
     if (response.status === CREATED_RESPONSE_CODE) {
       setModalMessage(() => 'Новината беше успешно създадена!');
       toggleModal();

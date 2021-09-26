@@ -27,8 +27,6 @@ const Verify = () => {
     });
 
     const result = await response.json();
-    console.log(result);
-
     // setErrors(() => result);
     // checkResponse(result);
   };

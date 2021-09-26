@@ -74,7 +74,6 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
   };
 
   const handleChange = (text) => {
-    console.log(text);
     setText(() => text);
   };
 
@@ -84,15 +83,9 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
     }
 
     if (shouldRedirectLogin) {
-      console.log(shouldRedirectLogin);
       router.push('/login');
     }
   }, [isNotFound, isNotValidId, router, shouldRedirectLogin]);
-
-  const refreshData = () => {
-    console.log('refreshing in parent ...');
-    router.replace(router.asPath);
-  };
 
   useEffect(() => {
     if (!shouldShowInput && text) {
@@ -113,7 +106,6 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
 
     setReplyingTo(() => ({ id: replyToId, isPost: isPost }));
     setShouldShowInput(() => true);
-    console.log(replyingTo);
   };
 
   const confirmCreate = async () => {
@@ -135,8 +127,8 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
       },
     });
 
-    console.log(response);
-    console.log(await response.json());
+    // console.log(response);
+    // console.log(await response.json());
     // todo: check for errors аnd set them
     // setErrors(() => result);
     // checkResponseEdit(response);

@@ -54,9 +54,6 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
   const [shouldRedirect, setShouldRedirect] = useState(false);
   const router = useRouter();
 
-  console.log('user data');
-  console.log(userData);
-
   // articles
   useEffect(() => {
     if (shouldRedirect) {

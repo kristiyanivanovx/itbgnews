@@ -36,8 +36,6 @@ const Login = () => {
       setModalMessage(() => 'Грешна парола');
       toggleModal();
     } else {
-      console.log('result.data');
-      console.log(result);
       const { accessToken } = result.data;
       await renewCookie(accessToken);
 

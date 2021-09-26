@@ -19,6 +19,8 @@ async function postGetter(req, res, next) {
   }
 
   req.post = post;
+  console.log('2 >> ' + post);
+
   next();
 }
 
@@ -41,6 +43,7 @@ async function userGetter(req, res, next) {
     return;
   }
 
+  console.log('1 >> ' + user);
   req.userObject = user;
   next();
 }

@@ -60,6 +60,11 @@ input {
   cursor: pointer;
 }
 
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+
 a {
   color: #ffffff;
   text-decoration: none;
