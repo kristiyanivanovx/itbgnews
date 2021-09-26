@@ -12,8 +12,8 @@ dotenv.config();
 
 router.use(app.json());
 
-router.post('/password-reset', passwordReset);
-
 router.post('/forgotten', forgottenPassword);
+
+router.post('/password-reset', passwordReset);
 
 module.exports = router;

@@ -9,6 +9,9 @@ module.exports = {
   INVALID_EMAIL_ERROR: 'The provided email is not a valid email.',
   NO_USER_FOUND_ERROR:
     'No user with that email has been found in the database.',
+  INVALID_PASSWORD_ERROR:
+    'The password must have one digit at least and be between 8 and 35 symbols.',
+  PASSWORD_CHANGED_SUCCESSFULLY: 'Your password has been changed successfully.',
   EXISTING_USER_ERROR_CODE: 11000,
   CREATED_RESPONSE_CODE: 201,
   DELETED_RESPONSE_CODE: 200,
