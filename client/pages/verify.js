@@ -7,15 +7,28 @@ import Form from '../components/Form';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../helpers/getDefaultLayout';
 import { useRouter } from 'next/router';
-import { getEndpoint } from '../utilities/common';
+import {
+  getEndpoint,
+  INVALID_PASSWORD_ERROR,
+  NO_USER_FOUND_ERROR,
+  PASSWORD_CHANGED_SUCCESSFULLY,
+} from '../utilities/common';
+import Header from '../components/Header';
+import Modal from '../components/Modal';
 
-// verify that this works
 const Verify = () => {
   const ENDPOINT = getEndpoint();
   const [password, setPassword] = useState('');
   const router = useRouter();
+  const [error, setError] = useState(null);
+  const [modalMessage, setModalMessage] = useState('');
+  const [shouldDisplay, setShouldDisplay] = useState(false);
 
   const { token, email } = router.query;
+
+  const toggleModal = () => {
+    setShouldDisplay((shouldDisplay) => !shouldDisplay);
+  };
 
   const submitForm = async () => {
     const response = await fetch(ENDPOINT + '/password-reset', {
@@ -27,29 +40,51 @@ const Verify = () => {
     });
 
     const result = await response.json();
-    console.log(result);
+    await checkResponse(result);
+  };
 
-    // setErrors(() => result);
-    // checkResponse(result);
+  const checkResponse = async (result) => {
+    console.log(result);
+    if (result.errorPassword === INVALID_PASSWORD_ERROR) {
+      setError(
+        () =>
+          'Паролата ви трябва да съдържа поне една цифра и да бъде между 8 и 35 символа.',
+      );
+    } else if (result.errorUser === NO_USER_FOUND_ERROR) {
+      setError(() => 'Потребител с този имейл не съществува.');
+    } else if (result.result === PASSWORD_CHANGED_SUCCESSFULLY) {
+      setError(() => null);
+      setModalMessage(() => 'Паролата ви беше успешно променена!');
+      toggleModal();
+      setTimeout(() => router.push('/'), 1500);
+    }
   };
 
   return (
-    <>
+    <div className={'container'}>
       <HeadComponent currentPageName={'Забравена Парола'} />
-      <FormContainer>
-        <FormTitle text={'Моля, изберете нова парола'} />
-        <Form>
-          <p>Въведете желаната от вас нова парола</p>
-          <Input
-            onChange={(e) => setPassword(e.target.value)}
-            type={'password'}
-            placeholder={'Нова Парола'}
-            // errorMessage={errors.errorEmail}
+      <Header shouldHideSearchBar={true} />
+      <div className={'col'}>
+        <FormContainer>
+          <Modal
+            text={modalMessage}
+            shouldDisplay={shouldDisplay}
+            toggleModal={(shouldDisplay) => setShouldDisplay(!shouldDisplay)}
           />
-          <Button text={'Запази'} onClick={async () => await submitForm()} />
-        </Form>
-      </FormContainer>
-    </>
+          <FormTitle text={'Моля, изберете нова парола'} />
+          <Form>
+            <p>Въведете желаната от вас нова парола</p>
+            <Input
+              onChange={(e) => setPassword(e.target.value)}
+              type={'password'}
+              placeholder={'Нова парола'}
+              errorMessage={error}
+            />
+            <Button text={'Запази'} onClick={async () => await submitForm()} />
+          </Form>
+        </FormContainer>
+      </div>
+    </div>
   );
 };
 

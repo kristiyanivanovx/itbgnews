@@ -7,14 +7,10 @@ import getDefaultLayout from '../helpers/getDefaultLayout';
 import { getEndpoint } from '../utilities/common';
 import Article from '../components/Article';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import MY_PROFILE_PATH from '../next.config';
 import { useRouter } from 'next/router';
 import requireAuthentication from '../helpers/requireAuthentication';
 import jwt from 'jsonwebtoken';
-import isTokenExpired from '../utilities/isTokenExpired';
-import renewToken from '../utilities/refreshToken';
 import getUserToken from '../utilities/getUserToken';
-import renewCookie from '../utilities/renewCookie';
 import ensureValidCookie from '../utilities/ensureValidCookie';
 
 export const getServerSideProps = requireAuthentication(async (context) => {
@@ -54,9 +50,6 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
   const [shouldRedirect, setShouldRedirect] = useState(false);
   const router = useRouter();
 
-  console.log('user data');
-  console.log(userData);
-
   // articles
   useEffect(() => {
     if (shouldRedirect) {
@@ -92,8 +85,6 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
         authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
       },
     })
-    console.log(1)
-    console.log(getPictureResponce)
   }
 
   getPicture()
@@ -131,6 +122,7 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
             commentsCount={userData.commentsCount}
             upvotesCount={userData.upvotesCount}
             articlesCount={userData.postsCount}
+            userId={userId}
           >
             <InfiniteScroll
               dataLength={articles.length}

@@ -10,7 +10,7 @@ import commentStyles from '../styles/Comment.module.css';
 
 import {
   CANNOT_FIND_POST_ERROR,
-  INVALID_ID,
+  INVALID_ID_ERROR,
   getEndpoint,
 } from '../utilities/common';
 import INDEX_PATH from '../next.config';
@@ -67,14 +67,13 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
   );
 
   const isNotFound = data?.message?.includes(CANNOT_FIND_POST_ERROR);
-  const isNotValidId = data?.message?.includes(INVALID_ID);
+  const isNotValidId = data?.message?.includes(INVALID_ID_ERROR);
 
   const toggleInput = () => {
     setShouldShowInput((prev) => !prev);
   };
 
   const handleChange = (text) => {
-    console.log(text);
     setText(() => text);
   };
 
@@ -84,15 +83,9 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
     }
 
     if (shouldRedirectLogin) {
-      console.log(shouldRedirectLogin);
       router.push('/login');
     }
   }, [isNotFound, isNotValidId, router, shouldRedirectLogin]);
-
-  const refreshData = () => {
-    console.log('refreshing in parent ...');
-    router.replace(router.asPath);
-  };
 
   useEffect(() => {
     if (!shouldShowInput && text) {
@@ -109,16 +102,16 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
   const changeReplyingTo = (replyToId, isPost) => {
     if (!accessToken) {
       setShouldRedirectLogin(() => true);
+      return;
     }
 
     setReplyingTo(() => ({ id: replyToId, isPost: isPost }));
     setShouldShowInput(() => true);
-    console.log(replyingTo);
   };
 
   const confirmCreate = async () => {
     if (!accessToken) {
-      // setShouldRedirectLogin(() => true);
+      setShouldRedirectLogin(() => true);
       return;
     }
 
@@ -135,14 +128,8 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
       },
     });
 
-    console.log(response);
-    console.log(await response.json());
-    // todo: check for errors аnd set them
-    // setErrors(() => result);
-    // checkResponseEdit(response);
-
     setShouldShowInput((prev) => !prev);
-    Router.reload(window.location.pathname);
+    router.replace(router.asPath);
   };
 
   const singleArticle = (
@@ -202,6 +189,9 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
 
               {tree.map((comment) => {
                 const childrenCount = countChildren(comment);
+                const shouldDisplayEditOption =
+                  comment.authorId === userId && comment.text;
+
                 return (
                   <Comment
                     key={comment._id}
@@ -218,6 +208,8 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
                     replyingTo={replyingTo}
                     accessToken={accessToken}
                     ENDPOINT={ENDPOINT}
+                    userId={userId}
+                    shouldDisplayEditOption={shouldDisplayEditOption}
                   />
                 );
               })}

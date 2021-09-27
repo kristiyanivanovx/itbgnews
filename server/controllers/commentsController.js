@@ -1,4 +1,5 @@
 const Comment = require('../models/comment');
+const User = require('../models/user');
 
 async function postComment(req, res) {
   const user = req.userObject;
@@ -30,7 +31,7 @@ async function postComment(req, res) {
 
 async function upvoteComment(req, res) {
   const comment = req.comment;
-  const user = req.user;
+  const user = req.userObject;
 
   //check if upvote exists
   const upvoteExists = !!(await Comment.findOne({
@@ -98,12 +99,22 @@ async function patchComment(req, res) {
 
 async function deleteComment(req, res) {
   const comment = req.comment;
-  const user = req.userObject;
+  const userId = req.user.sub;
+  const user = await User.findById(userId).exec();
 
   if (String(comment.authorId) === String(user._id)) {
     try {
-      comment.text = 'Deleted';
+      comment.text = null;
       user.commentCount -= 1;
+
+      for (let j = 0; j < comment.upvoters.length; j++) {
+        console.log(comment.upvoters[j].userId);
+
+        let upvoter = await User.findById(comments.upvoters[j].userId);
+        upvoter.commitedLikes -= 1;
+
+        upvoter.save();
+      }
 
       await comment.save();
       await user.save();

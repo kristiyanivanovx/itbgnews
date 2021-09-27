@@ -1,9 +1,65 @@
 .brand {
-    width: 20%;
-    display: flex;
+  width: 20%;
+  display: flex;
 }
 
 .brand__title {
-    font-size: 30px;
-    margin: auto 0 auto 1rem;
+  font-size: 30px;
+  margin: auto 0 auto 1rem;
+}
+
+.brand {
+  display: flex;
+}
+
+.brand__logo {
+  width: 60px;
+  height: 60px;
+}
+
+.header__main {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.icon__burger {
+  position: absolute;
+  font-size: 35px;
+  right: 0;
+  top: 12px;
+  cursor: pointer;
+  display: none;
+}
+
+.site__header {
+  width: 100%;
+  margin-bottom: 80px;
+}
+
+@media (max-width: 600px) {
+  .icon__burger {
+    display: block;
+  }
+
+  .header__main {
+    display: block;
+  }
+
+  .search__bar {
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  .brand__title {
+    width: calc(100% - 110px);
+    text-align: center;
+    font-size: 1.5rem;
+  }
+
+  .predictions {
+    clear: both;
+    width: 100%;
+  }
 }

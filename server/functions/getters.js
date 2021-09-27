@@ -19,6 +19,7 @@ async function postGetter(req, res, next) {
   }
 
   req.post = post;
+
   next();
 }
 

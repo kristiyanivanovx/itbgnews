@@ -9,6 +9,7 @@ const userSchema = new Schema({
   postsCount: { type: Number, default: 0 },
   commentsCount: { type: Number, default: 0 },
   upvotesCount: { type: Number, default: 0 },
+  profileImage: String,
 });
 
 userSchema.index(

@@ -1,5 +1,7 @@
+// noinspection DuplicatedCode
+
 import React, { useEffect, useState } from 'react';
-import styles from '../styles/Comment.module.css';
+import styles from '../../styles/Comment.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faChevronUp,
@@ -11,20 +13,20 @@ import {
   faTrashAlt,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
-import countChildren from '../utilities/countChildren';
+import countChildren from '../../utilities/countChildren';
 import {
   CREATED_RESPONSE_CODE,
   DELETED_RESPONSE_CODE,
   EDITED_RESPONSE_CODE,
   REMOVED_RESPONSE_CODE,
   UNAUTHORIZED_RESPONSE_CODE,
-} from '../utilities/common';
-import ensureValidCookie from '../utilities/ensureValidCookie';
-import Input from './Input';
-import Modal from './Modal';
+} from '../../utilities/common';
+import ensureValidCookie from '../../utilities/ensureValidCookie';
+import Input from '../Input';
+import Modal from '../Modal';
 import { useRouter } from 'next/router';
 
-const Comment = ({
+const WorkingCommentBackup = ({
   commentId,
   title,
   username,
@@ -320,4 +322,4 @@ const Comment = ({
   );
 };
 
-export default Comment;
+export default WorkingCommentBackup;

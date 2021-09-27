@@ -19,39 +19,6 @@ router.get('/search', getters.getSearch);
 router.get('/comments/:postId', getters.postGetter, controllers.getComments);
 
 
-router.get('/my-profile/image', verifyToken,async (req , res) => {
-  const userId = req.user.sub
-  console.log(userId + "This is the id ")
-  const { resources } = await cloudinary.search
-    .expression(`profile_pictures/public_id:${userId}`)
-    .execute();
-  if(resources.length > 0){
-    console.log(resources)
-    return res.json({
-      data : resources[0].secure_url
-    })
-  }
-  return res.status(404).json({
-    massage : "This image cannot be found"
-  })
-
-})
-router.post('/my-profile/image', async (req , res) => {
-  const {imageString , userId} = req.body
-  console.log(imageString , userId)
-
-  try {
-    const uploadResponse = await cloudinary.uploader.upload(imageString, {
-      public_id : userId,
-      folder: "profile_pictures"
-    });
-    console.log(uploadResponse);
-    res.json({ msg: 'Sucessfully uploaded image' });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ err: 'Something went wrong' });
-  }
-})
 
 //Creating a Post ✔
 router.post(

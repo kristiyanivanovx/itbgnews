@@ -10,10 +10,13 @@ import getDefaultLayout from '../helpers/getDefaultLayout';
 import {
   EXISTING_USER_ERROR_CODE,
   getEndpoint,
-  SUCCESSFUL_REGISTRATION_MESSAGE,
+  SUCCESSFUL_REGISTRATION_ERROR,
 } from '../utilities/common';
 import Router from 'next/router';
 import renewCookie from '../utilities/renewCookie';
+import AuthLinks from '../components/AuthLinks';
+import AuthLink from '../components/AuthLink';
+import Header from '../components/Header';
 
 const Register = () => {
   const ENDPOINT = getEndpoint();
@@ -29,10 +32,10 @@ const Register = () => {
   }
 
   const checkResponse = async (result) => {
-    if (result.message === SUCCESSFUL_REGISTRATION_MESSAGE) {
+    if (result.message === SUCCESSFUL_REGISTRATION_ERROR) {
       setModalMessage(() => 'Регистрирахте се успешно!');
 
-      let { accessToken } = result.data;
+      const { accessToken } = result.data;
       await renewCookie(accessToken);
 
       toggleModal();
@@ -59,41 +62,47 @@ const Register = () => {
   };
 
   return (
-    <>
+    <div className={'container'}>
       <HeadComponent currentPageName={'Регистрация'} />
-      <FormContainer>
-        <Modal
-          text={modalMessage}
-          shouldDisplay={shouldDisplay}
-          toggleModal={(shouldDisplay) => setShouldDisplay(!shouldDisplay)}
-        />
-        <FormTitle text={'Регистрация'} />
-        <Form>
-          <Input
-            onChange={(e) => setUsername(e.target.value)}
-            type={'text'}
-            placeholder={'Име'}
-            errorMessage={errors.errorUsername}
+      <Header shouldHideSearchBar={true} />
+      <div className={'col'}>
+        <FormContainer>
+          <Modal
+            text={modalMessage}
+            shouldDisplay={shouldDisplay}
+            toggleModal={(shouldDisplay) => setShouldDisplay(!shouldDisplay)}
           />
-          <Input
-            onChange={(e) => setEmail(e.target.value)}
-            type={'text'}
-            placeholder={'Имейл'}
-            errorMessage={errors.errorEmail}
-          />
-          <Input
-            onChange={(e) => setPassword(e.target.value)}
-            type={'password'}
-            placeholder={'Парола'}
-            errorMessage={errors.errorPassword}
-          />
-          <Button
-            text={'Регистрация'}
-            onClick={async () => await submitForm()}
-          />
-        </Form>
-      </FormContainer>
-    </>
+          <FormTitle text={'Регистрация'} />
+          <Form>
+            <Input
+              onChange={(e) => setUsername(e.target.value)}
+              type={'text'}
+              placeholder={'Име'}
+              errorMessage={errors.errorUsername}
+            />
+            <Input
+              onChange={(e) => setEmail(e.target.value)}
+              type={'text'}
+              placeholder={'Имейл'}
+              errorMessage={errors.errorEmail}
+            />
+            <Input
+              onChange={(e) => setPassword(e.target.value)}
+              type={'password'}
+              placeholder={'Парола'}
+              errorMessage={errors.errorPassword}
+            />
+            <Button
+              text={'Регистрация'}
+              onClick={async () => await submitForm()}
+            />
+            <AuthLinks>
+              <AuthLink text={'Имаш профил?'} link={'/login'} />
+            </AuthLinks>
+          </Form>
+        </FormContainer>
+      </div>
+    </div>
   );
 };
 

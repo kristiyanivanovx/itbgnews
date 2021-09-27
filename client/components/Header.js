@@ -14,9 +14,7 @@ const Header = ({ shouldHideSearchBar }) => {
   const [shouldDisplay, setShouldDisplay] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
-
   const router = useRouter();
-
   let icon = shouldDisplay ? faTimes : faBars;
 
   const toggleNavigation = () => {

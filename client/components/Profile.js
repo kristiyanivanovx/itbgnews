@@ -7,17 +7,17 @@ import CustomImage from "../components/CustomImage"
 import {useRef} from "react"
 
 const Profile = ({
-                   image,
-                   username,
-                   bio,
-                   email,
-                   commentsCount,
-                   upvotesCount,
-                   articlesCount,
-                   triggerConfirmation,
-                   children,
-                  userId,
-                 }) => {
+  image,
+  username,
+  bio,
+  email,
+  commentsCount,
+  upvotesCount,
+  articlesCount,
+  triggerConfirmation,
+  children,
+  userId,
+}) => {
   const [shouldBlurEmail, setShouldBlurEmail] = useState(true);
   const toggleDisplayEmail = () => {
     setShouldBlurEmail((shouldBlurEmail) => !shouldBlurEmail);

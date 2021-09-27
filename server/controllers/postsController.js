@@ -1,9 +1,8 @@
 const getters = require('../functions/getters');
 const Post = require('../models/post');
 const User = require('../models/user');
-const { validateUrl } = require('../utilities/validation');
 const { isEmpty } = require('../utilities/common');
-const { upvoteComment } = require('./commentsController');
+const validator = require('validator');
 
 async function getPosts(req, res) {
   const { skip, limit } = req.query;
@@ -68,9 +67,10 @@ async function postPost(req, res) {
     errors.errorTitle = 'The title must be at least 6 letters and at most 250.';
   }
 
-  if (!validateUrl(url)) {
+  if (!validator.isURL(url)) {
     errors.errorUrl =
-      'The url must be valid hyperlink and have 1 character at least and at most 1024.';
+      // 'The url must be a valid hyperlink and have 1 character at least and at most 1024.';
+      'The url must be a valid hyperlink.';
   }
 
   if (!isEmpty(errors)) {
@@ -186,20 +186,42 @@ async function deletePost(req, res) {
 
   if (String(post.authorId) === String(userId)) {
     try {
-      //get all comments connected to the post and delete them too
+      //get all comments and upvotes on comments connected to the post and delete them too
       let comments = await getters.commentsGetter(post._id);
-      const deletionsCount = comments.length;
+      //const commentCountUserPairs = [];
 
       for (let i = 0; i < comments.length; i++) {
+        let author = await User.findById(comments[i].authorId);
+        author.commentsCount -= 1;
+        await author.save();
+
+        for (let j = 0; j < comments[i].upvoters.length; j++) {
+          console.log(comments[i].upvoters[j].userId);
+
+          let upvoter = await User.findById(comments[i].upvoters[j].userId);
+          upvoter.commitedLikes -= 1;
+
+          upvoter.save();
+        }
+        //Find each users commentCount on the post
+        //if (commentCountUserPairs.includes(author._id)) author._id += 1;
+        //else commentCountUserPairs.push({ [author._id]: 1 });
+
         await comments[i].delete();
+      }
+
+      for (let k = 0; k < post.upvoters.length; k++) {
+        let author = await User.findById(post.upvoters[k].userId);
+        author.commitedLikes -= 1;
+
+        author.save();
       }
 
       await post.delete();
 
-      const user = await User.findOne({ _id: userId });
+      const user = await User.findById(userId);
 
       user.postsCount -= 1;
-      user.commentsCount -= deletionsCount;
       await user.save();
 
       res

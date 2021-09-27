@@ -11,11 +11,11 @@ function validateUrl(url) {
 
 function validatePassword(password) {
   const re = /\d/;
-  return password.length > 10 && password.length < 35 && re.test(password);
+  return password.length >= 8 && password.length <= 35 && re.test(password);
 }
 
 module.exports = {
-  validateEmail,
   validatePassword,
-  validateUrl,
+  validateEmail,
+  validateUrl
 };

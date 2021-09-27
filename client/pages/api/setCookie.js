@@ -6,7 +6,7 @@ export default function handle(req, res) {
     serialize('accessToken', req.body.accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV !== 'development',
-      maxAge: 60 * 60 * 7 * 24,
+      maxAge: 60 * 60 * 24 * 7, // 7 days
       path: '/',
       sameSite: 'strict',
     }),
