@@ -67,9 +67,7 @@ async function postPost(req, res) {
   }
 
   if (!validator.isURL(url)) {
-    errors.errorUrl =
-      // 'The url must be a valid hyperlink and have 1 character at least and at most 1024.';
-      'The url must be a valid hyperlink.';
+    errors.errorUrl = 'The url must be a valid hyperlink.';
   }
 
   if (!isEmpty(errors)) {
