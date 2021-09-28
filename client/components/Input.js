@@ -1,4 +1,4 @@
-import styles from '../styles/Form.module.css';
+import styles from '../styles/Input.module.css';
 import React from 'react';
 
 export default function Input({ type, name, placeholder, onClick }) {

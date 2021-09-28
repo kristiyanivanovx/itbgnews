@@ -1,47 +1,51 @@
-/* Email Input */
 .input__component {
-    /*position: absolute;*/
-    /*width: 410px;*/
-    /*height: 65.5px;*/
-
-    /*left: 515px;*/
-    /*top: 220px;*/
-
-    color: #FFFFFF;
+    color: var(--clr-white);
 }
 
-/* Border */
 .input__border {
     position: absolute;
-
-    /*left: 0%;*/
-    /*right: 0%;*/
-    /*top: 0%;*/
-    /*bottom: 0%;*/
-
     background: #302636;
-    /*border: 2px solid #51515B;*/
     box-sizing: border-box;
     border-radius: 10px;
 }
 
-/* Е-мейл */
 .input__text {
     position: absolute;
-
-    /*left: 7.32%;*/
-    /*right: 73.17%;*/
-    /*top: 25.95%;*/
-    /*bottom: 23.66%;*/
-
     font-style: normal;
     font-weight: normal;
     font-size: 24px;
     line-height: 33px;
-
-    /* identical to box height */
     display: flex;
     align-items: center;
+    color: var(--clr-white);
+}
+.user__input {
+    width: 70%;
+    height: 40px;
+    font-weight: var(--fw-reg);
+    padding-left: 1.75rem;
+    border: 2px solid var(--clr-grey);
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    outline: none;
+}
 
-    color: rgba(255, 255, 255, 0.8);
+.user__input__error {
+    border: 2px solid var(--clr-red);
+}
+
+.user__input__error__text {
+    max-width: 400px;
+    /*color: var(--clr-red);*/
+}
+
+.user__input::placeholder {
+    font-size: 24px;
+    color: var(--clr-white);
+}
+
+@media (max-width: 600px) {
+    .user__input {
+        width: 90%;
+    }
 }

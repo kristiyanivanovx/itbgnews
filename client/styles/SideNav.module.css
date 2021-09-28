@@ -1,7 +1,7 @@
 .nav {
     width: 20%;
     margin-top: 1rem;
-    font-size: 30px;
+    font-size: clamp(15px, 2.5vw, 25px);
 }
 
 .nav__item:hover, .nav__item a:hover {
@@ -23,7 +23,7 @@
     padding-right: .5rem;
 }
 
-/* for active links */
+
 .active {
     color: pink;
 }
