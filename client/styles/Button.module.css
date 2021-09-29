@@ -1,42 +1,42 @@
 .btn {
-    position: relative;
-    width: 410px;
-    height: 65px;
-    margin: 1rem 0;
+  position: relative;
+  width: 410px;
+  height: 65px;
+  margin: 1rem 0;
 }
 
 .btn__background {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 6.15%;
-    bottom: -6.15%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 6.15%;
+  bottom: -6.15%;
 
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), linear-gradient(264.39deg, #BA2BAC -36.33%, #E655E8 20.2%, #6369FA 106.31%, rgba(255, 6, 230, 0) 130.66%);
-    border-radius: 10px;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), linear-gradient(264.39deg, #BA2BAC -36.33%, #E655E8 20.2%, #6369FA 106.31%, rgba(255, 6, 230, 0) 130.66%);
+  border-radius: 10px;
 }
 
 .btn__shadow {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
 
-    background: linear-gradient(264.39deg, #BA2BAC -36.33%, #E655E8 20.2%, #6369FA 106.31%, rgba(255, 6, 230, 0) 130.66%);
-    border-radius: 10px;
+  background: linear-gradient(264.39deg, #BA2BAC -36.33%, #E655E8 20.2%, #6369FA 106.31%, rgba(255, 6, 230, 0) 130.66%);
+  border-radius: 10px;
 }
 
 .btn__text{
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 16px;
-    bottom: 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 16px;
+  bottom: 0;
 
-    font-weight: var(--fw-bold);
-    font-size: 24px;
-    text-align: center;
+  font-weight: var(--fw-bold);
+  font-size: 24px;
+  text-align: center;
 
-    color: var(--clr-white);
+  color: var(--clr-white);
 }

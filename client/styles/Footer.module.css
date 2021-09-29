@@ -1,8 +1,8 @@
 .footer {
-    text-align: center;
-    font-size: var(--fs-footer);
+  text-align: center;
+  font-size: var(--fs-footer);
 }
 
 .footer a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }

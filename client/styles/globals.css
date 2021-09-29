@@ -1,17 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200;400;700&display=swap');
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 :root {
-    --ff-primary: 'Nunito', sans-serif;
+  --ff-primary: 'Nunito', sans-serif;
 
-    --fw-reg: 200;
-    --fw-bold: 700;
-
+  --fw-reg: 200;
+  --fw-bold: 700;
 
   --clr-background: #302636;
   --clr-main: #554360;
@@ -26,108 +25,108 @@
   --fs-h3: 2.5rem;
   --fs-h4: 2rem;
 
-    --fs-body: 1.25rem;
-    --fs-small: 0.5rem;
-    --fs-footer: 1rem;
+  --fs-body: 1.25rem;
+  --fs-small: 0.5rem;
+  --fs-footer: 1rem;
 }
 
 @media (max-width: 1400px) {
-    :root {
-        --fs-h2: 2.5rem;
-        --fs-h3: 1.5rem;
-        --fs-h4: 1rem;
+  :root {
+    --fs-h2: 2.5rem;
+    --fs-h3: 1.5rem;
+    --fs-h4: 1rem;
 
-        --fs-body: 1.2rem;
-        --fs-small: 0.5rem;
-        --fs-footer: 1rem;
-    }
+    --fs-body: 1.2rem;
+    --fs-small: 0.5rem;
+    --fs-footer: 1rem;
+  }
 }
 
 @media (max-width: 800px) {
-    :root {
-        --fs-h2: 2rem;
-        --fs-h3: 1rem;
-        --fs-h4: .5rem;
+  :root {
+    --fs-h2: 2rem;
+    --fs-h3: 1rem;
+    --fs-h4: .5rem;
 
-        --fs-body: 1.25rem;
-        --fs-small: 0.5rem;
-        --fs-footer: 1rem;
-    }
+    --fs-body: 1.25rem;
+    --fs-small: 0.5rem;
+    --fs-footer: 1rem;
+  }
 }
 
 @media (max-width: 800px) {
-    :root {
-        --fs-h2: 2rem;
-        --fs-h3: 1rem;
-        --fs-h4: .5rem;
+  :root {
+    --fs-h2: 2rem;
+    --fs-h3: 1rem;
+    --fs-h4: .5rem;
 
-        --fs-body: 1.25rem;
-        --fs-small: 0.5rem;
-        --fs-footer: 1rem;
-    }
+    --fs-body: 1.25rem;
+    --fs-small: 0.5rem;
+    --fs-footer: 1rem;
+  }
 }
 
 
 body {
-    background: var(--clr-background);
-    font-family: var(--ff-primary);
-    font-size: var(--fs-body);
-    color: var(--clr-white);
+  background: var(--clr-background);
+  font-family: var(--ff-primary);
+  font-size: var(--fs-body);
+  color: var(--clr-white);
 
-    /* center content */
-    display: grid;
-    min-height: 100%;
+  /* center content */
+  display: grid;
+  min-height: 100%;
 
-    /* sticky footer*/
-    grid-template-rows: 1fr auto;
+  /* sticky footer*/
+  grid-template-rows: 1fr auto;
 }
 
 html {
-    height: 100%;
+  height: 100%;
 }
 
 button,
 input {
-    color: inherit;
-    background-color: inherit;
-    font-size: inherit;
-    font-family: inherit;
-    border: 0;
-    padding: 0;
+  color: inherit;
+  background-color: inherit;
+  font-size: inherit;
+  font-family: inherit;
+  border: 0;
+  padding: 0;
 }
 
 h2,
 h3,
 h4 {
-    line-height: 1;
-    margin: 0;
-    font-weight: var(--fw-bold);
+  line-height: 1;
+  margin: 0;
+  font-weight: var(--fw-bold);
 }
 
 h2 {
-    font-size: var(--fs-h2);
+  font-size: var(--fs-h2);
 }
 
 h3 {
-    font-size: var(--fs-h3);
+  font-size: var(--fs-h3);
 }
 
 h4 {
-    font-size: var(--fs-h4);
+  font-size: var(--fs-h4);
 }
 
 image {
-    width: 0;
-    height: 0;
+  width: 0;
+  height: 0;
 }
 
 a {
-    color: #ffffff;
-    text-decoration: none;
+  color: #ffffff;
+  text-decoration: none;
 }
 
 a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .container {
@@ -137,39 +136,39 @@ a:hover {
 }
 
 .col {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 
-    margin-bottom: 40px;
+  margin-bottom: 40px;
 }
 
 
 .articles {
-    width: 70%;
+  width: 70%;
 }
 
 .svg-inline--fa :global {
-    font-size: unset;
+  font-size: unset;
 }
 
 
 @media (max-width: 800px) {
-    .articles {
-        width: 100%;
-    }
+  .articles {
+    width: 100%;
+  }
 
 }
 
 @media (max-width: 550px) {
-    :root {
-        --fs-h2: 2rem;
-        --fs-h3: 1rem;
-        --fs-h4: .5rem;
+  :root {
+    --fs-h2: 2rem;
+    --fs-h3: 1rem;
+    --fs-h4: .5rem;
 
-        --fs-body: 1rem;
-        --fs-small: 0.5rem;
-        --fs-footer: 1rem;
-    }
+    --fs-body: 1rem;
+    --fs-small: 0.5rem;
+    --fs-footer: 1rem;
+  }
 }
 
 /*#__next {*/

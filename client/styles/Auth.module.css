@@ -1,34 +1,34 @@
 .auth {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    /*align-items: center;*/
-    margin: auto;
-    min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /*align-items: center;*/
+  margin: auto;
+  min-height: 100vh;
 }
 .auth__links {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
 .auth__link:hover {
-    text-decoration: underline;
-    cursor: pointer;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .auth__container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin: auto;
-    /*margin-top: 15%;*/
-    /*width: 22%;*/
-    /*height: 100%;*/
-    /*display: flex;*/
-    /*justify-content: center;*/
-    /*align-items: center;*/
-    /*border: 1px solid red;*/
-    /*margin-left: auto;*/
-    /*margin-right: auto;*/
-    /*display: table;*/
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: auto;
+  /*margin-top: 15%;*/
+  /*width: 22%;*/
+  /*height: 100%;*/
+  /*display: flex;*/
+  /*justify-content: center;*/
+  /*align-items: center;*/
+  /*border: 1px solid red;*/
+  /*margin-left: auto;*/
+  /*margin-right: auto;*/
+  /*display: table;*/
 }

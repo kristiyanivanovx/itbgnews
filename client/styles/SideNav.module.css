@@ -1,41 +1,41 @@
 .nav {
-    width: 20%;
-    margin-top: 1rem;
-    font-size: clamp(15px, 2.5vw, 25px);
+  width: 20%;
+  margin-top: 1rem;
+  font-size: clamp(15px, 2.5vw, 25px);
 }
 
 .nav__item:hover, .nav__item a:hover {
-    color: var(--clr-white);
-    cursor: pointer;
+  color: var(--clr-white);
+  cursor: pointer;
 }
 
 .nav__list {
-    list-style: none;
-    color: var(--clr-grey) ;
+  list-style: none;
+  color: var(--clr-grey) ;
 }
 
 .nav__item, .nav__item  a {
-    padding-top: 2rem;
-    color: var(--clr-grey);
+  padding-top: 2rem;
+  color: var(--clr-grey);
 }
 
 .nav__icon {
-    padding-right: .5rem;
+  padding-right: .5rem;
 }
 
 
 .active {
-    color: pink;
+  color: pink;
 }
 
 @media (max-width: 1400px) {
-    .nav {
-        font-size: 24px;
-    }
+  .nav {
+    font-size: 24px;
+  }
 }
 
 @media (max-width: 800px) {
-    .nav {
-        display: none;
-    }
+  .nav {
+    display: none;
+  }
 }
