@@ -1,22 +1,22 @@
 .brand {
-    width: 20%;
-    display: flex;
+  width: 20%;
+  display: flex;
 }
 
 .brand__logo {
-    width: 70px;
-    height: 70px;
-    min-width: 50px;
-    min-height: 50px;
+  width: 70px;
+  height: 70px;
+  min-width: 50px;
+  min-height: 50px;
 }
 
 .brand__title {
-    font-size: 30px;
-    margin: auto 0 auto 1rem;
+  font-size: 30px;
+  margin: auto 0 auto 1rem;
 }
 
 @media (max-width: 1400px) {
-    .brand__title {
-        font-size: 20px;
-    }
+  .brand__title {
+    font-size: 20px;
+  }
 }

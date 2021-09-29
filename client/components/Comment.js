@@ -2,10 +2,10 @@ import React from 'react';
 import styles from '../styles/Comment.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faChevronUp,
-    faClock,
-    faComment,
-    faUser,
+  faChevronUp,
+  faClock,
+  faComment,
+  faUser,
 } from '@fortawesome/free-solid-svg-icons';
 
 import countChildren from '../utilities/countChildren';
@@ -19,8 +19,8 @@ import {
   UNAUTHORIZED_RESPONSE_CODE,
 } from '../utilities/common';
 import ensureValidCookie from '../utilities/ensureValidCookie';
-import FormInput from "./FormInput";
-import Input from "./Input";
+import FormInput from './FormInput';
+import Input from './Input';
 
 const Comment = ({
   commentId,
@@ -116,61 +116,69 @@ const Comment = ({
   };
 
   return (
-      <>
-    <div className={styles.comment}>
-      <div className={styles.comment__left}>
-        <div className={styles.comment__votes__count}>10</div>
-        <div className={styles.comment__line}></div>
-      </div>
-      <div className={styles.comment__right}>
-        <div className={styles.comment__data}>
-          <div className={styles.comment__author}>Петър</div>
-          <div className={styles.comment__created}>
-            <FontAwesomeIcon
-              icon={faClock}
-              className={styles.comment__information__icon}
-            />
-            {new Date(date).toLocaleDateString('bg-BG')}
+    <>
+      <div className={styles.comment}>
+        <div className={styles.comment__left}>
+          <div className={styles.comment__votes__count}>10</div>
+          <div className={styles.comment__line}></div>
+        </div>
+        <div className={styles.comment__right}>
+          <div className={styles.comment__data}>
+            <div className={styles.comment__author}>Петър</div>
+            <div className={styles.comment__created}>
+              <FontAwesomeIcon
+                icon={faClock}
+                className={styles.comment__information__icon}
+              />
+              {new Date(date).toLocaleDateString('bg-BG')}
+            </div>
+          </div>
+          <div className={styles.comment__body}>
+            <Input />
+            {/*Някъв коментар*/}
+            <div className={styles.comment__votes__icon}>
+              <div
+                className={`${styles.comment__votes} ${styles.comment__small__text}`}
+              >
+                {/* icons */}
+                <div className={styles.comment__icon}>
+                  <FontAwesomeIcon icon={faSave} />
+                </div>
+                <div className={styles.comment__icon}>
+                  <FontAwesomeIcon icon={faEdit} />
+                </div>
+                <div className={styles.comment__icon}>
+                  <FontAwesomeIcon icon={faTrashAlt} />
+                </div>
+                <div
+                  className={styles.comment__icon}
+                  onClick={() => changeReplyingTo(commentId, false)}
+                >
+                  <FontAwesomeIcon icon={faReply} />
+                </div>
+                <div className={styles.comment__icon} onLoad={upvote}>
+                  <FontAwesomeIcon
+                    className={styles.comment__votes__icon}
+                    icon={faChevronUp}
+                  />
+                </div>
+                <div
+                  className={`${styles.comment__icon} ${styles.comment__icon__comments}`}
+                >
+                  <FontAwesomeIcon
+                    icon={faComment}
+                    className={styles.comment__information__icon}
+                  />
+                  {/*{comments} коментара*/}
+                </div>
+                <span>{comments} отговора</span>
+              </div>
+            </div>
           </div>
         </div>
-        <div className={styles.comment__body}>
-          <Input/>
-          {/*Някъв коментар*/}
-          <div className={styles.comment__votes__icon}>
-            <div
-              className={`${styles.comment__votes} ${styles.comment__small__text}`}
-            >
-              {/* icons */}
-              <div className={styles.comment__icon}>
-                <FontAwesomeIcon icon={faSave} />
-              </div>
-              <div className={styles.comment__icon}>
-                <FontAwesomeIcon icon={faEdit} />
-              </div>
-              <div className={styles.comment__icon}>
-                <FontAwesomeIcon icon={faTrashAlt} />
-              </div>
-              <div className={styles.comment__icon} onClick={() => changeReplyingTo(commentId, false)}>
-                <FontAwesomeIcon icon={faReply} />
-              </div>
-              <div className={styles.comment__icon} onLoad={upvote}>
-                <FontAwesomeIcon
-                  className={styles.comment__votes__icon}
-                  icon={faChevronUp}
-                />
-              </div>
-              <div className={`${styles.comment__icon} ${styles.comment__icon__comments}`}>
-                <FontAwesomeIcon
-                  icon={faComment}
-                  className={styles.comment__information__icon}
-                />
-                {/*{comments} коментара*/}
-              </div>
-              <span>{comments} отговора</span>
-            </div>
-        </div>
-        </>
-    );
+      </div>
+    </>
+  );
 };
 
 export default Comment;

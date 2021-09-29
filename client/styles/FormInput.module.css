@@ -1,25 +1,25 @@
 .input__component {
-    color: #FFFFFF;
+  color: #FFFFFF;
 }
 
 .input__border {
-    position: absolute;
+  position: absolute;
 
-    background: #302636;
-    box-sizing: border-box;
-    border-radius: 10px;
+  background: #302636;
+  box-sizing: border-box;
+  border-radius: 10px;
 }
 
 .input__text {
-    position: absolute;
+  position: absolute;
 
-    font-style: normal;
-    font-weight: normal;
-    font-size: 24px;
-    line-height: 33px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 24px;
+  line-height: 33px;
 
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 
-    color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.8);
 }
