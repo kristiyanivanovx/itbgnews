@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Input from '../components/Input';
+import FormInput from '../components/FormInput';
 import Button from '../components/Button';
 import FormTitle from '../components/FormTitle';
 import FormContainer from '../components/FormContainer';
@@ -38,7 +38,7 @@ const Verify = () => {
         <FormTitle text={'Моля, изберете нова парола'} />
         <Form>
           <p>Въведете желаната от вас нова парола</p>
-          <Input
+          <FormInput
             onChange={(e) => setPassword(e.target.value)}
             type={'password'}
             placeholder={'Нова Парола'}

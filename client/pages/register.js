@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import FormContainer from '../components/FormContainer';
 import FormTitle from '../components/FormTitle';
 import Form from '../components/Form';
-import Input from '../components/Input';
+import FormInput from '../components/FormInput';
 import Button from '../components/Button';
 import HeadComponent from '../components/HeadComponent';
 import Modal from '../components/Modal';
@@ -69,19 +69,19 @@ const Register = () => {
         />
         <FormTitle text={'Регистрация'} />
         <Form>
-          <Input
+          <FormInput
             onChange={(e) => setUsername(e.target.value)}
             type={'text'}
             placeholder={'Име'}
             errorMessage={errors.errorUsername}
           />
-          <Input
+          <FormInput
             onChange={(e) => setEmail(e.target.value)}
             type={'text'}
             placeholder={'Имейл'}
             errorMessage={errors.errorEmail}
           />
-          <Input
+          <FormInput
             onChange={(e) => setPassword(e.target.value)}
             type={'password'}
             placeholder={'Парола'}

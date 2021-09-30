@@ -22,6 +22,7 @@ import {
   UNAUTHORIZED_RESPONSE_CODE,
 } from '../utilities/common';
 import ensureValidCookie from '../utilities/ensureValidCookie';
+import Input from './Input';
 
 const Comment = ({
   commentId,
@@ -117,88 +118,6 @@ const Comment = ({
   };
 
   return (
-    // <div className={styles.comment__flex}>
-    //   <div className={styles.comment__wrapper}>
-    //     <div className={styles.comment__border}>
-    //       <div className={styles.comment__regular}>
-    //         <div className={styles.comment__main}>
-    //           <p className={styles.comment__title}>
-    //             {/*<a href={link}> {title}</a>*/}
-    //             {title}
-    //           </p>
-    //           <div
-    //             className={`${styles.comment__votes} ${styles.comment__small__text}`}
-    //           >
-    //             {shouldDisplayReplyIcon ? (
-    //               <div onClick={() => changeReplyingTo(commentId, false)}>
-    //                 <FontAwesomeIcon icon={faReply} />{' '}
-    //               </div>
-    //             ) : null}
-    //             <div onLoad={upvote}>
-    //               <FontAwesomeIcon
-    //                 className={styles.comment__votes__icon}
-    //                 icon={faChevronUp}
-    //               />
-    //             </div>
-    //             {upvotesCount} гласа
-    //           </div>
-    //         </div>
-    //         <div
-    //           className={`${styles.comment__information} ${styles.comment__small__text}`}
-    //         >
-    //           <div>
-    //             <FontAwesomeIcon
-    //               icon={faUser}
-    //               className={styles.comment__information__icon}
-    //             />
-    //             от {username}
-    //           </div>
-    //           <div>
-    //             <FontAwesomeIcon
-    //               icon={faClock}
-    //               className={styles.comment__information__icon}
-    //             />
-    //             {new Date(date).toLocaleDateString('bg-BG')}
-    //           </div>
-    //           <div>
-    //             <FontAwesomeIcon
-    //               icon={faComment}
-    //               className={styles.comment__information__icon}
-    //             />
-    //             {comments} коментара
-    //           </div>
-    //         </div>
-    //       </div>
-    //     </div>
-    //
-    //     {childrenComments?.map((comment) => {
-    //       const childrenCount = countChildren(comment);
-    //
-    //       {
-    //         /* validate that passing postId, replyingTo, accessToken works */
-    //       }
-    //       return (
-    //         <Comment
-    //           key={comment._id}
-    //           commentId={comment._id}
-    //           title={comment.text}
-    //           childrenComments={comment.children}
-    //           comments={childrenCount}
-    //           upvotes={comment.upvoters.length}
-    //           username={comment.authorName}
-    //           date={comment.creationDate}
-    //           shouldDisplayReplyIcon={true}
-    //           changeReplyingTo={changeReplyingTo}
-    //           postId={postId}
-    //           replyingTo={replyingTo}
-    //           accessToken={accessToken}
-    //           ENDPOINT={ENDPOINT}
-    //         />
-    //       );
-    //     })}
-    //   </div>
-    // </div>
-
     <div className={styles.comment}>
       <div className={styles.comment__left}>
         <div className={styles.comment__votes__count}>10</div>
@@ -216,38 +135,46 @@ const Comment = ({
           </div>
         </div>
         <div className={styles.comment__body}>
-          Някъв коментар
+          <Input />
           <div className={styles.comment__votes__icon}>
             <div
               className={`${styles.comment__votes} ${styles.comment__small__text}`}
             >
               {/* icons */}
-              <div className={''}>
+              <div className={styles.comment__icon}>
                 <FontAwesomeIcon icon={faSave} />
               </div>
-              <div className={''}>
+              <div className={styles.comment__icon}>
                 <FontAwesomeIcon icon={faEdit} />
               </div>
               <div>
-                <FontAwesomeIcon icon={faTrashAlt} />
+                <FontAwesomeIcon
+                  className={styles.comment__icon}
+                  icon={faTrashAlt}
+                />
               </div>
               <div onClick={() => changeReplyingTo(commentId, false)}>
-                <FontAwesomeIcon icon={faReply} />
+                <FontAwesomeIcon
+                  className={styles.comment__icon}
+                  icon={faReply}
+                />
               </div>
-              <div onLoad={upvote}>
+              <div className={styles.comment__icon} onLoad={upvote}>
                 <FontAwesomeIcon
                   className={styles.comment__votes__icon}
                   icon={faChevronUp}
                 />
               </div>
-              <div>
+              <div
+                className={`${styles.comment__icon} ${styles.comment__icon__comments}`}
+              >
                 <FontAwesomeIcon
                   icon={faComment}
                   className={styles.comment__information__icon}
                 />
                 {/*{comments} коментара*/}
-                {comments} отговора
               </div>
+              <span>{comments} отговора</span>
             </div>
           </div>
         </div>

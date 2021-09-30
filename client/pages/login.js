@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Input from '../components/Input';
+import FormInput from '../components/FormInput';
 import Button from '../components/Button';
 import FormTitle from '../components/FormTitle';
 import AuthLinks from '../components/AuthLinks';
@@ -74,13 +74,13 @@ const Login = () => {
         />
         <FormTitle text={'Вход'} />
         <Form>
-          <Input
+          <FormInput
             onChange={(e) => setEmail(e.target.value)}
             placeholder={'Имейл'}
             type={'text'}
             errorMessage={errors?.email}
           />
-          <Input
+          <FormInput
             onChange={(e) => setPassword(e.target.value)}
             placeholder={'Парола'}
             type={'password'}

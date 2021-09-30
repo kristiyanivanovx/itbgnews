@@ -22,7 +22,7 @@
   --clr-white: #ffffff;
   --clr-comment: #755a85;
 
-  --fs-h2: 3rem;
+  --fs-h2: 2.5rem;
   --fs-h3: 2.5rem;
   --fs-h4: 2rem;
 
@@ -110,7 +110,7 @@ a:hover {
 
 .container {
   width: 90%;
-  max-width: 1600px;
+  max-width: 1400px;
   margin: 40px auto 0 auto;
 }
 

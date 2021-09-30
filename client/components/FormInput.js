@@ -1,7 +1,7 @@
-import styles from '../styles/Input.module.css';
+import styles from '../styles/Form.module.css';
 import React from 'react';
 
-export default function Input({
+export default function FormInput({
   defaultValue,
   type,
   name,

@@ -22,9 +22,10 @@ import {
   EDITED_RESPONSE_CODE,
   getEndpoint,
 } from '../utilities/common';
-import Input from './Input';
+import FormInput from './FormInput';
 import ensureValidCookie from '../utilities/ensureValidCookie';
 import { route } from 'next/dist/server/router';
+import Input from './Input';
 
 const Article = ({
   postId,
@@ -178,7 +179,13 @@ const Article = ({
       className={articleClasses}
       style={{ display: isDeleted ? 'none' : 'flex' }}
     >
-      <div className={styles.article__main}>
+      <div
+        className={
+          shouldDisplayEditInputs
+            ? `${styles.article__main} ${styles.article__main__column}`
+            : styles.article__main
+        }
+      >
         {shouldDisplayEditInputs ? (
           <>
             <div className={styles.article__inputs__wrapper}>
@@ -190,9 +197,6 @@ const Article = ({
                 defaultValue={originalUrl}
                 onChange={(e) => setFormUrl(e.target.value)}
               />
-            </div>
-            <div className={styles.article__modify} onClick={toggleEditInputs}>
-              <FontAwesomeIcon icon={faSave} onClick={confirmEdit} />
             </div>
           </>
         ) : (
@@ -209,42 +213,57 @@ const Article = ({
           cancelOptionText={'Не'}
           confirmDelete={confirmDelete}
         />
-        {shouldDisplayEditOptions ? (
-          <>
-            <div className={styles.article__modify} onClick={toggleEditInputs}>
-              <FontAwesomeIcon icon={faEdit} />
-            </div>
+        <div
+          className={
+            shouldDisplayEditInputs
+              ? `${styles.article__icons} ${styles.article__icons__edit}`
+              : styles.article__icons
+          }
+        >
+          <div className={styles.article__modify} onClick={toggleEditInputs}>
+            <FontAwesomeIcon icon={faSave} onClick={confirmEdit} />
+          </div>
+
+          {shouldDisplayEditOptions ? (
+            <>
+              <div
+                className={styles.article__modify}
+                onClick={toggleEditInputs}
+              >
+                <FontAwesomeIcon icon={faEdit} />
+              </div>
+              <div
+                className={styles.article__modify}
+                onClick={() =>
+                  toggleModalDelete(
+                    'Сигурни ли сте, че искате да изтриете тази статия?',
+                  )
+                }
+              >
+                <FontAwesomeIcon icon={faTrashAlt} />
+              </div>
+            </>
+          ) : null}
+          {shouldDisplayReplyIcon ? (
             <div
               className={styles.article__modify}
-              onClick={() =>
-                toggleModalDelete(
-                  'Сигурни ли сте, че искате да изтриете тази статия?',
-                )
-              }
+              onClick={() => changeReplyingTo(postId, true)}
             >
-              <FontAwesomeIcon icon={faTrashAlt} />
+              <FontAwesomeIcon icon={faReply} />{' '}
             </div>
-          </>
-        ) : null}
-        {shouldDisplayReplyIcon ? (
+          ) : null}
           <div
-            className={styles.article__modify}
-            onClick={() => changeReplyingTo(postId, true)}
+            onClick={async () => await upvote()}
+            className={`${styles.article__votes} ${styles.article__small__text} `}
           >
-            <FontAwesomeIcon icon={faReply} />{' '}
+            <FontAwesomeIcon
+              className={`${styles.article__votes__icon} ${
+                shouldRotate ? styles.rotated : ''
+              }`}
+              icon={faChevronUp}
+            />
+            {upvotesCount} гласа
           </div>
-        ) : null}
-        <div
-          onClick={async () => await upvote()}
-          className={`${styles.article__votes} ${styles.article__small__text} `}
-        >
-          <FontAwesomeIcon
-            className={`${styles.article__votes__icon} ${
-              shouldRotate ? styles.rotated : ''
-            }`}
-            icon={faChevronUp}
-          />
-          {upvotesCount} гласа
         </div>
       </div>
 
