@@ -3,8 +3,6 @@ const multer = require("multer")
 const upload = multer()
 const {verifyToken} = require("../middlewares/authMiddleware")
 const {cloudinary} = require(`../config/cloudinaryConfig`)
-const path = require("path")
-const fs = require("fs")
 router.get('/image', verifyToken,async (req , res) => {
   const userId = req.user.sub
   const { resources } = await cloudinary.search
@@ -24,6 +22,7 @@ router.get('/image', verifyToken,async (req , res) => {
 router.post('/image', upload.single("image"), async (req , res) => {
   const file = req.file
   const userId = 1
+  console.log(file)
   try {
     const uploadResponse = await cloudinary.uploader.upload(file.originalname, {
       public_id : userId,

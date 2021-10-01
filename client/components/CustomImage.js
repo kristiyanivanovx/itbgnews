@@ -1,13 +1,13 @@
 import React from 'react';
 import {useState} from 'react';
 import {useRef} from "react"
-import { CREATED_RESPONSE_CODE, getEndpoint } from '../utilities/common';
 import axios from "axios"
 
 const CustomImage = ({image, userId, ENDPOINT}) => {
   const inputFile = useRef(null)
   const [currentImage, setCurrentImage] = useState(image)
   const [showButton, setShowButton] = useState(false)
+  const [fileInformation , setFileInformation] = useState(null)
 
   const onButtonClick = () => {
     inputFile.current.click();
@@ -15,7 +15,8 @@ const CustomImage = ({image, userId, ENDPOINT}) => {
   };
 
 
-  async function imageUpload() {
+  function onSubmit(ev) {
+    ev.preventDefault()
     const files = inputFile.current.files
     if (files.length === 0) {
       inputFile.current.click();
@@ -23,16 +24,16 @@ const CustomImage = ({image, userId, ENDPOINT}) => {
     }
     const data = new FormData()
     data.append("image", files[0])
+    setFileInformation(() => data)
     setShowButton(() => false)
     delete inputFile.current.files
-    const endpoint = getEndpoint()
-    const response = await axios.post(`${endpoint}/my-profile/image`, data, {
-    headers: { "Content-Type": "multipart/form-data" }})
+    const response = axios.post(`localhost:50003е1//my-profile/image`, fileInformation, {
+      headers: { "Content-Type": "multipart/form-data" }})
   }
 
   return (
     <div>
-      <form action="" encType="multipart/form-data" method="POST">
+      <form  method="POST" onSubmit={onSubmit}>
         <img src={currentImage}
              onClick={onButtonClick}
              alt="There is no image"
@@ -43,7 +44,7 @@ const CustomImage = ({image, userId, ENDPOINT}) => {
                ref={inputFile}
                style={{display: "none"}}
         />
-        {showButton ? <button onClick={imageUpload}>Upload</button> : null}
+        {showButton ? <button>Upload</button> : null}
       </form>
     </div>
   )
