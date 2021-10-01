@@ -174,7 +174,7 @@ const Comment = ({
   return (
     <div
       className={styles.comment}
-      style={{ display: originalText !== null ? 'flex' : 'none' }}
+      style={{ display: originalText ? 'flex' : 'none' }}
     >
       <Modal
         text={modalMessage}
@@ -203,7 +203,6 @@ const Comment = ({
         </div>
 
         <div className={styles.comment__body}>
-          {/*{originalText}*/}
           {shouldDisplayEditInputs ? (
             <>
               <div className={styles.comment__inputs__wrapper}>
@@ -226,7 +225,6 @@ const Comment = ({
             <div
               className={`${styles.comment__votes} ${styles.comment__small__text}`}
             >
-              {/* icons */}
               {shouldDisplayEditOption ? (
                 <>
                   <div
@@ -257,20 +255,21 @@ const Comment = ({
               ) : null}
               <div onClick={upvote}>
                 <FontAwesomeIcon
-                  // className={styles.comment__votes__icon}
                   className={`${styles.comment__votes__icon} ${
                     shouldRotate ? styles.rotated : ''
                   }`}
                   icon={faChevronUp}
                 />
               </div>
-              <div>
+              <div
+                className={`${styles.comment__icon} ${styles.comment__icon__comments}`}
+              >
                 <FontAwesomeIcon
                   icon={faComment}
                   className={styles.comment__information__icon}
                 />
-                {comments} отговора
               </div>
+              <span>{comments} отговора</span>
             </div>
           </div>
         </div>

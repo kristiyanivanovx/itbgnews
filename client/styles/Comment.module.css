@@ -98,7 +98,7 @@
 
 .comment__votes {
   display: flex;
-  flex-direction: column;
+  /*flex-direction: column;*/
 }
 
 .comment__votes svg {
@@ -189,6 +189,7 @@
   display: flex;
   flex-direction: column;
   margin-left: 1.5rem;
+  width: 70%;
 }
 
 .comment__data {
@@ -205,5 +206,12 @@
 }
 .comment__body {
   margin: 0.7rem 0;
+}
+.comment__icon {
+  margin-right: 1rem;
+}
+.comment__icon:hover {
+  color: #554360;
+  cursor: pointer;
 }
 
