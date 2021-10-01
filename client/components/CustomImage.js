@@ -1,25 +1,19 @@
 import React from 'react';
 import {useState} from 'react';
 import {useRef} from "react"
+import { CREATED_RESPONSE_CODE, getEndpoint } from '../utilities/common';
+import axios from "axios"
 
 const CustomImage = ({image, userId, ENDPOINT}) => {
   const inputFile = useRef(null)
   const [currentImage, setCurrentImage] = useState(image)
   const [showButton, setShowButton] = useState(false)
-  const [file ,setFile] = useState(null)
 
   const onButtonClick = () => {
     inputFile.current.click();
     setShowButton(() => true)
   };
 
-  const previewFile = (file) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = function () {
-      setCurrentImage(() => reader.result)
-    };
-  };
 
   async function imageUpload() {
     const files = inputFile.current.files
@@ -27,20 +21,13 @@ const CustomImage = ({image, userId, ENDPOINT}) => {
       inputFile.current.click();
       return
     }
-    setFile(() => files[0])
-    previewFile(file)
-    const json = {
-      userId,
-      imageString: currentImage
-    }
+    const data = new FormData()
+    data.append("image", files[0])
     setShowButton(() => false)
-    setFile(() => null)
-
-    await fetch(`http://localhost:5000/my-profile/image`, {
-      method: "POST",
-      body: JSON.stringify(json),
-      headers: {'Content-Type': 'application/json'},
-    })
+    delete inputFile.current.files
+    const endpoint = getEndpoint()
+    const response = await axios.post(`${endpoint}/my-profile/image`, data, {
+    headers: { "Content-Type": "multipart/form-data" }})
   }
 
   return (
