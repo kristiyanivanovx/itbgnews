@@ -272,7 +272,9 @@ const Article = ({
             icon={faComment}
             className={styles.article__information__icon}
           />
-          {comments} коментара
+          <Link href={{ pathname: '/view', query: { name: formText, postId } }}>
+            <a>{comments} коментара</a>
+          </Link>
         </div>
       </div>
     </article>

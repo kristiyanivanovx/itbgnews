@@ -114,9 +114,7 @@ const Comment = ({
   };
 
   const checkResponseVote = async (response) => {
-    console.log(response);
     const data = await response.json();
-    console.log(data);
     const { count } = data;
 
     if (
@@ -174,18 +172,27 @@ const Comment = ({
   };
 
   return (
-    // <<<<<<< HEAD
-    //    >> in notepad
-    // =======
+    <div
+      className={styles.comment}
+      style={{ display: originalText !== null ? 'flex' : 'none' }}
+    >
+      <Modal
+        text={modalMessage}
+        shouldDisplay={shouldDisplayModal}
+        toggleModal={(shouldDisplay) => setShouldDisplayModal(!shouldDisplay)}
+        hasDeleteOption={hasDeleteOption}
+        confirmOptionText={'Да'}
+        cancelOptionText={'Не'}
+        confirmDelete={confirmDelete}
+      />
 
-    <div className={styles.comment}>
       <div className={styles.comment__left}>
-        <div className={styles.comment__votes__count}>10</div>
+        <div className={styles.comment__votes__count}>{upvotesCount}</div>
         <div className={styles.comment__line}></div>
       </div>
       <div className={styles.comment__right}>
         <div className={styles.comment__data}>
-          <div className={styles.comment__author}>Петър</div>
+          <div className={styles.comment__author}>{username}</div>
           <div className={styles.comment__created}>
             <FontAwesomeIcon
               icon={faClock}
@@ -194,28 +201,66 @@ const Comment = ({
             {new Date(date).toLocaleDateString('bg-BG')}
           </div>
         </div>
+
         <div className={styles.comment__body}>
-          Някъв коментар
+          {/*{originalText}*/}
+          {shouldDisplayEditInputs ? (
+            <>
+              <div className={styles.comment__inputs__wrapper}>
+                <Input
+                  defaultValue={originalText}
+                  onChange={(e) => setFormText(e.target.value)}
+                />
+              </div>
+              <div
+                className={styles.comment__modify}
+                onClick={toggleEditInputs}
+              >
+                <FontAwesomeIcon icon={faSave} onClick={confirmEdit} />
+              </div>
+            </>
+          ) : (
+            <p className={styles.comment__title}>{originalText}</p>
+          )}
           <div className={styles.comment__votes__icon}>
             <div
               className={`${styles.comment__votes} ${styles.comment__small__text}`}
             >
               {/* icons */}
-              <div className={''}>
-                <FontAwesomeIcon icon={faSave} />
-              </div>
-              <div className={''}>
-                <FontAwesomeIcon icon={faEdit} />
-              </div>
-              <div>
-                <FontAwesomeIcon icon={faTrashAlt} />
-              </div>
-              <div onClick={() => changeReplyingTo(commentId, false)}>
-                <FontAwesomeIcon icon={faReply} />
-              </div>
-              <div onLoad={upvote}>
+              {shouldDisplayEditOption ? (
+                <>
+                  <div
+                    className={styles.comment__modify}
+                    onClick={toggleEditInputs}
+                  >
+                    <FontAwesomeIcon icon={faEdit} />
+                  </div>
+                  <div
+                    className={styles.comment__modify}
+                    onClick={() =>
+                      toggleModalDelete(
+                        'Сигурни ли сте, че искате да изтриете този коментар?',
+                      )
+                    }
+                  >
+                    <FontAwesomeIcon icon={faTrashAlt} />
+                  </div>
+                </>
+              ) : null}
+              {shouldDisplayReplyIcon ? (
+                <div
+                  className={styles.comment__reply}
+                  onClick={() => changeReplyingTo(commentId, false)}
+                >
+                  <FontAwesomeIcon icon={faReply} />
+                </div>
+              ) : null}
+              <div onClick={upvote}>
                 <FontAwesomeIcon
-                  className={styles.comment__votes__icon}
+                  // className={styles.comment__votes__icon}
+                  className={`${styles.comment__votes__icon} ${
+                    shouldRotate ? styles.rotated : ''
+                  }`}
                   icon={faChevronUp}
                 />
               </div>
@@ -224,13 +269,40 @@ const Comment = ({
                   icon={faComment}
                   className={styles.comment__information__icon}
                 />
-                {/*{comments} коментара*/}
                 {comments} отговора
               </div>
             </div>
           </div>
-          {/*>>>>>>> add-icons-comment*/}
         </div>
+        {/* nested comments */}
+        {childrenComments?.map((comment) => {
+          const childrenCount = countChildren(comment);
+          const shouldDisplayEditOption =
+            comment.authorId === userId && comment.text;
+
+          // validate that passing postId, replyingTo, accessToken works
+          return (
+            <Comment
+              key={comment._id}
+              commentId={comment._id}
+              title={comment.text}
+              date={comment.creationDate}
+              upvotes={comment.upvoters.length}
+              username={comment.authorName}
+              comments={childrenCount}
+              childrenComments={comment.children}
+              changeReplyingTo={changeReplyingTo}
+              shouldDisplayReplyIcon={true}
+              postId={postId}
+              replyingTo={replyingTo}
+              accessToken={accessToken}
+              ENDPOINT={ENDPOINT}
+              // todo: check if current user === comment creator
+              userId={userId}
+              shouldDisplayEditOption={shouldDisplayEditOption}
+            />
+          );
+        })}
       </div>
     </div>
   );
