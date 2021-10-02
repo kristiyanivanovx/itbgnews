@@ -193,7 +193,9 @@ const Comment = ({
       <div className={styles.comment__right}>
         <div className={styles.comment__data}>
           <div className={styles.comment__author}>{username}</div>
-          <div className={styles.comment__created}>
+          <div
+            className={`${styles.comment__created} ${styles.comment__small__text}`}
+          >
             <FontAwesomeIcon
               icon={faClock}
               className={styles.comment__information__icon}
@@ -247,13 +249,13 @@ const Comment = ({
               ) : null}
               {shouldDisplayReplyIcon ? (
                 <div
-                  className={styles.comment__reply}
+                  className={`${styles.comment__reply} ${styles.comment__modify}`}
                   onClick={() => changeReplyingTo(commentId, false)}
                 >
                   <FontAwesomeIcon icon={faReply} />
                 </div>
               ) : null}
-              <div onClick={upvote}>
+              <div className={styles.comment__modify} onClick={upvote}>
                 <FontAwesomeIcon
                   className={`${styles.comment__votes__icon} ${
                     shouldRotate ? styles.rotated : ''
@@ -261,9 +263,7 @@ const Comment = ({
                   icon={faChevronUp}
                 />
               </div>
-              <div
-                className={`${styles.comment__icon} ${styles.comment__icon__comments}`}
-              >
+              <div className={styles.comment__modify}>
                 <FontAwesomeIcon
                   icon={faComment}
                   className={styles.comment__information__icon}
