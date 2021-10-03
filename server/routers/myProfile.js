@@ -3,6 +3,9 @@ const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const { verifyToken } = require('../middlewares/authMiddleware');
 const { cloudinary } = require(`../config/cloudinaryConfig`);
+const fs = require('fs');
+const { promisify } = require('util');
+const unlinkAsync = promisify(fs.unlink);
 
 router.get('/image/:userId', async (req, res) => {
   const userId = req.params.userId;
@@ -40,7 +43,8 @@ router.post('/image', verifyToken, upload.single('image'), async (req, res) => {
         msg: 'Successfully uploaded image',
         img: data.secure_url,
       });
-    });
+    })
+    .then(async () => await unlinkAsync(req.file.path));
 });
 
 module.exports = router;

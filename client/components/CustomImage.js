@@ -4,6 +4,8 @@ import { useRef } from 'react';
 import ensureValidCookie from '../utilities/ensureValidCookie';
 import { getEndpoint } from '../utilities/common';
 import Image from 'next/image';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUpload } from '@fortawesome/free-solid-svg-icons';
 
 const CustomImage = ({ image, accessToken }) => {
   const inputFile = useRef(null);
@@ -47,24 +49,30 @@ const CustomImage = ({ image, accessToken }) => {
   return (
     <div>
       <form method="POST" onSubmit={onSubmit}>
-        <img
-          src={currentImage}
-          onClick={onButtonClick}
-          alt="There is no image"
-          style={{ width: '100%' }}
-          name="image"
-        />
-
-        {/*<Image*/}
+        {/*<img*/}
         {/*  src={currentImage}*/}
         {/*  onClick={onButtonClick}*/}
         {/*  alt="There is no image"*/}
         {/*  style={{ width: '100%' }}*/}
         {/*  name="image"*/}
         {/*/>*/}
+        <Image
+          src={currentImage}
+          onClick={onButtonClick}
+          alt="There is no image"
+          width={150}
+          height={150}
+          name="image"
+        />
 
-        <input type="file" ref={inputFile} style={{ display: 'none' }} />
-        {showButton ? <button>Upload</button> : null}
+        <div>
+          <input type="file" ref={inputFile} style={{ display: 'none' }} />
+          {showButton ? (
+            <button>
+              <FontAwesomeIcon icon={faUpload} /> <span>Качи</span>
+            </button>
+          ) : null}
+        </div>
       </form>
     </div>
   );

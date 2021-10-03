@@ -122,7 +122,7 @@ const MyProfile = ({
             accessToken={accessToken}
           >
             <InfiniteScroll
-              dataLength={articles.length}
+              dataLength={articles.length || 0}
               next={getMoreArticles}
               hasMore={hasMore}
               loader={<h4>Зареждане...</h4>}
@@ -130,24 +130,26 @@ const MyProfile = ({
                 <p className={'center'}>Това са всичките налични статии!</p>
               }
             >
-              {articles.map((article, index) => (
-                <Article
-                  key={article._id}
-                  postId={article._id}
-                  isFirstArticle={index === 0}
-                  title={article.text}
-                  upvotes={article.upvoters.length}
-                  username={article.authorName}
-                  date={article.creationDate}
-                  // todo: show real comments count
-                  comments={index}
-                  link={article.url}
-                  authorId={article.authorId}
-                  userId={userId}
-                  shouldDisplayEditOptions={userId === article.authorId}
-                  accessToken={accessToken}
-                />
-              ))}
+              {articles.length > 0
+                ? articles.map((article, index) => (
+                    <Article
+                      key={article._id}
+                      postId={article._id}
+                      isFirstArticle={index === 0}
+                      title={article.text}
+                      upvotes={article.upvoters.length}
+                      username={article.authorName}
+                      date={article.creationDate}
+                      // todo: show real comments count
+                      comments={index}
+                      link={article.url}
+                      authorId={article.authorId}
+                      userId={userId}
+                      shouldDisplayEditOptions={userId === article.authorId}
+                      accessToken={accessToken}
+                    />
+                  ))
+                : null}
             </InfiniteScroll>
           </Profile>
         </div>

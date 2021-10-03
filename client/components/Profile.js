@@ -22,7 +22,7 @@ const Profile = ({
     setShouldBlurEmail((shouldBlurEmail) => !shouldBlurEmail);
   };
 
-  console.log('cloud image');
+  console.log('profile image');
   console.log(image);
 
   return (
