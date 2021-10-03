@@ -196,10 +196,10 @@ const Comment = ({
           <div
             className={`${styles.comment__created} ${styles.comment__small__text}`}
           >
-            <FontAwesomeIcon
-              icon={faClock}
-              className={styles.comment__information__icon}
-            />
+            {/*<FontAwesomeIcon*/}
+            {/*  icon={faClock}*/}
+            {/*  className={styles.comment__information__icon}*/}
+            {/*/>*/}
             {new Date(date).toLocaleDateString('bg-BG')}
           </div>
         </div>
