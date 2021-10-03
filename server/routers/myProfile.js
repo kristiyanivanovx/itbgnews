@@ -5,22 +5,27 @@ const { verifyToken } = require('../middlewares/authMiddleware');
 const { cloudinary } = require(`../config/cloudinaryConfig`);
 router.get('/image', verifyToken, async (req, res) => {
   const userId = req.user.sub;
-  const { resources } = await cloudinary.search
-    .expression(`profile_pictures/public_id:${userId}`)
-    .execute();
-  if (resources.length > 0) {
+  console.log(userId);
+  try {
+    const { resources } = await cloudinary.search
+      .expression(`profile_pictures/ filename=${userId}`)
+      .execute();
     console.log(resources);
-    return res.json({
-      data: resources[0].secure_url,
+    if (resources.length > 0) {
+      console.log(resources);
+      return res.status(200).json({
+        data: resources[0].secure_url,
+      });
+    }
+    return res.status(404).json({
+      massage: 'This image cannot be found',
     });
+  }catch (er){
+    console.log(er);
   }
-  return res.status(404).json({
-    massage: 'This image cannot be found',
-  });
 });
-router.post('/image', verifyToken, upload.single('image'), async (req, res) => {
-  const userId = 1;
-  console.log(req);
+router.post('/image',  verifyToken,upload.single('image'),async (req, res) => {
+  const userId = req.user.sub
   const file = req.file;
   const uploadResponse = await cloudinary.uploader.upload(file.path, {
     public_id: userId,

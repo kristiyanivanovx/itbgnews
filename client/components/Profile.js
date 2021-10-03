@@ -16,7 +16,7 @@ const Profile = ({
   articlesCount,
   triggerConfirmation,
   children,
-  userId,
+  accessToken
 }) => {
   const [shouldBlurEmail, setShouldBlurEmail] = useState(true);
   const toggleDisplayEmail = () => {
@@ -46,7 +46,7 @@ const Profile = ({
             width={100}
             height={100}
             image={image}
-            userId = {userId}
+            accessToken={accessToken}
             alt={'profile picture'}
           />
         </div>

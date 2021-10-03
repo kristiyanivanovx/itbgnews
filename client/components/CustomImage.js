@@ -1,32 +1,12 @@
 import React from 'react';
 import {useState} from 'react';
 import {useRef} from "react"
-import requireAuthentication from "../helpers/requireAuthentication";
-import {getEndpoint} from "../utilities/common";
-import getUserToken from "../utilities/getUserToken";
 import ensureValidCookie from "../utilities/ensureValidCookie";
-
-
-export const getServerSideProps = requireAuthentication(async (context) => {
-    const ENDPOINT = getEndpoint();
-
-    const accessToken = getUserToken(context.req?.headers.cookie).split('=')[1];
-
-
-    return {
-        props: {
-            accessToken,
-            ENDPOINT,
-        },
-    };
-});
 
 const CustomImage = ({image, accessToken}) => {
     const inputFile = useRef(null)
     const [currentImage, setCurrentImage] = useState(image)
     const [showButton, setShowButton] = useState(false)
-    const [fileInformation, setFileInformation] = useState(null)
-    console.log(accessToken);
     const onButtonClick = () => {
         inputFile.current.click();
         setShowButton(() => true)
@@ -42,7 +22,6 @@ const CustomImage = ({image, accessToken}) => {
         }
         const data = new FormData()
         data.append("image", files[0])
-        setFileInformation(() => data)
         setShowButton(() => false)
         delete inputFile.current.files
         const response = await fetch(`http://localhost:5000/my-profile/image`, {
