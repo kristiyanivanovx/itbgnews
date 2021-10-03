@@ -68,7 +68,7 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
     }
   };
 
-  useEffect(() => getPicture, [])
+  useEffect()
 
   // articles
   useEffect(() => {
