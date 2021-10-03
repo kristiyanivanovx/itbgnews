@@ -48,7 +48,27 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
   const [articles, setArticles] = useState(data.posts);
   const [hasMore, setHasMore] = useState(true);
   const [shouldRedirect, setShouldRedirect] = useState(false);
+  const [currentImage, setCurrentImage] = useState(null)
   const router = useRouter();
+  const getPicture = async () => {
+    const getPictureResponse = await fetch(`${ENDPOINT}/my-profile/image`, {
+      method: 'GET',
+      headers: {
+        authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
+      },
+    });
+    if(getPictureResponse.status === 200){
+      const {img} = await getPictureResponse.json()
+      setCurrentImage(() => img)
+    }else{
+      const style = `jdenticon`;
+      const randomized = userId + Math.random();
+      const img = `https://avatars.dicebear.com/api/${style}/${randomized}.svg`;
+      setCurrentImage(() => img)
+    }
+  };
+
+  useEffect(() => getPicture, [])
 
   // articles
   useEffect(() => {
@@ -56,7 +76,6 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
       router.push('/login');
       setShouldRedirect((prev) => !prev);
     }
-
     setHasMore(data.postsCount > articles.length);
   }, [articles.length, shouldRedirect, data.postsCount, router]);
 
@@ -79,6 +98,7 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
     // if (result.status === SUCCESS_RESPONSE_CODE) { }
   };
 
+
   const getMoreArticles = async () => {
     const response = await fetch(
       ENDPOINT + '/posts/by/' + userId + `?skip=${articles.length}&limit=10`,
@@ -89,9 +109,6 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
   };
 
   // todo: upload profile image - https://codesandbox.io/s/thyb0?file=/pages/index.js:869-895
-  const style = `jdenticon`;
-  const randomized = userId + Math.random();
-  const image = `https://avatars.dicebear.com/api/${style}/${randomized}.svg`;
 
   return (
     <>
@@ -104,14 +121,15 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
           <SideNav />
           <Profile
             triggerConfirmation={async () => await submitLogoutForm()}
-            image={image}
+            userId={userId}
+            image={currentImage}
             username={userData.username}
             bio={userData?.bio ?? ''}
             email={userData.email}
             commentsCount={userData.commentsCount}
             upvotesCount={userData.upvotesCount}
             articlesCount={userData.postsCount}
-            userId={userId}
+            accessToken={accessToken}
           >
             <InfiniteScroll
               dataLength={articles.length}

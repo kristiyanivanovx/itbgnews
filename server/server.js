@@ -15,6 +15,7 @@ const treeRouter = require('./routers/treeRouter');
 const postsRouter = require('./routers/postsRouter');
 const commentsRouter = require('./routers/commentsRouter');
 const usersRouter = require('./routers/usersRouter');
+const profileRouter = require("./routers/myProfile")
 
 app
   .use(cors())
@@ -26,6 +27,7 @@ app
   .use('/posts', postsRouter)
   .use('/comments', commentsRouter)
   .use('/users', usersRouter)
+  .use("/my-profile", profileRouter)
   .listen(PORT, () => {
     console.log(`Listening on port ${PORT} in ${ENV}...`);
   });

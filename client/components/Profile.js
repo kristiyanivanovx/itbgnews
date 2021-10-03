@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import Image from 'next/image';
+import React, {useState} from 'react';
 import styles from '../styles/Profile.module.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye } from '@fortawesome/free-solid-svg-icons';
-import { faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faEye} from '@fortawesome/free-solid-svg-icons';
+import {faEyeSlash} from '@fortawesome/free-solid-svg-icons';
+import CustomImage from "../components/CustomImage"
+import {useRef} from "react"
 
 const Profile = ({
   image,
@@ -15,13 +16,13 @@ const Profile = ({
   articlesCount,
   triggerConfirmation,
   children,
-  userId,
+  accessToken
 }) => {
   const [shouldBlurEmail, setShouldBlurEmail] = useState(true);
-
   const toggleDisplayEmail = () => {
     setShouldBlurEmail((shouldBlurEmail) => !shouldBlurEmail);
   };
+
 
   return (
     <main className={styles.profile}>
@@ -31,20 +32,21 @@ const Profile = ({
           className={styles.exit__btn}
           onClick={(e) => triggerConfirmation(e)}
         >
-          <div className={styles.exit__btn__shadow}> </div>
+          <div className={styles.exit__btn__shadow}></div>
           <span className={styles.exit__btn__text}>Изход</span>
         </button>
       </div>
 
       <div className={styles.profile__information}>
         <div className={styles.user__profile__pic}>
-          <Image
+          <CustomImage
             className={styles.profile__pic}
             // src={profile}
             // src={img}
             width={100}
             height={100}
-            src={image}
+            image={image}
+            accessToken={accessToken}
             alt={'profile picture'}
           />
         </div>
@@ -66,9 +68,9 @@ const Profile = ({
             </div>
             <div className={styles.eye__container} onClick={toggleDisplayEmail}>
               {shouldBlurEmail ? (
-                <FontAwesomeIcon icon={faEye} />
+                <FontAwesomeIcon icon={faEye}/>
               ) : (
-                <FontAwesomeIcon icon={faEyeSlash} />
+                <FontAwesomeIcon icon={faEyeSlash}/>
               )}
             </div>
           </div>

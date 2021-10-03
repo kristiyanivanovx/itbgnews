@@ -39,6 +39,7 @@ async function getPost(req, res) {
     res.json({
       posts: posts,
       postsCount: count,
+      user : req.user
     });
   } catch (err) {
     res.status(500).json({ message: err.message });

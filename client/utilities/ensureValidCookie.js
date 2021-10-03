@@ -8,6 +8,7 @@ const ensureValidCookie = async (accessToken) => {
   const ENDPOINT = getEndpoint();
   const userId = jwt.decode(accessToken).sub;
   const isExpired = isTokenExpired(accessToken);
+  console.log(isExpired)
 
   const updatedToken = isExpired
     ? (await renewToken(ENDPOINT, userId)).accessToken
