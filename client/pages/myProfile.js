@@ -79,15 +79,15 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
     // if (result.status === SUCCESS_RESPONSE_CODE) { }
   };
   const getPicture = async () => {
-    const getPictureResponce = await fetch(`${ENDPOINT}/posts/my-profile/image`, {
-      method : "GET",
+    const getPictureResponse = await fetch(`${ENDPOINT}/posts/my-profile/image`, {
+      method: 'GET',
       headers: {
         authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
       },
-    })
-  }
+    });
+  };
 
-  getPicture()
+  getPicture();
 
   const getMoreArticles = async () => {
     const response = await fetch(
@@ -114,7 +114,7 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
           <SideNav />
           <Profile
             triggerConfirmation={async () => await submitLogoutForm()}
-            userId = {userId}
+            userId={userId}
             image={image}
             username={userData.username}
             bio={userData?.bio ?? ''}
@@ -122,7 +122,6 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
             commentsCount={userData.commentsCount}
             upvotesCount={userData.upvotesCount}
             articlesCount={userData.postsCount}
-            userId={userId}
           >
             <InfiniteScroll
               dataLength={articles.length}
