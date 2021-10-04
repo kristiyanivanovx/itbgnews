@@ -12,6 +12,7 @@ import requireAuthentication from '../helpers/requireAuthentication';
 import jwt from 'jsonwebtoken';
 import getUserToken from '../utilities/getUserToken';
 import ensureValidCookie from '../utilities/ensureValidCookie';
+import setProfilePicture from '../utilities/pictures/setProfilePicture';
 
 export const getServerSideProps = requireAuthentication(async (context) => {
   const ENDPOINT = getEndpoint();
@@ -33,6 +34,9 @@ export const getServerSideProps = requireAuthentication(async (context) => {
   const userInformation = await fetch(ENDPOINT + '/users/info/' + userId);
   const userData = await userInformation.json();
 
+  const pictureResponse = await fetch(ENDPOINT + '/my-profile/image/' + userId);
+  const picture = await setProfilePicture(pictureResponse, userId);
+
   return {
     props: {
       data,
@@ -40,16 +44,25 @@ export const getServerSideProps = requireAuthentication(async (context) => {
       userData,
       accessToken,
       ENDPOINT,
+      picture,
     },
   };
 });
 
-const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
+const MyProfile = ({
+  data,
+  userId,
+  userData,
+  accessToken,
+  ENDPOINT,
+  picture,
+}) => {
   const [articles, setArticles] = useState(data.posts);
   const [hasMore, setHasMore] = useState(true);
   const [shouldRedirect, setShouldRedirect] = useState(false);
-  const [currentImage, setCurrentImage] = useState(null)
+  const [currentImage, setCurrentImage] = useState(picture);
   const router = useRouter();
+<<<<<<< HEAD
   const getPicture = async () => {
     const getPictureResponse = await fetch(`${ENDPOINT}/my-profile/image`, {
       method: 'GET',
@@ -69,6 +82,8 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
   };
 
   useEffect()
+=======
+>>>>>>> origin/chris
 
   // articles
   useEffect(() => {
@@ -98,7 +113,6 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
     // if (result.status === SUCCESS_RESPONSE_CODE) { }
   };
 
-
   const getMoreArticles = async () => {
     const response = await fetch(
       ENDPOINT + '/posts/by/' + userId + `?skip=${articles.length}&limit=10`,
@@ -107,8 +121,6 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
     const { posts } = await response.json();
     setArticles((articles) => [...articles, ...posts]);
   };
-
-  // todo: upload profile image - https://codesandbox.io/s/thyb0?file=/pages/index.js:869-895
 
   return (
     <>

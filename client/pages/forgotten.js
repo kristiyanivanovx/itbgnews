@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Input from '../components/Input';
+import FormInput from '../components/FormInput';
 import Button from '../components/Button';
 import FormTitle from '../components/FormTitle';
 import FormContainer from '../components/FormContainer';
@@ -63,7 +63,7 @@ const Forgotten = () => {
           />
           <FormTitle text={'Забравена Парола'} />
           <Form>
-            <Input
+            <FormInput
               onChange={(e) => setEmail(e.target.value)}
               type={'text'}
               placeholder={'Имейл'}

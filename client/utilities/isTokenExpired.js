@@ -9,7 +9,5 @@ export default function isTokenExpired(accessTokenCookie) {
     return true;
   }
 
-  // return true if token is expired
-  // return false if token is not expired
   return token.exp * 1000 < now.getTime();
 }

@@ -1,6 +1,6 @@
 .nav {
     margin-top: 1rem;
-    font-size: clamp(15px, 2.5vw, 30px);
+    font-size: clamp(15px, 2.5vw, 25px);
 }
 
 .nav__item:hover,
