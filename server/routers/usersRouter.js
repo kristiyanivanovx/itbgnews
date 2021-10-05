@@ -13,14 +13,4 @@ router.get(
   },
 );
 
-// todo: upload image/delete image routes
-// router.get(
-//   '/',
-//   auth.verifyToken,
-//   getters.userGetter,
-//   (req, res) => {
-//     res.json(req.userObject);
-//   },
-// );
-
 module.exports = router;
