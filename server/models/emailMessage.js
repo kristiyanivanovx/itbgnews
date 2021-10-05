@@ -13,6 +13,8 @@ const HOST = isProduction
   ? process.env.REMOTE_FRONTEND_HOST
   : process.env.LOCAL_FRONTEND_HOST;
 
+// const SENDER = process.env.SENDER_EMAIL;
+
 function createMessage(email, code) {
   return {
     to: email,

@@ -22,9 +22,6 @@ const Profile = ({
     setShouldBlurEmail((shouldBlurEmail) => !shouldBlurEmail);
   };
 
-  console.log('profile image');
-  console.log(image);
-
   return (
     <main className={styles.profile}>
       <div className={styles.top__info}>
