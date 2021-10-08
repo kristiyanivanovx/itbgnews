@@ -66,7 +66,7 @@ async function postPost(req, res) {
     errors.errorTitle = 'The title must be at least 6 letters and at most 250.';
   }
 
-  if (!validator.isURL(url)) {
+  if (!validator.isURL(url, { require_protocol: true })) {
     errors.errorUrl = 'The url must be a valid hyperlink.';
   }
 
