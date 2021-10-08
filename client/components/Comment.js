@@ -196,10 +196,6 @@ const Comment = ({
           <div
             className={`${styles.comment__created} ${styles.comment__small__text}`}
           >
-            {/*<FontAwesomeIcon*/}
-            {/*  icon={faClock}*/}
-            {/*  className={styles.comment__information__icon}*/}
-            {/*/>*/}
             {new Date(date).toLocaleDateString('bg-BG')}
           </div>
         </div>
@@ -213,12 +209,6 @@ const Comment = ({
                   onChange={(e) => setFormText(e.target.value)}
                 />
               </div>
-              <div
-                className={styles.comment__modify}
-                onClick={toggleEditInputs}
-              >
-                <FontAwesomeIcon icon={faSave} onClick={confirmEdit} />
-              </div>
             </>
           ) : (
             <p className={styles.comment__title}>{originalText}</p>
@@ -229,6 +219,12 @@ const Comment = ({
             >
               {shouldDisplayEditOption ? (
                 <>
+                  <div
+                    className={styles.comment__modify}
+                    onClick={toggleEditInputs}
+                  >
+                    <FontAwesomeIcon icon={faSave} onClick={confirmEdit} />
+                  </div>
                   <div
                     className={styles.comment__modify}
                     onClick={toggleEditInputs}
@@ -249,7 +245,7 @@ const Comment = ({
               ) : null}
               {shouldDisplayReplyIcon ? (
                 <div
-                  className={`${styles.comment__reply} ${styles.comment__modify}`}
+                  className={styles.comment__modify}
                   onClick={() => changeReplyingTo(commentId, false)}
                 >
                   <FontAwesomeIcon icon={faReply} />
@@ -269,7 +265,9 @@ const Comment = ({
                   className={styles.comment__information__icon}
                 />
               </div>
-              <span>{comments} отговора</span>
+              <span>2&nbsp;отговора</span>
+
+              {/*<span>{comments} отговора</span>*/}
             </div>
           </div>
         </div>
