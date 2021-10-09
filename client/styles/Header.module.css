@@ -80,7 +80,7 @@
 .search__bar {
     display: flex;
     align-items: center;
-    width: 70%;
+    width: 65%;
     border-radius: 15px;
     padding: 0.5em 1em;
     background: var(--clr-main);
@@ -89,7 +89,7 @@
 .search__bar__edges {
     display: flex;
     align-items: center;
-    width: 70%;
+    width: 65%;
     padding: 0.5em 1em;
     background: var(--clr-main);
     border-radius: 15px 15px 0 0;

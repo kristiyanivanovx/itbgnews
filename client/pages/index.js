@@ -65,7 +65,7 @@ const Home = ({ data, accessToken, ENDPOINT }) => {
           <SideNav />
           <main className={styles.articles}>
             <InfiniteScroll
-              dataLength={articles.length ?? 0}
+              dataLength={articles.length || 0}
               next={getMoreArticles}
               hasMore={hasMore}
               loader={<h4>Зареждане...</h4>}

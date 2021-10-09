@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const getter = require('../functions/getters');
-const controller = require('../controllers/commentsController');
 const auth = require('../middlewares/authMiddleware');
+const controller = require('../controllers/commentsController');
 
 //Create a comment ✔
 router.post(

@@ -1,6 +1,6 @@
 import Header from '../components/Header';
 import React, { useState } from 'react';
-import Input from '../components/Input';
+import FormInput from '../components/FormInput';
 import Button from '../components/Button';
 import FormTitle from '../components/FormTitle';
 import Form from '../components/Form';
@@ -79,13 +79,13 @@ const Create = ({ accessToken }) => {
           />
           <FormTitle text={'Създай Статия'} />
           <Form>
-            <Input
+            <FormInput
               onChange={(e) => setText(e.target.value)}
               type={'text'}
               placeholder={'Заглавие'}
               errorMessage={errors?.errorTitle}
             />
-            <Input
+            <FormInput
               onChange={(e) => setUrl(e.target.value)}
               type={'url'}
               placeholder={'Линк'}

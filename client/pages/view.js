@@ -7,6 +7,7 @@ import SideNav from '../components/SideNav';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../helpers/getDefaultLayout';
 import commentStyles from '../styles/Comment.module.css';
+import Input from '../components/Input';
 
 import {
   CANNOT_FIND_POST_ERROR,

@@ -12,6 +12,7 @@ import requireAuthentication from '../helpers/requireAuthentication';
 import jwt from 'jsonwebtoken';
 import getUserToken from '../utilities/getUserToken';
 import ensureValidCookie from '../utilities/ensureValidCookie';
+import setProfilePicture from '../utilities/pictures/setProfilePicture';
 
 export const getServerSideProps = requireAuthentication(async (context) => {
   const ENDPOINT = getEndpoint();
@@ -33,6 +34,9 @@ export const getServerSideProps = requireAuthentication(async (context) => {
   const userInformation = await fetch(ENDPOINT + '/users/info/' + userId);
   const userData = await userInformation.json();
 
+  const pictureResponse = await fetch(ENDPOINT + '/my-profile/image/' + userId);
+  const picture = await setProfilePicture(pictureResponse, userId);
+
   return {
     props: {
       data,
@@ -40,14 +44,23 @@ export const getServerSideProps = requireAuthentication(async (context) => {
       userData,
       accessToken,
       ENDPOINT,
+      picture,
     },
   };
 });
 
-const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
+const MyProfile = ({
+  data,
+  userId,
+  userData,
+  accessToken,
+  ENDPOINT,
+  picture,
+}) => {
   const [articles, setArticles] = useState(data.posts);
   const [hasMore, setHasMore] = useState(true);
   const [shouldRedirect, setShouldRedirect] = useState(false);
+  const [currentImage, setCurrentImage] = useState(picture);
   const router = useRouter();
 
   // articles
@@ -56,7 +69,6 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
       router.push('/login');
       setShouldRedirect((prev) => !prev);
     }
-
     setHasMore(data.postsCount > articles.length);
   }, [articles.length, shouldRedirect, data.postsCount, router]);
 
@@ -88,11 +100,6 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
     setArticles((articles) => [...articles, ...posts]);
   };
 
-  // todo: upload profile image - https://codesandbox.io/s/thyb0?file=/pages/index.js:869-895
-  const style = `jdenticon`;
-  const randomized = userId + Math.random();
-  const image = `https://avatars.dicebear.com/api/${style}/${randomized}.svg`;
-
   return (
     <>
       <HeadComponent currentPageName={'Моят Профил'} />
@@ -104,17 +111,18 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
           <SideNav />
           <Profile
             triggerConfirmation={async () => await submitLogoutForm()}
-            image={image}
+            userId={userId}
+            image={currentImage}
             username={userData.username}
             bio={userData?.bio ?? ''}
             email={userData.email}
             commentsCount={userData.commentsCount}
             upvotesCount={userData.upvotesCount}
             articlesCount={userData.postsCount}
-            userId={userId}
+            accessToken={accessToken}
           >
             <InfiniteScroll
-              dataLength={articles.length}
+              dataLength={articles.length || 0}
               next={getMoreArticles}
               hasMore={hasMore}
               loader={<h4>Зареждане...</h4>}
@@ -122,24 +130,26 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
                 <p className={'center'}>Това са всичките налични статии!</p>
               }
             >
-              {articles.map((article, index) => (
-                <Article
-                  key={article._id}
-                  postId={article._id}
-                  isFirstArticle={index === 0}
-                  title={article.text}
-                  upvotes={article.upvoters.length}
-                  username={article.authorName}
-                  date={article.creationDate}
-                  // todo: show real comments count
-                  comments={index}
-                  link={article.url}
-                  authorId={article.authorId}
-                  userId={userId}
-                  shouldDisplayEditOptions={userId === article.authorId}
-                  accessToken={accessToken}
-                />
-              ))}
+              {articles.length > 0
+                ? articles.map((article, index) => (
+                    <Article
+                      key={article._id}
+                      postId={article._id}
+                      isFirstArticle={index === 0}
+                      title={article.text}
+                      upvotes={article.upvoters.length}
+                      username={article.authorName}
+                      date={article.creationDate}
+                      // todo: show real comments count
+                      comments={index}
+                      link={article.url}
+                      authorId={article.authorId}
+                      userId={userId}
+                      shouldDisplayEditOptions={userId === article.authorId}
+                      accessToken={accessToken}
+                    />
+                  ))
+                : null}
             </InfiniteScroll>
           </Profile>
         </div>
