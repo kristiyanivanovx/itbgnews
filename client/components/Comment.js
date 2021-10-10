@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useReducer, useState } from 'react';
 import styles from '../styles/Comment.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -23,6 +23,10 @@ import ensureValidCookie from '../utilities/ensureValidCookie';
 import Input from './Input';
 import Modal from './Modal';
 import { useRouter } from 'next/router';
+import { CommentsContext } from '../pages/_app';
+import commentsReducer, { COMMENT_ACTIONS } from '../reducers/commentsReducer';
+
+const initialState = 0;
 
 const Comment = ({
   commentId,
@@ -42,6 +46,11 @@ const Comment = ({
   userId,
   shouldDisplayEditOption,
 }) => {
+  // const commentsContext = useContext(CommentsContext);
+  const [count, dispatch] = useReducer(commentsReducer, {
+    firstCounter: upvotes,
+  });
+
   const [formText, setFormText] = useState(title);
   const [shouldDisplayEditInputs, setShouldDisplayEditInputs] = useState(false);
   const [upvotesCount, setUpvotesCount] = useState(upvotes);
@@ -56,6 +65,11 @@ const Comment = ({
   const [isDeleted, setIsDeleted] = useState(false);
   const router = useRouter();
 
+  // useEffect(() => {
+  //   let { count } = state;
+  //   // setUpvotesCount(() => count);
+  // }, [state, state.count]);
+
   useEffect(() => {
     if (shouldRedirectLogin) {
       router.push('/login');
@@ -64,10 +78,7 @@ const Comment = ({
 
   // edit
   const confirmEdit = async () => {
-    if (!accessToken) {
-      setShouldRedirectLogin(() => true);
-      return;
-    }
+    isTokenPresent(accessToken);
 
     const response = await fetch(
       ENDPOINT + '/comments/update/' + commentId, // replyingTo.id
@@ -95,22 +106,25 @@ const Comment = ({
     }
   };
 
-  // voting
-  const upvote = async () => {
+  const isTokenPresent = (accessToken) => {
     if (!accessToken) {
       setShouldRedirectLogin(() => true);
-      return;
+      return false;
     }
 
-    const response = await fetch(ENDPOINT + '/comments/upvote/' + commentId, {
-      method: 'PATCH',
-      headers: {
-        Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
-      },
-    });
+    return true;
+  };
 
-    setShouldRotate((shouldRotate) => !shouldRotate);
-    await checkResponseVote(response);
+  // voting
+  const upvote = async () => {
+    // const response = await fetch(ENDPOINT + '/comments/upvote/' + commentId, {
+    //   method: 'PATCH',
+    //   headers: {
+    //     Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
+    //   },
+    // });
+    //
+    // await checkResponseVote(response);
   };
 
   const checkResponseVote = async (response) => {
@@ -122,6 +136,7 @@ const Comment = ({
       response.status === REMOVED_RESPONSE_CODE
     ) {
       setUpvotesCount(() => count);
+      setShouldRotate((shouldRotate) => !shouldRotate);
     } else if (response.status === UNAUTHORIZED_RESPONSE_CODE) {
       setShouldRedirectLogin(() => true);
     }
@@ -135,10 +150,7 @@ const Comment = ({
 
   // delete
   const confirmDelete = async () => {
-    if (!accessToken) {
-      setShouldRedirectLogin(() => true);
-      return;
-    }
+    isTokenPresent();
 
     const response = await fetch(
       ENDPOINT + '/comments/delete/' + postId + '/' + commentId,
@@ -176,6 +188,17 @@ const Comment = ({
       className={styles.comment}
       style={{ display: originalText ? 'flex' : 'none' }}
     >
+      {/*<div>*/}
+      {/*  {commentsContext.commentState}*/}
+      {/*  <br />*/}
+
+      {/*  <button onClick={() => commentsContext.commentDispatch('decrement')}>*/}
+      {/*    decrement*/}
+      {/*  </button>*/}
+      {/*  <button onClick={() => commentsContext.commentDispatch('reset')}>*/}
+      {/*    reset*/}
+      {/*  </button>*/}
+      {/*</div>*/}
       <Modal
         text={modalMessage}
         shouldDisplay={shouldDisplayModal}
@@ -187,7 +210,13 @@ const Comment = ({
       />
 
       <div className={styles.comment__left}>
-        <div className={styles.comment__votes__count}>{upvotesCount}</div>
+        <div className={styles.comment__votes__count}>
+          {/*{console.log('state')}*/}
+          {/*{console.log(state.count)}*/}
+          {/*{console.log('end state')}*/}
+          {/*{commentsContext.countState}*/}
+          {count.firstCounter} | {upvotesCount}
+        </div>
         <div className={styles.comment__line}></div>
       </div>
       <div className={styles.comment__right}>
@@ -224,6 +253,7 @@ const Comment = ({
                     onClick={toggleEditInputs}
                   >
                     <FontAwesomeIcon icon={faSave} onClick={confirmEdit} />
+                    {/*<FontAwesomeIcon icon={faSave} onClick={countContext.dispatch} />*/}
                   </div>
                   <div
                     className={styles.comment__modify}
@@ -251,7 +281,22 @@ const Comment = ({
                   <FontAwesomeIcon icon={faReply} />
                 </div>
               ) : null}
-              <div className={styles.comment__modify} onClick={upvote}>
+              <div
+                className={styles.comment__modify}
+                // onClick={upvote}
+                onClick={async () => {
+                  isTokenPresent(accessToken)
+                    ? dispatch({
+                        type: COMMENT_ACTIONS.UPVOTE,
+                        payload: {
+                          commentId: commentId,
+                          token: await ensureValidCookie(accessToken),
+                          ENDPOINT: ENDPOINT,
+                        },
+                      })
+                    : null;
+                }}
+              >
                 <FontAwesomeIcon
                   className={`${styles.comment__votes__icon} ${
                     shouldRotate ? styles.rotated : ''
@@ -265,7 +310,7 @@ const Comment = ({
                   className={styles.comment__information__icon}
                 />
               </div>
-              <span>2&nbsp;отговора</span>
+              <span>2(hardcoded!)&nbsp;отговора</span>
 
               {/*<span>{comments} отговора</span>*/}
             </div>
@@ -304,5 +349,11 @@ const Comment = ({
     </div>
   );
 };
+
+// const { checkResponseVote } = Comment;
+//
+// module.exports = {
+//   checkResponseVote,
+// };
 
 export default Comment;

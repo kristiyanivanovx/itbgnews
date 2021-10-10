@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import Article from '../components/Article';
 import SideNav from '../components/SideNav';
 import Header from '../components/Header';
@@ -10,6 +10,7 @@ import INDEX_PATH from '../next.config';
 import getUserToken from '../utilities/getUserToken';
 import jwt from 'jsonwebtoken';
 import styles from '../styles/Articles.module.css';
+import { CommentsContext } from './_app';
 
 export async function getServerSideProps(context) {
   const ENDPOINT = getEndpoint();
@@ -35,6 +36,8 @@ export async function getServerSideProps(context) {
 }
 
 const Home = ({ data, accessToken, ENDPOINT }) => {
+  const commentsContext = useContext(CommentsContext);
+
   const [articles, setArticles] = useState(data.posts);
   const [hasMore, setHasMore] = useState(true);
   const [userId, setUserId] = useState(
