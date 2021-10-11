@@ -39,7 +39,7 @@ async function getPost(req, res) {
     res.json({
       posts: posts,
       postsCount: count,
-      user : req.user
+      user: req.user,
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -184,7 +184,7 @@ async function deletePost(req, res) {
 
   if (String(post.authorId) === String(userId)) {
     try {
-      //get all comments and upvotes on comments connected to the post and delete them too
+      //get all comment and upvotes on comment connected to the post and delete them too
       let comments = await getters.commentsGetter(post._id);
       //const commentCountUserPairs = [];
 
@@ -224,7 +224,7 @@ async function deletePost(req, res) {
 
       res
         .status(200)
-        .json({ message: 'Post and comments have been deleted successfully!' });
+        .json({ message: 'Post and comment have been deleted successfully!' });
 
       return;
     } catch (err) {

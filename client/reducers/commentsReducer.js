@@ -8,7 +8,7 @@ export const COMMENT_ACTIONS = {
 
 const commentsReducer = (state, action) => {
   const { commentId, token, ENDPOINT } = action.payload;
-  const target = ENDPOINT + '/comments/upvote/' + commentId;
+  const target = ENDPOINT + '/comment/upvote/' + commentId;
   let result = 0;
 
   switch (action.type) {

@@ -10,7 +10,6 @@ import INDEX_PATH from '../next.config';
 import getUserToken from '../utilities/getUserToken';
 import jwt from 'jsonwebtoken';
 import styles from '../styles/Articles.module.css';
-import { CommentsContext } from './_app';
 
 export async function getServerSideProps(context) {
   const ENDPOINT = getEndpoint();
@@ -36,7 +35,7 @@ export async function getServerSideProps(context) {
 }
 
 const Home = ({ data, accessToken, ENDPOINT }) => {
-  const commentsContext = useContext(CommentsContext);
+  // const commentsContext = useContext(CommentsContext);
 
   const [articles, setArticles] = useState(data.posts);
   const [hasMore, setHasMore] = useState(true);
@@ -86,7 +85,7 @@ const Home = ({ data, accessToken, ENDPOINT }) => {
                       upvotes={article.upvoters.length}
                       username={article.authorName}
                       date={article.creationDate}
-                      // todo: show real comments count
+                      // todo: show real comment count
                       comments={index}
                       link={article.url}
                       redirectUrl={INDEX_PATH}

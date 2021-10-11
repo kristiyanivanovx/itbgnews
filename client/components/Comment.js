@@ -23,8 +23,6 @@ import ensureValidCookie from '../utilities/ensureValidCookie';
 import Input from './Input';
 import Modal from './Modal';
 import { useRouter } from 'next/router';
-import { CommentsContext } from '../pages/_app';
-import commentsReducer, { COMMENT_ACTIONS } from '../reducers/commentsReducer';
 
 const initialState = 0;
 
@@ -47,10 +45,6 @@ const Comment = ({
   shouldDisplayEditOption,
 }) => {
   // const commentsContext = useContext(CommentsContext);
-  const [count, dispatch] = useReducer(commentsReducer, {
-    firstCounter: upvotes,
-  });
-
   const [formText, setFormText] = useState(title);
   const [shouldDisplayEditInputs, setShouldDisplayEditInputs] = useState(false);
   const [upvotesCount, setUpvotesCount] = useState(upvotes);
@@ -117,7 +111,7 @@ const Comment = ({
 
   // voting
   const upvote = async () => {
-    // const response = await fetch(ENDPOINT + '/comments/upvote/' + commentId, {
+    // const response = await fetch(ENDPOINT + '/comment/upvote/' + commentId, {
     //   method: 'PATCH',
     //   headers: {
     //     Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
@@ -211,11 +205,8 @@ const Comment = ({
 
       <div className={styles.comment__left}>
         <div className={styles.comment__votes__count}>
-          {/*{console.log('state')}*/}
-          {/*{console.log(state.count)}*/}
-          {/*{console.log('end state')}*/}
-          {/*{commentsContext.countState}*/}
-          {count.firstCounter} | {upvotesCount}
+          {/*{count.firstCounter} | */}
+          {upvotesCount}
         </div>
         <div className={styles.comment__line}></div>
       </div>
@@ -285,16 +276,16 @@ const Comment = ({
                 className={styles.comment__modify}
                 // onClick={upvote}
                 onClick={async () => {
-                  isTokenPresent(accessToken)
-                    ? dispatch({
-                        type: COMMENT_ACTIONS.UPVOTE,
-                        payload: {
-                          commentId: commentId,
-                          token: await ensureValidCookie(accessToken),
-                          ENDPOINT: ENDPOINT,
-                        },
-                      })
-                    : null;
+                  // isTokenPresent(accessToken)
+                  //   ? dispatch({
+                  //       type: COMMENT_ACTIONS.UPVOTE,
+                  //       payload: {
+                  //         commentId: commentId,
+                  //         token: await ensureValidCookie(accessToken),
+                  //         ENDPOINT: ENDPOINT,
+                  //       },
+                  //     })
+                  //   : null;
                 }}
               >
                 <FontAwesomeIcon
@@ -312,11 +303,11 @@ const Comment = ({
               </div>
               <span>2(hardcoded!)&nbsp;отговора</span>
 
-              {/*<span>{comments} отговора</span>*/}
+              {/*<span>{comment} отговора</span>*/}
             </div>
           </div>
         </div>
-        {/* nested comments */}
+        {/* nested comment */}
         {childrenComments?.map((comment) => {
           const childrenCount = countChildren(comment);
           const shouldDisplayEditOption =

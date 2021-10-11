@@ -140,7 +140,7 @@ const MyProfile = ({
                       upvotes={article.upvoters.length}
                       username={article.authorName}
                       date={article.creationDate}
-                      // todo: show real comments count
+                      // todo: show real comment count
                       comments={index}
                       link={article.url}
                       authorId={article.authorId}

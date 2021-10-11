@@ -7,8 +7,6 @@ import SideNav from '../components/SideNav';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../helpers/getDefaultLayout';
 import commentStyles from '../styles/Comment.module.css';
-import Input from '../components/Input';
-
 import {
   CANNOT_FIND_POST_ERROR,
   INVALID_ID_ERROR,
@@ -23,11 +21,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faSave } from '@fortawesome/free-regular-svg-icons';
 import ensureValidCookie from '../utilities/ensureValidCookie';
+import { useDispatch, useSelector } from 'react-redux';
+import { addComment, fetchCommentCreate } from '../components/redux';
 
 export async function getServerSideProps(context) {
-  const postId = context.query.postId;
   const ENDPOINT = getEndpoint();
-  const response = await fetch(ENDPOINT + `/posts/comments/` + postId);
+
+  const postId = context.query.postId;
+
+  const target = ENDPOINT + `/posts/comments/` + postId;
+  const response = await fetch(target);
   const data = await response.json();
 
   const userToken = getUserToken(context.req?.headers.cookie);
@@ -39,7 +42,7 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const treeResponse = await fetch(ENDPOINT + '/tree/' + postId);
+  const treeResponse = await fetch(getEndpoint() + '/tree/' + postId);
   const treeData = await treeResponse.json();
 
   return {
@@ -53,8 +56,11 @@ export async function getServerSideProps(context) {
   };
 }
 
-// todo: finish up here, get current post + comments by the post's id
+// todo: finish up here, get current post + comment by the post's id
 const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
+  const numberOfComments = useSelector((state) => state.comment.numberOfCakes);
+  const commentDispatch = useDispatch();
+
   const [shouldShowInput, setShouldShowInput] = useState(false);
   // const [shouldRedirect, setShouldRedirect] = useState(false);
   const [shouldRedirectLogin, setShouldRedirectLogin] = useState(false);
@@ -116,18 +122,22 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
       return;
     }
 
-    const response = await fetch(ENDPOINT + '/comments/create', {
-      method: 'POST',
-      body: JSON.stringify({
-        parentPostId: postId,
-        parentCommentId: replyingTo.isPost ? 'false' : replyingTo.id,
-        text: text,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
-      },
-    });
+    // () => commentDispatch(addComment())
+
+    commentDispatch(fetchCommentCreate(postId, replyingTo, accessToken, text));
+
+    // const response = await fetch(ENDPOINT + '/comments/create', {
+    //   method: 'POST',
+    //   body: JSON.stringify({
+    //     parentPostId: postId,
+    //     parentCommentId: replyingTo.isPost ? 'false' : replyingTo.id,
+    //     text: text,
+    //   }),
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
+    //   },
+    // });
 
     setShouldShowInput((prev) => !prev);
     router.replace(router.asPath);
@@ -142,7 +152,7 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
       username={article.authorName}
       date={article.creationDate}
       upvotes={article.upvoters.length}
-      // todo: show real comments count
+      // todo: show real comment count
       comments={6}
       link={article.url}
       redirectUrl={INDEX_PATH}
