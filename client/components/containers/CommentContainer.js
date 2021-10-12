@@ -10,7 +10,7 @@ function CommentContainer() {
   return (
     <div>
       <h2>number of comments {numberOfComments}</h2>
-      <button onClick={() => commentDispatch(addComment())}>add comment</button>
+      {/*<button onClick={() => commentDispatch(addComment())}>add comment</button>*/}
       <button onClick={() => commentDispatch(deleteComment())}>
         delete comment
       </button>
