@@ -112,10 +112,20 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
     isTokenPresent(accessToken, setShouldRedirectLogin);
 
     const token = await ensureValidCookie(accessToken);
-    commentDispatch(addComment(postId, replyingTo, token, text));
-    setShouldShowInput((prev) => !prev);
 
-    router.replace(router.asPath);
+    console.log('1');
+    let handle = addComment(postId, replyingTo, token, text);
+    handle.then(() => {
+      router.replace(router.asPath);
+      setShouldShowInput((prev) => !prev);
+    });
+
+    commentDispatch(handle);
+
+    console.log('handle');
+
+    console.log('2');
+    console.log('3');
   };
 
   const singleArticle = (

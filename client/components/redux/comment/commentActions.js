@@ -146,6 +146,7 @@ export const addComment = (postId, replyingTo, accessToken, text) => {
   return (dispatch) => {
     const target = getEndpoint() + '/comments/create';
 
+    console.log('4');
     fetch(target, {
       method: 'post',
       headers: {
@@ -160,6 +161,7 @@ export const addComment = (postId, replyingTo, accessToken, text) => {
     })
       .then((response) => response.json())
       .then((response) => {
+        console.log('5');
         dispatch(addCommentSuccess(response));
       })
       .catch((error) => {
