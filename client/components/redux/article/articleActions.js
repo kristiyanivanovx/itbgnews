@@ -12,14 +12,9 @@ import {
   UPVOTE_ARTICLE_FAILURE,
 } from './articleTypes';
 import { getEndpoint } from '../../../utilities/common';
-import {
-  upvoteCommentFailure,
-  upvoteCommentSuccess,
-} from '../comment/commentActions';
-import ensureValidCookie from '../../../utilities/ensureValidCookie';
 
 export const createArticle = (text, url, userId, token) => {
-  return async (dispatch) => {
+  return (dispatch) => {
     const target = getEndpoint() + '/posts/create';
 
     fetch(target, {

@@ -47,7 +47,7 @@ const Create = ({ accessToken }) => {
   const submitForm = async () => {
     let userId = jwt.decode(accessToken).sub;
     const token = await ensureValidCookie(accessToken);
-    commentDispatch(createArticle(text, url, userId, token));
+    commentDispatch(await createArticle(text, url, userId, token));
 
     console.log('the article i got is: ');
     console.log(article);
@@ -59,9 +59,9 @@ const Create = ({ accessToken }) => {
 
   // const checkResponse = async (response, result) => {
   const checkResponse = () => {
-    let hasErrors = !errors?.errorTitle && !errors?.errorUrl;
+    let hasNoErrors = !errors?.errorTitle && !errors?.errorUrl;
 
-    if (hasErrors) {
+    if (hasNoErrors) {
       console.log('debug: no errors');
       setModalMessage(() => 'Новината беше успешно създадена!');
       toggleModal();
