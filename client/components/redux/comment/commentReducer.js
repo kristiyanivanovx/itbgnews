@@ -16,7 +16,8 @@ import {
 const initialState = {
   comment: '',
   message: '',
-  count: -9,
+  text: '',
+  count: -999,
 };
 
 const commentReducer = (state = initialState, action) => {
@@ -34,15 +35,25 @@ const commentReducer = (state = initialState, action) => {
         error: '',
       };
     case EDIT_COMMENT:
+      console.log('EDIT_COMMENT (in reducer)');
       return {
         ...state,
         comment: action.payload,
       };
     case EDIT_COMMENT_SUCCESS:
-      return {
-        ...state,
+      console.log('EDIT_COMMENT_SUCCESS (in reducer)');
+      console.log({
+        // ...state,
         loading: false,
-        comment: action.payload.text,
+        comment: action.payload,
+        text: action.payload.text,
+        error: '',
+      });
+      return {
+        // ...state,
+        loading: false,
+        comment: action.payload,
+        text: action.payload.text,
         error: '',
       };
     case EDIT_COMMENT_FAILURE:
@@ -66,21 +77,31 @@ const commentReducer = (state = initialState, action) => {
         message: action.payload,
       };
     case UPVOTE_COMMENT:
+      console.log('UPVOTE_COMMENT: ' + action.payload);
       return {
         ...state,
         count: action.payload,
       };
     case UPVOTE_COMMENT_SUCCESS:
+      console.log('UPVOTE_COMMENT_SUCCESS (in reducer)' + action.payload);
+      console.log({
+        ...state,
+        count: action.payload,
+      });
+
       return {
         ...state,
         count: action.payload,
       };
     case UPVOTE_COMMENT_FAILURE:
+      console.log('UPVOTE_COMMENT_FAILURE (in reducer)' + action.payload);
       return {
         ...state,
         error: action.payload,
       };
     default:
+      console.log('Default state...');
+      console.log(state);
       return state;
   }
 };

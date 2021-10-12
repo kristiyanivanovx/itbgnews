@@ -20,7 +20,7 @@ import countChildren from '../utilities/countChildren';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faSave } from '@fortawesome/free-regular-svg-icons';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addComment } from '../components/redux';
 import isTokenPresent from '../helpers/isTokenPresent';
 import ensureValidCookie from '../utilities/ensureValidCookie';
@@ -59,7 +59,7 @@ export async function getServerSideProps(context) {
 
 const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
   const router = useRouter();
-  const commentDispatch = useDispatch();
+  const dispatch = useDispatch();
   const [shouldShowInput, setShouldShowInput] = useState(false);
   const [shouldRedirectLogin, setShouldRedirectLogin] = useState(false);
   const [replyingTo, setReplyingTo] = useState({ id: postId, isPost: true });
@@ -110,22 +110,12 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
 
   const confirmCreate = async () => {
     isTokenPresent(accessToken, setShouldRedirectLogin);
-
     const token = await ensureValidCookie(accessToken);
 
-    console.log('1');
-    let handle = addComment(postId, replyingTo, token, text);
-    handle.then(() => {
-      router.replace(router.asPath);
+    dispatch(addComment(postId, replyingTo, token, text)).then(() => {
       setShouldShowInput((prev) => !prev);
+      // router.replace(router.asPath);
     });
-
-    commentDispatch(handle);
-
-    console.log('handle');
-
-    console.log('2');
-    console.log('3');
   };
 
   const singleArticle = (

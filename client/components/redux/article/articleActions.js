@@ -17,7 +17,7 @@ export const createArticle = (text, url, userId, token) => {
   return (dispatch) => {
     const target = getEndpoint() + '/posts/create';
 
-    fetch(target, {
+    return fetch(target, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -54,7 +54,7 @@ export const upvoteArticle = (postId, accessToken) => {
   return (dispatch) => {
     const target = getEndpoint() + '/posts/upvote/' + postId;
 
-    fetch(target, {
+    return fetch(target, {
       method: 'PATCH',
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -90,7 +90,7 @@ export const editArticle = (postId, formText, formUrl, token) => {
   return (dispatch) => {
     const target = getEndpoint() + '/posts/update/' + postId;
 
-    fetch(target, {
+    return fetch(target, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -127,7 +127,7 @@ export const deleteArticle = (postId, token) => {
   return (dispatch) => {
     const target = getEndpoint() + '/posts/delete/' + postId;
 
-    fetch(target, {
+    return fetch(target, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${token}`,

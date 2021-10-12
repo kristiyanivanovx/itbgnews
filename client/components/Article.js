@@ -50,8 +50,7 @@ const Article = ({
   changeReplyingTo,
 }) => {
   const router = useRouter();
-  const ENDPOINT = getEndpoint();
-  const articleDispatch = useDispatch();
+  const dispatch = useDispatch();
   const article = useSelector((state) => state.article);
   const [shouldDisplayEditInputs, setShouldDisplayEditInputs] = useState(false);
   const [shouldDisplayModal, setShouldDisplayModal] = useState(false);
@@ -88,64 +87,51 @@ const Article = ({
   // delete
   const confirmDelete = async () => {
     let token = await ensureValidCookie(accessToken);
-    articleDispatch(deleteArticle(postId, token));
 
-    // todo: check for errors аnd set them
-    // setErrors(() => result);
-    checkResponseDelete();
-  };
+    dispatch(deleteArticle(postId, token)).then(() => {
+      setHasDeleteOption((hasDeleteOption) => !hasDeleteOption);
+      setModalMessage(() => 'Новината беше успешно изтрита.');
 
-  const checkResponseDelete = () => {
-    setHasDeleteOption((hasDeleteOption) => !hasDeleteOption);
-    setModalMessage(() => 'Новината беше успешно изтрита.');
+      setTimeout(() => {
+        setIsDeleted(() => true);
+      }, 1000);
 
-    setTimeout(() => {
-      setIsDeleted(() => true);
-    }, 1000);
+      // todo: check for errors аnd set them
+      // setErrors(() => result);
+    });
   };
 
   // edit
   const confirmEdit = async () => {
     let token = await ensureValidCookie(accessToken);
-    articleDispatch(editArticle(postId, formText, formUrl, token));
 
-    console.log('edit article is');
-    console.log(article);
+    dispatch(editArticle(postId, formText, formUrl, token)).then(() => {
+      let article = article.article;
+      console.log('let article = article.article');
+      console.log(article);
 
-    // todo: check for errors аnd set them
-    // setErrors(() => result);
+      // todo: check for errors аnd set them
+      // setErrors(() => result);
 
-    checkResponseEdit(article);
-  };
-
-  const checkResponseEdit = (articleReducer) => {
-    let article = articleReducer.article;
-
-    if (article) {
-      setOriginalText(() => article.text);
-      setOriginalUrl(() => article.url);
-      setFormText(() => article.text);
-      setFormUrl(() => article.url);
-    }
+      if (article) {
+        setOriginalText(() => article.text);
+        setOriginalUrl(() => article.url);
+        setFormText(() => article.text);
+        setFormUrl(() => article.url);
+      }
+    });
   };
 
   // vote
   const upvote = async () => {
     isTokenPresent(accessToken, setShouldRedirectLogin);
-
     const token = await ensureValidCookie(accessToken);
-    articleDispatch(upvoteArticle(postId, token));
 
-    console.log('upvoted article is');
-    console.log(article);
-
-    // setShouldRotate(() => !shouldRotate);
-    checkResponseVote(article);
-  };
-
-  const checkResponseVote = (article) => {
-    const count = article.article.count;
-    setUpvotesCount(() => count);
+    dispatch(upvoteArticle(postId, token)).then(() => {
+      const count = article.article.count;
+      setUpvotesCount(() => count);
+      // setShouldRotate(() => !shouldRotate);
+    });
   };
 
   const articleClasses = isFirstArticle

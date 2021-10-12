@@ -45,7 +45,7 @@ const Comment = ({
   userId,
   shouldDisplayEditOption,
 }) => {
-  const commentDispatch = useDispatch();
+  const dispatch = useDispatch();
   const [formText, setFormText] = useState(title);
   const [shouldDisplayEditInputs, setShouldDisplayEditInputs] = useState(false);
   const [upvotesCount, setUpvotesCount] = useState(upvotes);
@@ -59,6 +59,8 @@ const Comment = ({
   const [modalMessage, setModalMessage] = useState('');
   const [isDeleted, setIsDeleted] = useState(false);
   const router = useRouter();
+
+  const state = useSelector((state) => state);
   const comment = useSelector((state) => state.comment.comment);
   const message = useSelector((state) => state.comment.message);
   const count = useSelector((state) => state.comment.count);
@@ -84,42 +86,48 @@ const Comment = ({
   // edit
   const confirmEdit = async () => {
     const token = await ensureValidCookie(accessToken);
-    commentDispatch(editComment(commentId, formText, token));
 
-    console.log('confirm edit comment');
-    console.log(comment);
+    dispatch(editComment(commentId, formText, token)).then(() => {
+      console.log('confirm edit comment');
+      console.log(state);
 
-    // todo: change component contents to new ones
-    setOriginalText(() => comment);
-    setFormText(() => comment);
+      // todo: change component contents to new ones
+      setOriginalText(() => state.comment.comment.text);
+      setFormText(() => state.comment.comment.text);
 
-    // setShouldShowInput((prev) => !prev);
-    // setErrors(() => result);
+      // setShouldShowInput((prev) => !prev);
+      // setErrors(() => result);
+    });
   };
 
   // voting
   const confirmUpvote = async () => {
     isTokenPresent(accessToken, setShouldRedirectLogin);
-
     const token = await ensureValidCookie(accessToken);
-    commentDispatch(upvoteComment(commentId, token));
 
-    console.log('count in confirm upvote: ' + count);
-    setUpvotesCount(() => count);
-    // setShouldRotate((shouldRotate) => !shouldRotate);
+    dispatch(upvoteComment(commentId, token)).then(() => {
+      console.log('.then state');
+      console.log(state);
+
+      console.log('.then count');
+      console.log(count);
+      // setUpvotesCount(() => state.comment.count);
+      // setShouldRotate((shouldRotate) => !shouldRotate);
+    });
   };
 
   // delete
   const confirmDelete = async () => {
     const token = await ensureValidCookie(accessToken);
-    commentDispatch(deleteComment(commentId, postId, token));
 
-    setHasDeleteOption((hasDeleteOption) => !hasDeleteOption);
-    setModalMessage(() => 'Коментарът беше успешно изтрит.');
+    dispatch(deleteComment(commentId, postId, token)).then(() => {
+      setHasDeleteOption((hasDeleteOption) => !hasDeleteOption);
+      setModalMessage(() => 'Коментарът беше успешно изтрит.');
 
-    setTimeout(() => {
-      setIsDeleted(() => true);
-    }, 1000);
+      setTimeout(() => {
+        setIsDeleted(() => true);
+      }, 1000);
+    });
   };
 
   return (

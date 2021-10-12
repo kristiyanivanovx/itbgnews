@@ -57,6 +57,7 @@ export const deleteCommentFailure = (error) => {
 };
 
 export const upvoteCommentSuccess = (count) => {
+  console.log('upvoteCommentSuccess (in action): ' + count);
   return {
     type: UPVOTE_COMMENT_SUCCESS,
     payload: count,
@@ -74,7 +75,7 @@ export const upvoteComment = (commentId, accessToken) => {
   return (dispatch) => {
     const target = getEndpoint() + '/comments/upvote/' + commentId;
 
-    fetch(target, {
+    return fetch(target, {
       method: 'PATCH',
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -82,9 +83,8 @@ export const upvoteComment = (commentId, accessToken) => {
     })
       .then((response) => response.json())
       .then((response) => {
-        console.log('upvoteComment');
         const count = response.count;
-        console.log(count);
+        console.log('upvoteComment...2: ' + count);
 
         dispatch(upvoteCommentSuccess(count));
       })
@@ -100,7 +100,7 @@ export const deleteComment = (commentId, postId, accessToken) => {
     const target =
       getEndpoint() + '/comments/delete/' + postId + '/' + commentId;
 
-    fetch(target, {
+    return fetch(target, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -121,7 +121,7 @@ export const editComment = (commentId, formText, accessToken) => {
   return (dispatch) => {
     const target = getEndpoint() + '/comments/update/' + commentId;
 
-    fetch(target, {
+    return fetch(target, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -146,8 +146,7 @@ export const addComment = (postId, replyingTo, accessToken, text) => {
   return (dispatch) => {
     const target = getEndpoint() + '/comments/create';
 
-    console.log('4');
-    fetch(target, {
+    return fetch(target, {
       method: 'post',
       headers: {
         'Content-Type': 'application/json',
@@ -161,7 +160,6 @@ export const addComment = (postId, replyingTo, accessToken, text) => {
     })
       .then((response) => response.json())
       .then((response) => {
-        console.log('5');
         dispatch(addCommentSuccess(response));
       })
       .catch((error) => {

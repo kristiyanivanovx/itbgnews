@@ -45,6 +45,8 @@ const Create = ({ accessToken }) => {
 
   // todo: fix state not updating
   const submitForm = async () => {
+    console.log('submitForm');
+
     let userId = jwt.decode(accessToken).sub;
     const token = await ensureValidCookie(accessToken);
     commentDispatch(await createArticle(text, url, userId, token));

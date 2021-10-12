@@ -43,7 +43,6 @@ const articleReducer = (state = initialState, action) => {
         message: action.payload,
       };
     case EDIT_ARTICLE:
-      console.log('in EDIT_ARTICLE ?');
       return {
         ...state,
         article: action.payload,
@@ -73,7 +72,6 @@ const articleReducer = (state = initialState, action) => {
         // errors: action.payload,
       };
     case DELETE_ARTICLE:
-      console.log('in DELETE_ARTICLE ?');
       return {
         ...state,
       };
