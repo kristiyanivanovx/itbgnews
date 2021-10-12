@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addComment } from './redux';
-import { deleteComment } from '../../server/controllers/commentsController';
+import { addComment } from '../redux';
+import { deleteComment } from '../../../server/controllers/commentsController';
 
 function CommentContainer() {
   const numberOfComments = useSelector((state) => state.comment.numberOfCakes);

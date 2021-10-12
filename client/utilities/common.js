@@ -19,7 +19,7 @@ module.exports = {
   EDITED_RESPONSE_CODE: 200,
   REMOVED_RESPONSE_CODE: 200,
   UNAUTHORIZED_RESPONSE_CODE: 401,
-
+  isEmpty: (obj) => Object.keys(obj).length === 0,
   getEndpoint: () => {
     const ENV = process.env.NODE_ENV || 'development';
     const isProduction = ENV === 'production';

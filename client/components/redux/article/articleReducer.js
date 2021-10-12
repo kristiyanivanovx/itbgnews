@@ -1,24 +1,95 @@
-import { BUY_CAKE, MAKE_CAKE } from './cakeTypes';
+import {
+  CREATE_ARTICLE,
+  EDIT_ARTICLE,
+  DELETE_ARTICLE,
+  UPVOTE_ARTICLE,
+  CREATE_ARTICLE_SUCCESS,
+  CREATE_ARTICLE_FAILURE,
+  EDIT_ARTICLE_SUCCESS,
+  EDIT_ARTICLE_FAILURE,
+  DELETE_ARTICLE_SUCCESS,
+  DELETE_ARTICLE_FAILURE,
+  UPVOTE_ARTICLE_SUCCESS,
+  UPVOTE_ARTICLE_FAILURE,
+} from './articleTypes';
+import { act } from 'react-dom/test-utils';
 
 const initialState = {
-  numberOfCakes: 15,
+  article: null,
+  errors: null,
+  message: null,
 };
 
-const cakeReducer = (state = initialState, action) => {
+const articleReducer = (state = initialState, action) => {
   switch (action.type) {
-    case BUY_CAKE:
+    case CREATE_ARTICLE:
       return {
         ...state,
-        numberOfCakes: state.numberOfCakes - action.payload,
+        article: action.payload,
       };
-    case MAKE_CAKE:
+    case CREATE_ARTICLE_SUCCESS:
+      // console.log('CREATE_ARTICLE_SUCCESS action.payload');
+      // console.log(action.payload);
+
+      const { errorTitle, errorUrl } = action.payload;
       return {
         ...state,
-        numberOfCakes: state.numberOfCakes + 1,
+        errors: { errorTitle, errorUrl },
+        article: action.payload,
+      };
+    case CREATE_ARTICLE_FAILURE:
+      return {
+        ...state,
+        message: action.payload,
+      };
+    case EDIT_ARTICLE:
+      console.log('in EDIT_ARTICLE ?');
+      return {
+        ...state,
+        article: action.payload,
+      };
+    case EDIT_ARTICLE_SUCCESS:
+      return {
+        ...state,
+        article: action.payload,
+      };
+    case EDIT_ARTICLE_FAILURE:
+      return {
+        ...state,
+        message: action.payload,
+      };
+    case UPVOTE_ARTICLE:
+      return {
+        ...state,
+      };
+    case UPVOTE_ARTICLE_SUCCESS:
+      return {
+        ...state,
+        article: action.payload,
+      };
+    case UPVOTE_ARTICLE_FAILURE:
+      return {
+        ...state,
+        // errors: action.payload,
+      };
+    case DELETE_ARTICLE:
+      console.log('in DELETE_ARTICLE ?');
+      return {
+        ...state,
+      };
+    case DELETE_ARTICLE_SUCCESS:
+      return {
+        ...state,
+        article: action.payload,
+      };
+    case DELETE_ARTICLE_FAILURE:
+      return {
+        ...state,
+        // errors: action.payload,
       };
     default:
       return state;
   }
 };
 
-export default cakeReducer;
+export default articleReducer;

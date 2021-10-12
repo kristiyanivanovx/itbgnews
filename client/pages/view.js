@@ -13,16 +13,17 @@ import {
   getEndpoint,
 } from '../utilities/common';
 import INDEX_PATH from '../next.config';
-import Router, { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import getUserToken from '../utilities/getUserToken';
 import jwt from 'jsonwebtoken';
 import countChildren from '../utilities/countChildren';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faSave } from '@fortawesome/free-regular-svg-icons';
+import { useDispatch } from 'react-redux';
+import { addComment } from '../components/redux';
+import isTokenPresent from '../helpers/isTokenPresent';
 import ensureValidCookie from '../utilities/ensureValidCookie';
-import { useDispatch, useSelector } from 'react-redux';
-import { addComment, fetchCommentCreate } from '../components/redux';
 
 export async function getServerSideProps(context) {
   const ENDPOINT = getEndpoint();
@@ -56,19 +57,13 @@ export async function getServerSideProps(context) {
   };
 }
 
-// todo: finish up here, get current post + comment by the post's id
 const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
-  const numberOfComments = useSelector((state) => state.comment.numberOfCakes);
+  const router = useRouter();
   const commentDispatch = useDispatch();
-
   const [shouldShowInput, setShouldShowInput] = useState(false);
-  // const [shouldRedirect, setShouldRedirect] = useState(false);
   const [shouldRedirectLogin, setShouldRedirectLogin] = useState(false);
-  const [iconsDisplay, setIconsDisplay] = useState(false);
   const [replyingTo, setReplyingTo] = useState({ id: postId, isPost: true });
   const [text, setText] = useState('');
-  const router = useRouter();
-
   const [userId, setUserId] = useState(
     jwt.decode(accessToken ?? null)?.sub ?? null,
   );
@@ -100,46 +95,26 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
     }
 
     // TODO: Should display icons
-    // //   const shouldDisplayIcons = data.post.authorId ===
+    // const shouldDisplayIcons = data.post.authorId ===
     // console.log(data);
   }, [shouldShowInput, text]);
 
   const article = data.post;
 
   const changeReplyingTo = (replyToId, isPost) => {
-    if (!accessToken) {
-      setShouldRedirectLogin(() => true);
-      return;
-    }
+    isTokenPresent(accessToken, setShouldRedirectLogin);
 
     setReplyingTo(() => ({ id: replyToId, isPost: isPost }));
     setShouldShowInput(() => true);
   };
 
   const confirmCreate = async () => {
-    if (!accessToken) {
-      setShouldRedirectLogin(() => true);
-      return;
-    }
+    isTokenPresent(accessToken, setShouldRedirectLogin);
 
-    // () => commentDispatch(addComment())
-
-    commentDispatch(fetchCommentCreate(postId, replyingTo, accessToken, text));
-
-    // const response = await fetch(ENDPOINT + '/comments/create', {
-    //   method: 'POST',
-    //   body: JSON.stringify({
-    //     parentPostId: postId,
-    //     parentCommentId: replyingTo.isPost ? 'false' : replyingTo.id,
-    //     text: text,
-    //   }),
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
-    //   },
-    // });
-
+    const token = await ensureValidCookie(accessToken);
+    commentDispatch(addComment(postId, replyingTo, token, text));
     setShouldShowInput((prev) => !prev);
+
     router.replace(router.asPath);
   };
 

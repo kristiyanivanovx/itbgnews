@@ -8,13 +8,15 @@ import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../helpers/getDefaultLayout';
 import FormContainer from '../components/FormContainer';
 import SideNav from '../components/SideNav';
-import { CREATED_RESPONSE_CODE, getEndpoint } from '../utilities/common';
 import { useRouter } from 'next/router';
 import Modal from '../components/Modal';
 import jwt from 'jsonwebtoken';
 import requireAuthentication from '../helpers/requireAuthentication';
 import getUserToken from '../utilities/getUserToken';
 import ensureValidCookie from '../utilities/ensureValidCookie';
+import { addComment, createArticle } from '../components/redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { isEmpty } from '../utilities/common';
 
 export const getServerSideProps = requireAuthentication((context) => {
   let accessToken = getUserToken(context.req?.headers.cookie).split('=')[1];
@@ -27,42 +29,47 @@ export const getServerSideProps = requireAuthentication((context) => {
 });
 
 const Create = ({ accessToken }) => {
-  const [errors, setErrors] = useState({});
   const router = useRouter();
-  const ENDPOINT = getEndpoint();
+  const article = useSelector((state) => state.article);
+  const errors = useSelector((state) => state.article.errors);
+  const commentDispatch = useDispatch();
   const [shouldDisplay, setShouldDisplay] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [text, setText] = useState('');
   const [url, setUrl] = useState('');
-
-  const checkResponse = async (response, result) => {
-    if (response.status === CREATED_RESPONSE_CODE) {
-      setModalMessage(() => 'Новината беше успешно създадена!');
-      toggleModal();
-
-      setTimeout(async () => await router.push('/'), 1000);
-    }
-  };
+  // const [errors, setErrors] = useState({});
 
   function toggleModal() {
     setShouldDisplay((shouldDisplay) => !shouldDisplay);
   }
 
+  // todo: fix state not updating
   const submitForm = async () => {
     let userId = jwt.decode(accessToken).sub;
+    const token = await ensureValidCookie(accessToken);
+    commentDispatch(createArticle(text, url, userId, token));
 
-    const response = await fetch(ENDPOINT + '/posts/create', {
-      method: 'POST',
-      body: JSON.stringify({ text, url, authorId: userId }),
-      headers: {
-        Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
-        'Content-Type': 'application/json',
-      },
-    });
+    console.log('the article i got is: ');
+    console.log(article);
+    console.log('the errors that i got are: ');
+    console.log(errors);
 
-    let result = await response.json();
-    setErrors(() => result);
-    await checkResponse(response, result);
+    checkResponse();
+  };
+
+  // const checkResponse = async (response, result) => {
+  const checkResponse = () => {
+    let hasErrors = !errors?.errorTitle && !errors?.errorUrl;
+
+    if (hasErrors) {
+      console.log('debug: no errors');
+      setModalMessage(() => 'Новината беше успешно създадена!');
+      toggleModal();
+
+      setTimeout(async () => await router.push('/'), 1000);
+    } else {
+      console.log('debug: yes errors');
+    }
   };
 
   return (

@@ -21,9 +21,9 @@ const Header = ({ shouldHideSearchBar }) => {
     setShouldDisplay((shouldDisplay) => !shouldDisplay);
   };
 
+  // todo: set search term to be query parameter
   const handleChange = (newTerm) => {
     setSearchTerm(() => newTerm);
-    // todo: set search term to be query parameter
   };
 
   useEffect(() => {

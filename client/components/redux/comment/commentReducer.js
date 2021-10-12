@@ -6,10 +6,17 @@ import {
   ADD_COMMENT_SUCCESS,
   EDIT_COMMENT_SUCCESS,
   EDIT_COMMENT_FAILURE,
+  DELETE_COMMENT_FAILURE,
+  DELETE_COMMENT_SUCCESS,
+  UPVOTE_COMMENT_SUCCESS,
+  UPVOTE_COMMENT_FAILURE,
 } from './commentTypes';
 
+// todo: fix bug where on upvote the count is -9 but not the actual one
 const initialState = {
-  numberOfComments: 5,
+  comment: '',
+  message: '',
+  count: -9,
 };
 
 const commentReducer = (state = initialState, action) => {
@@ -17,7 +24,7 @@ const commentReducer = (state = initialState, action) => {
     case ADD_COMMENT:
       return {
         ...state,
-        numberOfComments: state.numberOfComments - 1,
+        comment: action.payload,
       };
     case ADD_COMMENT_SUCCESS:
       return {
@@ -29,29 +36,49 @@ const commentReducer = (state = initialState, action) => {
     case EDIT_COMMENT:
       return {
         ...state,
-        numberOfComments: state.numberOfComments + 1,
+        comment: action.payload,
       };
     case EDIT_COMMENT_SUCCESS:
       return {
         ...state,
         loading: false,
-        comment: action.payload,
+        comment: action.payload.text,
         error: '',
       };
     case EDIT_COMMENT_FAILURE:
       return {
         ...state,
         loading: false,
-        comment: null,
         error: action.payload,
       };
     case DELETE_COMMENT:
       return {
         ...state,
       };
+    case DELETE_COMMENT_SUCCESS:
+      return {
+        ...state,
+        message: action.payload.message,
+      };
+    case DELETE_COMMENT_FAILURE:
+      return {
+        ...state,
+        message: action.payload,
+      };
     case UPVOTE_COMMENT:
       return {
         ...state,
+        count: action.payload,
+      };
+    case UPVOTE_COMMENT_SUCCESS:
+      return {
+        ...state,
+        count: action.payload,
+      };
+    case UPVOTE_COMMENT_FAILURE:
+      return {
+        ...state,
+        error: action.payload,
       };
     default:
       return state;

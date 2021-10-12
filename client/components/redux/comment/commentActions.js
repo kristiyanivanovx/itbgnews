@@ -7,17 +7,12 @@ import {
   UPVOTE_COMMENT,
   ADD_COMMENT_SUCCESS,
   ADD_COMMENT_FAILURE,
+  DELETE_COMMENT_SUCCESS,
+  DELETE_COMMENT_FAILURE,
+  UPVOTE_COMMENT_SUCCESS,
+  UPVOTE_COMMENT_FAILURE,
 } from './commentTypes';
-import axios from 'axios';
-import ensureValidCookie from '../../../utilities/ensureValidCookie';
 import { getEndpoint } from '../../../utilities/common';
-import { error } from 'next/dist/build/output/log';
-
-export const addComment = () => {
-  return {
-    type: ADD_COMMENT,
-  };
-};
 
 export const addCommentSuccess = (comment) => {
   return {
@@ -26,22 +21,17 @@ export const addCommentSuccess = (comment) => {
   };
 };
 
-export const addCommentFailure = (comment) => {
+export const addCommentFailure = (error) => {
   return {
     type: ADD_COMMENT_FAILURE,
-    payload: comment,
+    payload: error,
   };
 };
 
-export const editComment = () => {
-  return {
-    type: EDIT_COMMENT,
-  };
-};
-
-export const editCommentSuccess = () => {
+export const editCommentSuccess = (comment) => {
   return {
     type: EDIT_COMMENT_SUCCESS,
+    payload: comment,
   };
 };
 
@@ -52,65 +42,129 @@ export const editCommentFailure = (error) => {
   };
 };
 
-export const deleteComment = () => {
+export const deleteCommentSuccess = (response) => {
   return {
-    type: DELETE_COMMENT,
+    type: DELETE_COMMENT_SUCCESS,
+    payload: response,
   };
 };
 
-export const upvoteComment = () => {
+export const deleteCommentFailure = (error) => {
   return {
-    type: UPVOTE_COMMENT,
+    type: DELETE_COMMENT_FAILURE,
+    payload: error,
   };
 };
 
-export const fetchCommentCreate = async (
-  postId,
-  replyingTo,
-  accessToken,
-  text,
-) => {
-  return async (dispatch) => {
+export const upvoteCommentSuccess = (count) => {
+  return {
+    type: UPVOTE_COMMENT_SUCCESS,
+    payload: count,
+  };
+};
+
+export const upvoteCommentFailure = (error) => {
+  return {
+    type: UPVOTE_COMMENT_FAILURE,
+    payload: error,
+  };
+};
+
+export const upvoteComment = (commentId, accessToken) => {
+  return (dispatch) => {
+    const target = getEndpoint() + '/comments/upvote/' + commentId;
+
+    fetch(target, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((response) => {
+        console.log('upvoteComment');
+        const count = response.count;
+        console.log(count);
+
+        dispatch(upvoteCommentSuccess(count));
+      })
+      .catch((error) => {
+        const errorMessage = error.message;
+        dispatch(upvoteCommentFailure(errorMessage));
+      });
+  };
+};
+
+export const deleteComment = (commentId, postId, accessToken) => {
+  return (dispatch) => {
+    const target =
+      getEndpoint() + '/comments/delete/' + postId + '/' + commentId;
+
+    fetch(target, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((response) => {
+        dispatch(deleteCommentSuccess(response));
+      })
+      .catch((error) => {
+        const errorMessage = error.message;
+        dispatch(deleteCommentFailure(errorMessage));
+      });
+  };
+};
+
+export const editComment = (commentId, formText, accessToken) => {
+  return (dispatch) => {
+    const target = getEndpoint() + '/comments/update/' + commentId;
+
+    fetch(target, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ text: formText }),
+    })
+      .then((response) => response.json())
+      .then((response) => {
+        console.log('edit comment response');
+        console.log(response);
+        dispatch(editCommentSuccess(response));
+      })
+      .catch((error) => {
+        const errorMessage = error.message;
+        dispatch(editCommentFailure(errorMessage));
+      });
+  };
+};
+
+export const addComment = (postId, replyingTo, accessToken, text) => {
+  return (dispatch) => {
     const target = getEndpoint() + '/comments/create';
 
-    console.log('da');
-    // let options = {
-    //   url: target,
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     Authorization: `Bearer ${async () =>
-    //       await ensureValidCookie(accessToken)}`,
-    //   },
-    //   body: JSON.stringify({
-    //     parentPostId: postId,
-    //     parentCommentId: replyingTo.isPost ? 'false' : replyingTo.id,
-    //     text: text,
-    //   }),
-    // };
-
-    axios
-      .post(target, {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
-        },
-        body: JSON.stringify({
-          parentPostId: postId,
-          parentCommentId: replyingTo.isPost ? 'false' : replyingTo.id,
-          text: text,
-        }),
-      })
-      .then(function (response) {
-        console.log('dispatch !!');
-        const comment = response.data;
-        dispatch(addCommentSuccess(comment));
+    fetch(target, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({
+        parentPostId: postId,
+        parentCommentId: replyingTo.isPost ? 'false' : replyingTo.id,
+        text: text,
+      }),
+    })
+      .then((response) => response.json())
+      .then((response) => {
+        dispatch(addCommentSuccess(response));
       })
       .catch((error) => {
         const errorMessage = error.message;
         dispatch(addCommentFailure(errorMessage));
-        // console.error(error);
       });
   };
 };

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { buyCake, makeCake } from './redux';
+import { buyCake, makeCake } from '../redux';
 
 function CakeContainer() {
   const [number, setNumber] = useState(1);

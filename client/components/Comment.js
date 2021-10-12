@@ -23,8 +23,9 @@ import ensureValidCookie from '../utilities/ensureValidCookie';
 import Input from './Input';
 import Modal from './Modal';
 import { useRouter } from 'next/router';
-
-const initialState = 0;
+import isTokenPresent from '../helpers/isTokenPresent';
+import { addComment, upvoteComment, deleteComment, editComment } from './redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Comment = ({
   commentId,
@@ -44,7 +45,7 @@ const Comment = ({
   userId,
   shouldDisplayEditOption,
 }) => {
-  // const commentsContext = useContext(CommentsContext);
+  const commentDispatch = useDispatch();
   const [formText, setFormText] = useState(title);
   const [shouldDisplayEditInputs, setShouldDisplayEditInputs] = useState(false);
   const [upvotesCount, setUpvotesCount] = useState(upvotes);
@@ -58,11 +59,9 @@ const Comment = ({
   const [modalMessage, setModalMessage] = useState('');
   const [isDeleted, setIsDeleted] = useState(false);
   const router = useRouter();
-
-  // useEffect(() => {
-  //   let { count } = state;
-  //   // setUpvotesCount(() => count);
-  // }, [state, state.count]);
+  const comment = useSelector((state) => state.comment.comment);
+  const message = useSelector((state) => state.comment.message);
+  const count = useSelector((state) => state.comment.count);
 
   useEffect(() => {
     if (shouldRedirectLogin) {
@@ -70,70 +69,10 @@ const Comment = ({
     }
   }, [shouldRedirectLogin, router]);
 
-  // edit
-  const confirmEdit = async () => {
-    isTokenPresent(accessToken);
-
-    const response = await fetch(
-      ENDPOINT + '/comments/update/' + commentId, // replyingTo.id
-      {
-        method: 'PATCH',
-        body: JSON.stringify({ text: formText }),
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
-        },
-      },
-    );
-
-    // todo: check for errors аnd set them
-    // setErrors(() => result);
-    await checkResponseEdit(response);
-  };
-
-  const checkResponseEdit = async (response) => {
-    if (response.status === EDITED_RESPONSE_CODE) {
-      const data = await response.json();
-
-      setOriginalText(() => data.text);
-      setFormText(() => data.text);
-    }
-  };
-
-  const isTokenPresent = (accessToken) => {
-    if (!accessToken) {
-      setShouldRedirectLogin(() => true);
-      return false;
-    }
-
-    return true;
-  };
-
-  // voting
-  const upvote = async () => {
-    // const response = await fetch(ENDPOINT + '/comment/upvote/' + commentId, {
-    //   method: 'PATCH',
-    //   headers: {
-    //     Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
-    //   },
-    // });
-    //
-    // await checkResponseVote(response);
-  };
-
-  const checkResponseVote = async (response) => {
-    const data = await response.json();
-    const { count } = data;
-
-    if (
-      response.status === CREATED_RESPONSE_CODE ||
-      response.status === REMOVED_RESPONSE_CODE
-    ) {
-      setUpvotesCount(() => count);
-      setShouldRotate((shouldRotate) => !shouldRotate);
-    } else if (response.status === UNAUTHORIZED_RESPONSE_CODE) {
-      setShouldRedirectLogin(() => true);
-    }
+  const toggleModalDelete = (message) => {
+    setHasDeleteOption(() => true);
+    setModalMessage(() => message);
+    setShouldDisplayModal((shouldDisplay) => !shouldDisplay);
   };
 
   const toggleEditInputs = () => {
@@ -142,57 +81,53 @@ const Comment = ({
     );
   };
 
+  // edit
+  const confirmEdit = async () => {
+    const token = await ensureValidCookie(accessToken);
+    commentDispatch(editComment(commentId, formText, token));
+
+    console.log('confirm edit comment');
+    console.log(comment);
+
+    // todo: change component contents to new ones
+    setOriginalText(() => comment);
+    setFormText(() => comment);
+
+    // setShouldShowInput((prev) => !prev);
+    // setErrors(() => result);
+  };
+
+  // voting
+  const confirmUpvote = async () => {
+    isTokenPresent(accessToken, setShouldRedirectLogin);
+
+    const token = await ensureValidCookie(accessToken);
+    commentDispatch(upvoteComment(commentId, token));
+
+    console.log('count in confirm upvote: ' + count);
+    setUpvotesCount(() => count);
+    // setShouldRotate((shouldRotate) => !shouldRotate);
+  };
+
   // delete
   const confirmDelete = async () => {
-    isTokenPresent();
+    const token = await ensureValidCookie(accessToken);
+    commentDispatch(deleteComment(commentId, postId, token));
 
-    const response = await fetch(
-      ENDPOINT + '/comments/delete/' + postId + '/' + commentId,
-      {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
-        },
-      },
-    );
+    setHasDeleteOption((hasDeleteOption) => !hasDeleteOption);
+    setModalMessage(() => 'Коментарът беше успешно изтрит.');
 
-    // todo: check for errors аnd set them
-    // setErrors(() => result);
-    checkResponseDelete(response);
-  };
-
-  const checkResponseDelete = (response) => {
-    if (response.status === DELETED_RESPONSE_CODE) {
-      setHasDeleteOption((hasDeleteOption) => !hasDeleteOption);
-      setModalMessage(() => 'Коментарът беше успешно изтрит.');
-      setTimeout(() => {
-        setIsDeleted(() => true);
-      }, 1000);
-    }
-  };
-
-  const toggleModalDelete = (message) => {
-    setHasDeleteOption(() => true);
-    setModalMessage(() => message);
-    setShouldDisplayModal((shouldDisplay) => !shouldDisplay);
+    setTimeout(() => {
+      setIsDeleted(() => true);
+    }, 1000);
   };
 
   return (
     <div
       className={styles.comment}
-      style={{ display: originalText ? 'flex' : 'none' }}
+      style={{ display: originalText && !isDeleted ? 'flex' : 'none' }}
+      // style={{ display: isDeleted ? 'none' : 'flex' }}
     >
-      {/*<div>*/}
-      {/*  {commentsContext.commentState}*/}
-      {/*  <br />*/}
-
-      {/*  <button onClick={() => commentsContext.commentDispatch('decrement')}>*/}
-      {/*    decrement*/}
-      {/*  </button>*/}
-      {/*  <button onClick={() => commentsContext.commentDispatch('reset')}>*/}
-      {/*    reset*/}
-      {/*  </button>*/}
-      {/*</div>*/}
       <Modal
         text={modalMessage}
         shouldDisplay={shouldDisplayModal}
@@ -204,10 +139,7 @@ const Comment = ({
       />
 
       <div className={styles.comment__left}>
-        <div className={styles.comment__votes__count}>
-          {/*{count.firstCounter} | */}
-          {upvotesCount}
-        </div>
+        <div className={styles.comment__votes__count}>{upvotesCount}</div>
         <div className={styles.comment__line}></div>
       </div>
       <div className={styles.comment__right}>
@@ -239,13 +171,17 @@ const Comment = ({
             >
               {shouldDisplayEditOption ? (
                 <>
-                  <div
-                    className={styles.comment__modify}
-                    onClick={toggleEditInputs}
-                  >
-                    <FontAwesomeIcon icon={faSave} onClick={confirmEdit} />
-                    {/*<FontAwesomeIcon icon={faSave} onClick={countContext.dispatch} />*/}
-                  </div>
+                  {shouldDisplayEditInputs ? (
+                    <div
+                      className={styles.comment__modify}
+                      onClick={toggleEditInputs}
+                    >
+                      <FontAwesomeIcon
+                        icon={faSave}
+                        onClick={async () => await confirmEdit()}
+                      />
+                    </div>
+                  ) : null}
                   <div
                     className={styles.comment__modify}
                     onClick={toggleEditInputs}
@@ -274,19 +210,7 @@ const Comment = ({
               ) : null}
               <div
                 className={styles.comment__modify}
-                // onClick={upvote}
-                onClick={async () => {
-                  // isTokenPresent(accessToken)
-                  //   ? dispatch({
-                  //       type: COMMENT_ACTIONS.UPVOTE,
-                  //       payload: {
-                  //         commentId: commentId,
-                  //         token: await ensureValidCookie(accessToken),
-                  //         ENDPOINT: ENDPOINT,
-                  //       },
-                  //     })
-                  //   : null;
-                }}
+                onClick={async () => await confirmUpvote()}
               >
                 <FontAwesomeIcon
                   className={`${styles.comment__votes__icon} ${
@@ -301,9 +225,7 @@ const Comment = ({
                   className={styles.comment__information__icon}
                 />
               </div>
-              <span>2(hardcoded!)&nbsp;отговора</span>
-
-              {/*<span>{comment} отговора</span>*/}
+              <span>{comments}&nbsp;отговора</span>
             </div>
           </div>
         </div>
@@ -340,11 +262,5 @@ const Comment = ({
     </div>
   );
 };
-
-// const { checkResponseVote } = Comment;
-//
-// module.exports = {
-//   checkResponseVote,
-// };
 
 export default Comment;

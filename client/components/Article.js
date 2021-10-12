@@ -24,6 +24,14 @@ import {
 } from '../utilities/common';
 import ensureValidCookie from '../utilities/ensureValidCookie';
 import Input from './Input';
+import isTokenPresent from '../helpers/isTokenPresent';
+import {
+  deleteArticle,
+  deleteComment,
+  editArticle,
+  upvoteArticle,
+} from './redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Article = ({
   postId,
@@ -41,7 +49,10 @@ const Article = ({
   accessToken,
   changeReplyingTo,
 }) => {
+  const router = useRouter();
   const ENDPOINT = getEndpoint();
+  const articleDispatch = useDispatch();
+  const article = useSelector((state) => state.article);
   const [shouldDisplayEditInputs, setShouldDisplayEditInputs] = useState(false);
   const [shouldDisplayModal, setShouldDisplayModal] = useState(false);
   const [shouldRotate, setShouldRotate] = useState(false);
@@ -54,7 +65,6 @@ const Article = ({
   const [originalText, setOriginalText] = useState(title);
   const [originalUrl, setOriginalUrl] = useState(link);
   const [isDeleted, setIsDeleted] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     if (shouldRedirectLogin) {
@@ -62,6 +72,12 @@ const Article = ({
       setShouldRedirectLogin((prev) => !prev);
     }
   }, [shouldRedirectLogin, router]);
+
+  const toggleEditInputs = () => {
+    setShouldDisplayEditInputs(
+      (shouldDisplayEditInputs) => !shouldDisplayEditInputs,
+    );
+  };
 
   const toggleModalDelete = (message) => {
     setHasDeleteOption(() => true);
@@ -71,101 +87,65 @@ const Article = ({
 
   // delete
   const confirmDelete = async () => {
-    if (!accessToken) {
-      setShouldRedirectLogin(() => true);
-      return;
-    }
-
-    const response = await fetch(ENDPOINT + '/posts/delete/' + postId, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
-      },
-    });
+    let token = await ensureValidCookie(accessToken);
+    articleDispatch(deleteArticle(postId, token));
 
     // todo: check for errors аnd set them
     // setErrors(() => result);
-    checkResponseDelete(response);
+    checkResponseDelete();
   };
 
-  const checkResponseDelete = (response) => {
-    if (response.status === DELETED_RESPONSE_CODE) {
-      setHasDeleteOption((hasDeleteOption) => !hasDeleteOption);
-      setModalMessage(() => 'Новината беше успешно изтрита.');
-      setTimeout(() => {
-        setIsDeleted(() => true);
-      }, 1000);
-    }
+  const checkResponseDelete = () => {
+    setHasDeleteOption((hasDeleteOption) => !hasDeleteOption);
+    setModalMessage(() => 'Новината беше успешно изтрита.');
+
+    setTimeout(() => {
+      setIsDeleted(() => true);
+    }, 1000);
   };
 
   // edit
-  const toggleEditInputs = () => {
-    setShouldDisplayEditInputs(
-      (shouldDisplayEditInputs) => !shouldDisplayEditInputs,
-    );
-  };
-
   const confirmEdit = async () => {
-    if (!accessToken) {
-      setShouldRedirectLogin(() => true);
-      return;
-    }
+    let token = await ensureValidCookie(accessToken);
+    articleDispatch(editArticle(postId, formText, formUrl, token));
 
-    const response = await fetch(ENDPOINT + '/posts/update/' + postId, {
-      method: 'PATCH',
-      body: JSON.stringify({ text: formText, url: formUrl }),
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
-      },
-    });
+    console.log('edit article is');
+    console.log(article);
 
     // todo: check for errors аnd set them
     // setErrors(() => result);
-    await checkResponseEdit(response);
+
+    checkResponseEdit(article);
   };
 
-  const checkResponseEdit = async (response) => {
-    if (response.status === EDITED_RESPONSE_CODE) {
-      const data = await response.json();
+  const checkResponseEdit = (articleReducer) => {
+    let article = articleReducer.article;
 
-      setOriginalText(() => data.text);
-      setOriginalUrl(() => data.url);
-      setFormText(() => data.text);
-      setFormUrl(() => data.url);
+    if (article) {
+      setOriginalText(() => article.text);
+      setOriginalUrl(() => article.url);
+      setFormText(() => article.text);
+      setFormUrl(() => article.url);
     }
   };
 
   // vote
   const upvote = async () => {
-    if (!accessToken) {
-      setShouldRedirectLogin(() => true);
-      return;
-    }
+    isTokenPresent(accessToken, setShouldRedirectLogin);
 
-    const response = await fetch(ENDPOINT + '/posts/upvote/' + postId, {
-      method: 'PATCH',
-      headers: {
-        Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
-      },
-    });
+    const token = await ensureValidCookie(accessToken);
+    articleDispatch(upvoteArticle(postId, token));
 
-    setShouldRotate(() => !shouldRotate);
-    await checkResponseVote(response);
+    console.log('upvoted article is');
+    console.log(article);
+
+    // setShouldRotate(() => !shouldRotate);
+    checkResponseVote(article);
   };
 
-  const checkResponseVote = async (response) => {
-    const data = await response.json();
-    const { count } = data;
-
-    if (
-      response.status === CREATED_RESPONSE_CODE ||
-      response.status === REMOVED_RESPONSE_CODE
-    ) {
-      setUpvotesCount(() => count);
-    } else if (response.status === UNAUTHORIZED_RESPONSE_CODE) {
-      setShouldRedirectLogin(() => true);
-    }
+  const checkResponseVote = (article) => {
+    const count = article.article.count;
+    setUpvotesCount(() => count);
   };
 
   const articleClasses = isFirstArticle

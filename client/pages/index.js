@@ -35,8 +35,6 @@ export async function getServerSideProps(context) {
 }
 
 const Home = ({ data, accessToken, ENDPOINT }) => {
-  // const commentsContext = useContext(CommentsContext);
-
   const [articles, setArticles] = useState(data.posts);
   const [hasMore, setHasMore] = useState(true);
   const [userId, setUserId] = useState(
