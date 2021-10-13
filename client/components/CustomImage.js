@@ -6,6 +6,7 @@ import { getEndpoint } from '../utilities/common';
 import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpload } from '@fortawesome/free-solid-svg-icons';
+import styles from '../styles/Profile.module.css';
 
 const CustomImage = ({ image, accessToken }) => {
   const inputFile = useRef(null);
@@ -57,6 +58,7 @@ const CustomImage = ({ image, accessToken }) => {
         {/*  name="image"*/}
         {/*/>*/}
         <Image
+          className={styles.profile_pic}
           src={currentImage}
           onClick={onButtonClick}
           alt="There is no image"

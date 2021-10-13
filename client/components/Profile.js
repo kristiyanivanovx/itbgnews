@@ -38,9 +38,6 @@ const Profile = ({
       <div className={styles.profile__information}>
         <div className={styles.user__profile__pic}>
           <CustomImage
-            className={styles.profile__pic}
-            // src={profile}
-            // src={img}
             width={100}
             height={100}
             image={image}
