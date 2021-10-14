@@ -1,9 +1,4 @@
-/**
- * @param {string} ENDPOINT - The endpoint where the request should be made
- * @param {string} userId - The userId's token to refresh
- * @returns {object} - An object with accessToken property
- */
-export default async function refreshToken(ENDPOINT, userId) {
+export default async function renewToken(ENDPOINT, userId) {
   return await fetch(ENDPOINT + '/token', {
     method: 'POST',
     body: JSON.stringify({ userId }),

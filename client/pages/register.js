@@ -30,6 +30,19 @@ const Register = () => {
   }
 
   const checkResponse = async (result) => {
+    // let stateErrors = store.getState().article.errors;
+
+    setErrors((prev) => ({
+      ...prev,
+      errorEmail: result.errorEmail ? 'Имейлът ви не е валиден.' : null,
+      errorPassword: result.errorPassword
+        ? 'Паролата трябва да съдържа поне една цифра и да е с дължина от 8 до 35 символа.'
+        : null,
+      errorUsername: result.errorUsername
+        ? 'Потребителското ви име трябва да е с дължина от 6 до 30 символа.'
+        : null,
+    }));
+
     if (result.message === SUCCESSFUL_REGISTRATION_ERROR) {
       setModalMessage(() => 'Регистрирахте се успешно!');
       toggleModal();
@@ -49,7 +62,6 @@ const Register = () => {
       password,
     });
 
-    setErrors(() => result);
     await checkResponse(result);
   };
 

@@ -18,6 +18,7 @@ const Profile = ({
   accessToken,
 }) => {
   const [shouldBlurEmail, setShouldBlurEmail] = useState(true);
+
   const toggleDisplayEmail = () => {
     setShouldBlurEmail((shouldBlurEmail) => !shouldBlurEmail);
   };

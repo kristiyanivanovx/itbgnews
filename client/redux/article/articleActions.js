@@ -1,8 +1,4 @@
 import {
-  CREATE_ARTICLE,
-  EDIT_ARTICLE,
-  DELETE_ARTICLE,
-  UPVOTE_ARTICLE,
   CREATE_ARTICLE_SUCCESS,
   CREATE_ARTICLE_FAILURE,
   EDIT_ARTICLE_SUCCESS,
@@ -11,23 +7,26 @@ import {
   UPVOTE_ARTICLE_SUCCESS,
   UPVOTE_ARTICLE_FAILURE,
 } from './articleTypes';
-import { getEndpoint } from '../../utilities/infrastructure/messages';
+import Http from '../../utilities/service/http';
 
 export const createArticle = (text, url, userId, token) => {
   return (dispatch) => {
-    const target = getEndpoint() + '/posts/create';
+    const http = new Http();
 
-    return fetch(target, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ text, url, authorId: userId }),
-    })
-      .then((response) => response.json())
+    return http
+      .post('/posts/create', true, true, true, token, {
+        text,
+        url,
+        authorId: userId,
+      })
       .then((response) => {
-        dispatch(createArticleSuccess(response));
+        console.log(response);
+
+        const hasErrors = !response?.errorTitle || !response?.errorText;
+
+        hasErrors
+          ? dispatch(createArticleFailure(response))
+          : dispatch(createArticleSuccess(response));
       })
       .catch((error) => {
         const errorMessage = error.message;
@@ -50,17 +49,12 @@ export const createArticleFailure = (error) => {
   };
 };
 
-export const upvoteArticle = (postId, accessToken) => {
+export const upvoteArticle = (postId, token) => {
   return (dispatch) => {
-    const target = getEndpoint() + '/posts/upvote/' + postId;
+    const http = new Http();
 
-    return fetch(target, {
-      method: 'PATCH',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    })
-      .then((response) => response.json())
+    return http
+      .patch('/posts/upvote/' + postId, false, true, true, token, null)
       .then((response) => {
         console.log(response);
         dispatch(upvoteArticleSuccess(response));
@@ -72,10 +66,10 @@ export const upvoteArticle = (postId, accessToken) => {
   };
 };
 
-export const upvoteArticleSuccess = (article) => {
+export const upvoteArticleSuccess = (result) => {
   return {
     type: UPVOTE_ARTICLE_SUCCESS,
-    payload: article,
+    payload: result,
   };
 };
 
@@ -88,17 +82,13 @@ export const upvoteArticleFailure = (error) => {
 
 export const editArticle = (postId, formText, formUrl, token) => {
   return (dispatch) => {
-    const target = getEndpoint() + '/posts/update/' + postId;
+    const http = new Http();
 
-    return fetch(target, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ text: formText, url: formUrl }),
-    })
-      .then((response) => response.json())
+    return http
+      .patch('/posts/update/' + postId, true, true, true, token, {
+        text: formText,
+        url: formUrl,
+      })
       .then((response) => {
         dispatch(editArticleSuccess(response));
       })
@@ -125,15 +115,10 @@ export const editArticleFailure = (error) => {
 
 export const deleteArticle = (postId, token) => {
   return (dispatch) => {
-    const target = getEndpoint() + '/posts/delete/' + postId;
+    const http = new Http();
 
-    return fetch(target, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => response.json())
+    return http
+      .delete('/posts/delete/' + postId, false, true, true, token, null)
       .then((response) => {
         console.log('response in deleteArticle function');
         console.log(response);

@@ -17,6 +17,8 @@ const initialState = {
   article: null,
   errors: null,
   message: null,
+  count: -9,
+  verb: '',
 };
 
 const articleReducer = (state = initialState, action) => {
@@ -24,22 +26,19 @@ const articleReducer = (state = initialState, action) => {
     case CREATE_ARTICLE:
       return {
         ...state,
-        article: action.payload,
       };
     case CREATE_ARTICLE_SUCCESS:
-      // console.log('CREATE_ARTICLE_SUCCESS action.payload');
-      // console.log(action.payload);
-
+      return {
+        ...state,
+        errors: null,
+        article: action.payload,
+      };
+    case CREATE_ARTICLE_FAILURE:
       const { errorTitle, errorUrl } = action.payload;
       return {
         ...state,
         errors: { errorTitle, errorUrl },
         article: action.payload,
-      };
-    case CREATE_ARTICLE_FAILURE:
-      return {
-        ...state,
-        message: action.payload,
       };
     case EDIT_ARTICLE:
       return {
@@ -63,12 +62,13 @@ const articleReducer = (state = initialState, action) => {
     case UPVOTE_ARTICLE_SUCCESS:
       return {
         ...state,
+        count: action.payload.count,
         article: action.payload,
+        verb: action.payload.message.split(' ')[0],
       };
     case UPVOTE_ARTICLE_FAILURE:
       return {
         ...state,
-        // errors: action.payload,
       };
     case DELETE_ARTICLE:
       return {
@@ -82,7 +82,6 @@ const articleReducer = (state = initialState, action) => {
     case DELETE_ARTICLE_FAILURE:
       return {
         ...state,
-        // errors: action.payload,
       };
     default:
       return state;

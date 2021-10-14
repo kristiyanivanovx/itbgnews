@@ -17,6 +17,10 @@ import renewCookie from '../utilities/auth/renewCookie';
 import AuthLink from '../components/auth/AuthLink';
 import Header from '../components/stateful/Header';
 import Http from '../utilities/service/http';
+import { deleteComment } from '../redux';
+import { useDispatch } from 'react-redux';
+import store from '../redux/store';
+import { login } from '../redux/auth/authActions';
 
 const Login = () => {
   // const [errors, setErrors] = useState({});
@@ -24,38 +28,41 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [modalMessage, setModalMessage] = useState('');
   const [shouldDisplay, setShouldDisplay] = useState(false);
-  const http = new Http();
+  const dispatch = useDispatch();
 
   const toggleModal = () => {
     setShouldDisplay((shouldDisplay) => !shouldDisplay);
   };
 
-  const checkResult = async (result) => {
-    if (result.message === USER_NOT_FOUND_ERROR) {
+  const submitForm = async () => {
+    dispatch(login(email, password)).then(() => {
+      checkResult();
+      // await checkResult(store.getState().auth);
+    });
+  };
+
+  const checkResult = () => {
+    const auth = store.getState().auth;
+
+    if (auth.error === USER_NOT_FOUND_ERROR) {
       setModalMessage(() => 'Няма потребител с този имейл.');
       toggleModal();
-    } else if (result.error === INCORRECT_PASSWORD_ERROR) {
-      setModalMessage(() => 'Грешна парола');
+    } else if (auth.error === INCORRECT_PASSWORD_ERROR) {
+      setModalMessage(() => 'Грешна парола.');
       toggleModal();
-    } else {
-      await renewCookie(result.data.accessToken);
-
+    } else if (auth.accessToken) {
       setModalMessage(() => 'Влязохте успешно.');
       toggleModal();
 
-      setTimeout(() => {
-        Router.push('/');
-      }, 2000);
+      renewCookie(auth.accessToken).then(() => {
+        setTimeout(() => {
+          Router.push('/');
+        }, 2000);
+      });
+    } else {
+      setModalMessage(() => 'Стана неочаквана грешка...');
+      toggleModal();
     }
-  };
-
-  const submitForm = async () => {
-    const result = await http.post('/login', true, false, true, null, {
-      email,
-      password,
-    });
-
-    await checkResult(result);
   };
 
   return (

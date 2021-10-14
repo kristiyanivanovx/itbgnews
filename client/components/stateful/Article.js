@@ -17,7 +17,6 @@ import { useRouter } from 'next/router';
 import { pluralizeComments } from '../../utilities/display/pluralize';
 import ensureValidCookie from '../../utilities/auth/ensureValidCookie';
 import Input from '../common/Input';
-import isTokenPresent from '../../utilities/auth/isTokenPresent';
 import {
   deleteArticle,
   deleteComment,
@@ -25,6 +24,7 @@ import {
   upvoteArticle,
 } from '../../redux';
 import { useDispatch, useSelector } from 'react-redux';
+import store from '../../redux/store';
 
 const Article = ({
   postId,
@@ -35,20 +35,22 @@ const Article = ({
   date,
   comments,
   link,
-
   shouldDisplayReplyIcon,
   shouldDisplayEditOptions,
   accessToken,
   changeReplyingTo,
+  redirectUrl,
   // userId,
   // authorId,
 }) => {
+  // const article = useSelector((state) => state.article);
+  const shouldRotateInit =
+    store.getState().article.verb.toLowerCase() === 'added'.toLowerCase();
+  const [shouldRotate, setShouldRotate] = useState(shouldRotateInit);
   const router = useRouter();
   const dispatch = useDispatch();
-  const article = useSelector((state) => state.article);
   const [shouldDisplayEditInputs, setShouldDisplayEditInputs] = useState(false);
   const [shouldDisplayModal, setShouldDisplayModal] = useState(false);
-  const [shouldRotate, setShouldRotate] = useState(false);
   const [hasDeleteOption, setHasDeleteOption] = useState(false);
   const [shouldRedirectLogin, setShouldRedirectLogin] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
@@ -90,7 +92,7 @@ const Article = ({
         setIsDeleted(() => true);
       }, 1000);
 
-      setTimeout(() => router.push('/'));
+      setTimeout(() => router.push(redirectUrl || '/'));
       // todo: check for errors аnd set them
       // setErrors(() => result);
     });
@@ -98,34 +100,35 @@ const Article = ({
 
   // edit
   const confirmEdit = async () => {
-    let token = await ensureValidCookie(accessToken);
+    const token = await ensureValidCookie(accessToken);
 
     dispatch(editArticle(postId, formText, formUrl, token)).then(() => {
-      let article = article.article;
-      console.log('let article = article.article');
-      console.log(article);
+      const article = store.getState().article.article;
 
       // todo: check for errors аnd set them
       // setErrors(() => result);
-
-      if (article) {
-        setOriginalText(() => article.text);
-        setOriginalUrl(() => article.url);
-        setFormText(() => article.text);
-        setFormUrl(() => article.url);
-      }
+      setOriginalText(() => article.text);
+      setOriginalUrl(() => article.url);
+      setFormText(() => article.text);
+      setFormUrl(() => article.url);
     });
   };
 
   // vote
   const upvote = async () => {
-    isTokenPresent(accessToken, setShouldRedirectLogin);
+    if (!accessToken) {
+      setShouldRedirectLogin(true);
+      return;
+    }
+
     const token = await ensureValidCookie(accessToken);
 
     dispatch(upvoteArticle(postId, token)).then(() => {
-      const count = article.article.count;
+      const count = store.getState().article.count;
+      const verb = store.getState().article.verb;
+
       setUpvotesCount(() => count);
-      // setShouldRotate(() => !shouldRotate);
+      setShouldRotate(() => verb.toLowerCase() === 'added'.toLowerCase());
     });
   };
 
@@ -138,6 +141,7 @@ const Article = ({
       className={articleClasses}
       style={{ display: isDeleted ? 'none' : 'flex' }}
     >
+      {' '}
       <div
         className={
           shouldDisplayEditInputs
@@ -224,13 +228,13 @@ const Article = ({
               className={`${styles.article__votes__icon} ${
                 shouldRotate ? styles.rotated : ''
               }`}
+              // className={styles.article__votes__icon}
               icon={faChevronUp}
             />
             {upvotesCount} гласа
           </div>
         </div>
       </div>
-
       <div
         className={`${styles.article__information} ${styles.article__small__text}`}
       >

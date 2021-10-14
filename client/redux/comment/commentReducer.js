@@ -12,12 +12,11 @@ import {
   UPVOTE_COMMENT_FAILURE,
 } from './commentTypes';
 
-// todo: fix bug where on upvote the count is -9 but not the actual one
 const initialState = {
   comment: '',
   message: '',
   text: '',
-  count: -999,
+  count: -9,
 };
 
 const commentReducer = (state = initialState, action) => {
@@ -25,7 +24,6 @@ const commentReducer = (state = initialState, action) => {
     case ADD_COMMENT:
       return {
         ...state,
-        comment: action.payload,
       };
     case ADD_COMMENT_SUCCESS:
       return {
@@ -35,22 +33,13 @@ const commentReducer = (state = initialState, action) => {
         error: '',
       };
     case EDIT_COMMENT:
-      console.log('EDIT_COMMENT (in reducer)');
       return {
         ...state,
         comment: action.payload,
       };
     case EDIT_COMMENT_SUCCESS:
-      console.log('EDIT_COMMENT_SUCCESS (in reducer)');
-      console.log({
-        // ...state,
-        loading: false,
-        comment: action.payload,
-        text: action.payload.text,
-        error: '',
-      });
       return {
-        // ...state,
+        ...state,
         loading: false,
         comment: action.payload,
         text: action.payload.text,
@@ -77,31 +66,21 @@ const commentReducer = (state = initialState, action) => {
         message: action.payload,
       };
     case UPVOTE_COMMENT:
-      console.log('UPVOTE_COMMENT: ' + action.payload);
       return {
         ...state,
         count: action.payload,
       };
     case UPVOTE_COMMENT_SUCCESS:
-      console.log('UPVOTE_COMMENT_SUCCESS (in reducer)' + action.payload);
-      console.log({
-        ...state,
-        count: action.payload,
-      });
-
       return {
         ...state,
         count: action.payload,
       };
     case UPVOTE_COMMENT_FAILURE:
-      console.log('UPVOTE_COMMENT_FAILURE (in reducer)' + action.payload);
       return {
         ...state,
         error: action.payload,
       };
     default:
-      console.log('Default state...');
-      console.log(state);
       return state;
   }
 };

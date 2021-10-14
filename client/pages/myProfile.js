@@ -14,7 +14,8 @@ import getUserToken from '../utilities/auth/getUserToken';
 import ensureValidCookie from '../utilities/auth/ensureValidCookie';
 import setProfilePicture from '../utilities/image/setProfilePicture';
 import getMoreArticles from '../utilities/article/getMoreArticles';
-import Http from '../utilities/service/http';
+import { useDispatch } from 'react-redux';
+import { logout } from '../redux/auth/authActions';
 
 export const getServerSideProps = requireAuthentication(async (context) => {
   const ENDPOINT = getEndpoint();
@@ -64,7 +65,7 @@ const MyProfile = ({
   const [shouldRedirect, setShouldRedirect] = useState(false);
   const [currentImage, setCurrentImage] = useState(picture);
   const router = useRouter();
-  const http = new Http(ENDPOINT);
+  const dispatch = useDispatch();
 
   // article
   useEffect(() => {
@@ -78,11 +79,10 @@ const MyProfile = ({
 
   const submitLogoutForm = async () => {
     const token = await ensureValidCookie(accessToken);
-    await http.post('/logout', false, true, true, token, null);
-    await http.post('/api/removeCookie', true, false, false, token, null);
 
-    // todo: dispatch is logged out
-    setShouldRedirect(() => true);
+    dispatch(logout(token)).then(() => {
+      setShouldRedirect(() => true);
+    });
   };
 
   const loadMoreArticles = async () => {
@@ -139,6 +139,7 @@ const MyProfile = ({
                       comments={index}
                       accessToken={accessToken}
                       shouldDisplayEditOptions={userId === article.authorId}
+                      redirectUrl={'/myProfile'}
                       // authorId={article.authorId}
                       // userId={userId}
                     />

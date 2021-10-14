@@ -98,7 +98,7 @@ async function postPost(req, res) {
 }
 
 async function patchPost(req, res) {
-  // todo make validation on url if exists
+  // todo make validation on url if is valid
   const { text, url } = req.body;
   let hasChanged = false;
 

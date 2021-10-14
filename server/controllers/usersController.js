@@ -52,7 +52,7 @@ async function login(req, res) {
     if (user === null) {
       res.status(401).json({
         status: false,
-        message: 'There is no such user in the database.',
+        errorMessage: 'There is no such user in the database.',
       });
 
       return;
@@ -62,7 +62,7 @@ async function login(req, res) {
 
     if (!isValid) {
       res.status(401).json({
-        error: 'Incorrect password',
+        errorMessage: 'Incorrect password',
       });
 
       return;

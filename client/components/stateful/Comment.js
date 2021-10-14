@@ -17,7 +17,6 @@ import ensureValidCookie from '../../utilities/auth/ensureValidCookie';
 import Input from '../common/Input';
 import Modal from '../common/Modal';
 import { useRouter } from 'next/router';
-import isTokenPresent from '../../utilities/auth/isTokenPresent';
 import { upvoteComment, deleteComment, editComment } from '../../redux';
 import { useDispatch, useSelector } from 'react-redux';
 import store from '../../redux/store';
@@ -40,19 +39,19 @@ const Comment = ({
 }) => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const state = useSelector((state) => state);
   const [formText, setFormText] = useState(title);
   const [shouldDisplayEditInputs, setShouldDisplayEditInputs] = useState(false);
   const [upvotesCount, setUpvotesCount] = useState(upvotes);
   const [shouldRedirectLogin, setShouldRedirectLogin] = useState(false);
   const [originalText, setOriginalText] = useState(title);
   const [shouldDisplayModal, setShouldDisplayModal] = useState(false);
-  const [shouldRotate, setShouldRotate] = useState(false);
   const [hasDeleteOption, setHasDeleteOption] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [isDeleted, setIsDeleted] = useState(false);
   // const [shouldShowInput, setShouldShowInput] = useState(false);
   // const [iconsDisplay, setIconsDisplay] = useState(false);
+  // const state = useSelector((state) => state);
+  // const [shouldRotate, setShouldRotate] = useState(false);
 
   useEffect(() => {
     if (shouldRedirectLogin) {
@@ -74,31 +73,31 @@ const Comment = ({
 
   // edit
   const confirmEdit = async () => {
+    toggleEditInputs();
+
     const token = await ensureValidCookie(accessToken);
 
     dispatch(editComment(commentId, formText, token)).then(() => {
-      console.log('confirm edit comment');
-      console.log(state);
+      const comment = store.getState().comment.comment;
 
-      // todo: change component contents to new ones
-      setOriginalText(() => state.comment.comment.text);
-      setFormText(() => state.comment.comment.text);
-
-      // setShouldShowInput((prev) => !prev);
+      setOriginalText(() => comment.text);
+      setFormText(() => comment.text);
       // setErrors(() => result);
     });
   };
 
   // voting
   const confirmUpvote = async () => {
-    isTokenPresent(accessToken, setShouldRedirectLogin);
+    if (!accessToken) {
+      setShouldRedirectLogin(true);
+      return;
+    }
+
     const token = await ensureValidCookie(accessToken);
 
     dispatch(upvoteComment(commentId, token)).then(() => {
       const count = store.getState().comment.count;
       setUpvotesCount(() => count);
-
-      // console.log(state);
       // setShouldRotate((shouldRotate) => !shouldRotate);
     });
   };
@@ -167,10 +166,7 @@ const Comment = ({
               {shouldDisplayEditOption ? (
                 <>
                   {shouldDisplayEditInputs ? (
-                    <div
-                      className={styles.comment__modify}
-                      onClick={toggleEditInputs}
-                    >
+                    <div className={styles.comment__modify}>
                       <FontAwesomeIcon
                         icon={faSave}
                         onClick={async () => await confirmEdit()}
@@ -208,9 +204,10 @@ const Comment = ({
                 onClick={async () => await confirmUpvote()}
               >
                 <FontAwesomeIcon
-                  className={`${styles.comment__votes__icon} ${
-                    shouldRotate ? styles.rotated : ''
-                  }`}
+                  className={styles.comment__votes__icon}
+                  // className={`${styles.comment__votes__icon} ${
+                  //     shouldRotate ? styles.rotated : ''
+                  // }`}
                   icon={faChevronUp}
                 />
               </div>

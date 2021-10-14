@@ -12,7 +12,7 @@ import {
   UPVOTE_COMMENT_SUCCESS,
   UPVOTE_COMMENT_FAILURE,
 } from './commentTypes';
-import getEndpoint from '../../utilities/infrastructure/getEndpoint';
+import Http from '../../utilities/service/http';
 
 export const addCommentSuccess = (comment) => {
   return {
@@ -57,7 +57,6 @@ export const deleteCommentFailure = (error) => {
 };
 
 export const upvoteCommentSuccess = (count) => {
-  console.log('upvoteCommentSuccess (in action): ' + count);
   return {
     type: UPVOTE_COMMENT_SUCCESS,
     payload: count,
@@ -71,21 +70,14 @@ export const upvoteCommentFailure = (error) => {
   };
 };
 
-export const upvoteComment = (commentId, accessToken) => {
+export const upvoteComment = (commentId, token) => {
   return (dispatch) => {
-    const target = getEndpoint() + '/comments/upvote/' + commentId;
+    const http = new Http();
 
-    return fetch(target, {
-      method: 'PATCH',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    })
-      .then((response) => response.json())
+    return http
+      .patch('/comments/upvote/' + commentId, false, true, true, token, null)
       .then((response) => {
         const count = response.count;
-        console.log('upvoteComment...2: ' + count);
-
         dispatch(upvoteCommentSuccess(count));
       })
       .catch((error) => {
@@ -95,18 +87,19 @@ export const upvoteComment = (commentId, accessToken) => {
   };
 };
 
-export const deleteComment = (commentId, postId, accessToken) => {
+export const deleteComment = (commentId, postId, token) => {
   return (dispatch) => {
-    const target =
-      getEndpoint() + '/comments/delete/' + postId + '/' + commentId;
+    const http = new Http();
 
-    return fetch(target, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    })
-      .then((response) => response.json())
+    return http
+      .delete(
+        '/comments/delete/' + postId + '/' + commentId,
+        false,
+        true,
+        true,
+        token,
+        null,
+      )
       .then((response) => {
         dispatch(deleteCommentSuccess(response));
       })
@@ -117,22 +110,15 @@ export const deleteComment = (commentId, postId, accessToken) => {
   };
 };
 
-export const editComment = (commentId, formText, accessToken) => {
+export const editComment = (commentId, formText, token) => {
   return (dispatch) => {
-    const target = getEndpoint() + '/comments/update/' + commentId;
+    const http = new Http();
 
-    return fetch(target, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ text: formText }),
-    })
-      .then((response) => response.json())
+    return http
+      .patch('/comments/update/' + commentId, true, true, true, token, {
+        text: formText,
+      })
       .then((response) => {
-        console.log('edit comment response');
-        console.log(response);
         dispatch(editCommentSuccess(response));
       })
       .catch((error) => {
@@ -142,23 +128,16 @@ export const editComment = (commentId, formText, accessToken) => {
   };
 };
 
-export const addComment = (postId, replyingTo, accessToken, text) => {
+export const addComment = (postId, replyingTo, token, text) => {
   return (dispatch) => {
-    const target = getEndpoint() + '/comments/create';
+    const http = new Http();
 
-    return fetch(target, {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({
+    return http
+      .post('/comments/create', true, true, true, token, {
         parentPostId: postId,
         parentCommentId: replyingTo.isPost ? 'false' : replyingTo.id,
         text: text,
-      }),
-    })
-      .then((response) => response.json())
+      })
       .then((response) => {
         dispatch(addCommentSuccess(response));
       })

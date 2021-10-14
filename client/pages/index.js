@@ -37,7 +37,8 @@ export async function getServerSideProps(context) {
 const Home = ({ data, accessToken, ENDPOINT }) => {
   const [articles, setArticles] = useState(data.posts);
   const [hasMore, setHasMore] = useState(true);
-  const userId = jwt.decode(accessToken ?? null)?.sub ?? null;
+  // const userId = jwt.decode(accessToken ?? null)?.sub ?? null;
+  const userId = accessToken ? jwt.decode(accessToken).sub : null;
 
   useEffect(() => {
     setHasMore(data.postsCount > articles.length);

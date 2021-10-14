@@ -17,6 +17,7 @@ import ensureValidCookie from '../utilities/auth/ensureValidCookie';
 import { createArticle } from '../redux';
 import { useDispatch, useSelector } from 'react-redux';
 import store from '../redux/store';
+import { error } from 'next/dist/build/output/log';
 
 export const getServerSideProps = requireAuthentication((context) => {
   let accessToken = getUserToken(context.req?.headers.cookie).split('=')[1];
@@ -32,13 +33,13 @@ export const getServerSideProps = requireAuthentication((context) => {
 const Create = ({ accessToken }) => {
   const router = useRouter();
   const article = useSelector((state) => state.article);
-  const errors = useSelector((state) => state.article.errors);
   const commentDispatch = useDispatch();
   const [shouldDisplay, setShouldDisplay] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [text, setText] = useState('');
   const [url, setUrl] = useState('');
-  // const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({});
+  // const errorsCount = useSelector((state) => state.article.errors?.count || 0);
 
   function toggleModal() {
     setShouldDisplay((shouldDisplay) => !shouldDisplay);
@@ -47,38 +48,30 @@ const Create = ({ accessToken }) => {
   const submitForm = async () => {
     let userId = jwt.decode(accessToken).sub;
     const token = await ensureValidCookie(accessToken);
-    commentDispatch(await createArticle(text, url, userId, token));
 
-    // todo: fix state not updating
-    console.log('the article i got is: ');
-    console.log(article);
-
-    console.log('the errors that i got are: ');
-    console.log(errors);
-
-    console.log('store.getState() ');
-    console.log(store.getState());
-
-    checkResponse();
+    commentDispatch(createArticle(text, url, userId, token)).then(() => {
+      checkResponse();
+    });
   };
 
-  // const checkResponse = async (response, result) => {
   const checkResponse = () => {
-    let hasNoErrors = !errors?.errorTitle && !errors?.errorUrl;
+    let stateErrors = store.getState().article.errors;
 
-    if (hasNoErrors) {
-      console.log('debug: no errors');
+    setErrors((prev) => ({
+      ...prev,
+      errorTitle: stateErrors?.errorTitle
+        ? 'Заглавието трябва да е с дължина от 6 до 250 букви.'
+        : null,
+      errorUrl: stateErrors?.errorUrl
+        ? 'Хиперлинкът трябва да е валиден.'
+        : null,
+    }));
+
+    if (!stateErrors?.errorTitle && !stateErrors?.errorUrl) {
       setModalMessage(() => 'Новината беше успешно създадена!');
       toggleModal();
 
-      console.log('store.getState() ');
-      console.log(store.getState());
-
       setTimeout(async () => await router.push('/'), 1000);
-    } else {
-      console.log('store.getState() ');
-      console.log(store.getState());
-      console.log('debug: yes errors');
     }
   };
 

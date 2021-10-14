@@ -16,7 +16,6 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faSave } from '@fortawesome/free-regular-svg-icons';
 import { useDispatch } from 'react-redux';
 import { addComment } from '../redux';
-import isTokenPresent from '../utilities/auth/isTokenPresent';
 import ensureValidCookie from '../utilities/auth/ensureValidCookie';
 import getEndpoint from '../utilities/infrastructure/getEndpoint';
 
@@ -53,11 +52,11 @@ export async function getServerSideProps(context) {
 const View = ({ postId, accessToken, data, tree }) => {
   const router = useRouter();
   const dispatch = useDispatch();
+  const [text, setText] = useState('');
   const [shouldShowInput, setShouldShowInput] = useState(false);
   const [shouldRedirectLogin, setShouldRedirectLogin] = useState(false);
   const [replyingTo, setReplyingTo] = useState({ id: postId, isPost: true });
-  const [text, setText] = useState('');
-  const userId = jwt.decode(accessToken ?? null)?.sub ?? null;
+  const userId = accessToken ? jwt.decode(accessToken).sub : null;
 
   // const isNotFoundPost = data?.message?.includes(CANNOT_FIND_POST_ERROR);
   // const isNotValidId = data?.message?.includes(INVALID_ID_ERROR);
@@ -93,14 +92,21 @@ const View = ({ postId, accessToken, data, tree }) => {
   const article = data.post;
 
   const changeReplyingTo = (replyToId, isPost) => {
-    isTokenPresent(accessToken, setShouldRedirectLogin);
+    if (!accessToken) {
+      setShouldRedirectLogin(true);
+      return;
+    }
 
     setReplyingTo(() => ({ id: replyToId, isPost: isPost }));
     setShouldShowInput(() => true);
   };
 
   const confirmCreate = async () => {
-    isTokenPresent(accessToken, setShouldRedirectLogin);
+    if (!accessToken) {
+      setShouldRedirectLogin(true);
+      return;
+    }
+
     const token = await ensureValidCookie(accessToken);
 
     dispatch(addComment(postId, replyingTo, token, text)).then(() => {
@@ -127,6 +133,7 @@ const View = ({ postId, accessToken, data, tree }) => {
       shouldDisplayEditOptions={userId === article.authorId}
       shouldDisplayReplyIcon={true}
       changeReplyingTo={changeReplyingTo}
+      redirectUrl={'/'}
       // redirectUrl={INDEX_PATH}
       // authorId={article.authorId}
       // userId={userId}
