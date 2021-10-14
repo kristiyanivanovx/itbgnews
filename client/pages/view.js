@@ -12,7 +12,6 @@ import {
   INVALID_ID_ERROR,
   getEndpoint,
 } from '../utilities/common';
-import INDEX_PATH from '../next.config';
 import { useRouter } from 'next/router';
 import getUserToken from '../utilities/getUserToken';
 import jwt from 'jsonwebtoken';
@@ -20,14 +19,13 @@ import countChildren from '../utilities/countChildren';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faSave } from '@fortawesome/free-regular-svg-icons';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { addComment } from '../components/redux';
 import isTokenPresent from '../helpers/isTokenPresent';
 import ensureValidCookie from '../utilities/ensureValidCookie';
 
 export async function getServerSideProps(context) {
   const ENDPOINT = getEndpoint();
-
   const postId = context.query.postId;
 
   const target = ENDPOINT + `/posts/comments/` + postId;
@@ -43,7 +41,7 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const treeResponse = await fetch(getEndpoint() + '/tree/' + postId);
+  const treeResponse = await fetch(ENDPOINT + '/tree/' + postId);
   const treeData = await treeResponse.json();
 
   return {
@@ -52,24 +50,21 @@ export async function getServerSideProps(context) {
       accessToken,
       data,
       tree: treeData.tree,
-      ENDPOINT,
     },
   };
 }
 
-const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
+const View = ({ postId, accessToken, data, tree }) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const [shouldShowInput, setShouldShowInput] = useState(false);
   const [shouldRedirectLogin, setShouldRedirectLogin] = useState(false);
   const [replyingTo, setReplyingTo] = useState({ id: postId, isPost: true });
   const [text, setText] = useState('');
-  const [userId, setUserId] = useState(
-    jwt.decode(accessToken ?? null)?.sub ?? null,
-  );
+  const userId = jwt.decode(accessToken ?? null)?.sub ?? null;
 
-  const isNotFound = data?.message?.includes(CANNOT_FIND_POST_ERROR);
-  const isNotValidId = data?.message?.includes(INVALID_ID_ERROR);
+  // const isNotFoundPost = data?.message?.includes(CANNOT_FIND_POST_ERROR);
+  // const isNotValidId = data?.message?.includes(INVALID_ID_ERROR);
 
   const toggleInput = () => {
     setShouldShowInput((prev) => !prev);
@@ -80,14 +75,14 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
   };
 
   useEffect(() => {
-    if (isNotFound || isNotValidId) {
-      router.push('/');
-    }
+    // if (isNotFoundPost || isNotValidId) {
+    //   router.push('/');
+    // }
 
     if (shouldRedirectLogin) {
       router.push('/login');
     }
-  }, [isNotFound, isNotValidId, router, shouldRedirectLogin]);
+  }, [router, shouldRedirectLogin]);
 
   useEffect(() => {
     if (!shouldShowInput && text) {
@@ -95,7 +90,7 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
     }
 
     // TODO: Should display icons
-    // const shouldDisplayIcons = data.post.authorId ===
+    // const shouldDisplayIcons = data.post.authorId === ...
     // console.log(data);
   }, [shouldShowInput, text]);
 
@@ -114,9 +109,12 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
 
     dispatch(addComment(postId, replyingTo, token, text)).then(() => {
       setShouldShowInput((prev) => !prev);
-      // router.replace(router.asPath);
+      router.replace(router.asPath);
     });
   };
+
+  let commentsCount = 0;
+  tree.map((comment) => (commentsCount += countChildren(comment)));
 
   const singleArticle = (
     <Article
@@ -124,19 +122,18 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
       postId={article._id}
       isFirstArticle={true}
       title={article.text}
+      upvotes={article.upvoters.length}
       username={article.authorName}
       date={article.creationDate}
-      upvotes={article.upvoters.length}
-      // todo: show real comment count
-      comments={6}
       link={article.url}
-      redirectUrl={INDEX_PATH}
-      authorId={article.authorId}
-      userId={userId}
-      changeReplyingTo={changeReplyingTo}
+      comments={commentsCount}
       accessToken={accessToken}
-      shouldDisplayReplyIcon={true}
       shouldDisplayEditOptions={userId === article.authorId}
+      shouldDisplayReplyIcon={true}
+      changeReplyingTo={changeReplyingTo}
+      // redirectUrl={INDEX_PATH}
+      // authorId={article.authorId}
+      // userId={userId}
     />
   );
 
@@ -193,7 +190,6 @@ const View = ({ postId, accessToken, data, tree, ENDPOINT }) => {
                     postId={postId}
                     replyingTo={replyingTo}
                     accessToken={accessToken}
-                    ENDPOINT={ENDPOINT}
                     userId={userId}
                     shouldDisplayEditOption={shouldDisplayEditOption}
                   />

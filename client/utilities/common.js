@@ -19,6 +19,20 @@ module.exports = {
   EDITED_RESPONSE_CODE: 200,
   REMOVED_RESPONSE_CODE: 200,
   UNAUTHORIZED_RESPONSE_CODE: 401,
+  pluralizeReplies: (number) => {
+    if (number === 1) {
+      return 'отговор';
+    }
+
+    return 'отговора';
+  },
+  pluralizeComments: (number) => {
+    if (number === 1) {
+      return 'коментар';
+    }
+
+    return 'коментара';
+  },
   isEmpty: (obj) => Object.keys(obj).length === 0,
   getEndpoint: () => {
     const ENV = process.env.NODE_ENV || 'development';

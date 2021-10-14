@@ -8,21 +8,23 @@ import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../helpers/getDefaultLayout';
 import { useRouter } from 'next/router';
 import {
-  getEndpoint,
   INVALID_PASSWORD_ERROR,
   NO_USER_FOUND_ERROR,
   PASSWORD_CHANGED_SUCCESSFULLY,
 } from '../utilities/common';
 import Header from '../components/Header';
 import Modal from '../components/Modal';
+import { useSelector } from 'react-redux';
+import Http from '../services/http';
 
 const Verify = () => {
-  const ENDPOINT = getEndpoint();
-  const [password, setPassword] = useState('');
   const router = useRouter();
+  const ENDPOINT = useSelector((state) => state.infrastructure.endpoint);
+  const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [modalMessage, setModalMessage] = useState('');
   const [shouldDisplay, setShouldDisplay] = useState(false);
+  const http = new Http();
 
   const { token, email } = router.query;
 
@@ -31,20 +33,16 @@ const Verify = () => {
   };
 
   const submitForm = async () => {
-    const response = await fetch(ENDPOINT + '/password-reset', {
-      method: 'POST',
-      body: JSON.stringify({ token, email, password }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    const result = await http.post('/password-reset', true, false, true, null, {
+      token,
+      email,
+      password,
     });
 
-    const result = await response.json();
     await checkResponse(result);
   };
 
   const checkResponse = async (result) => {
-    console.log(result);
     if (result.errorPassword === INVALID_PASSWORD_ERROR) {
       setError(
         () =>
@@ -55,8 +53,9 @@ const Verify = () => {
     } else if (result.result === PASSWORD_CHANGED_SUCCESSFULLY) {
       setError(() => null);
       setModalMessage(() => 'Паролата ви беше успешно променена!');
+
       toggleModal();
-      setTimeout(() => router.push('/'), 1500);
+      setTimeout(() => router.push('/login'), 1500);
     }
   };
 

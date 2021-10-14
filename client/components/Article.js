@@ -14,14 +14,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import Modal from './Modal';
 import { useRouter } from 'next/router';
-import {
-  UNAUTHORIZED_RESPONSE_CODE,
-  REMOVED_RESPONSE_CODE,
-  CREATED_RESPONSE_CODE,
-  DELETED_RESPONSE_CODE,
-  EDITED_RESPONSE_CODE,
-  getEndpoint,
-} from '../utilities/common';
+import { pluralizeComments } from '../utilities/common';
 import ensureValidCookie from '../utilities/ensureValidCookie';
 import Input from './Input';
 import isTokenPresent from '../helpers/isTokenPresent';
@@ -42,12 +35,13 @@ const Article = ({
   date,
   comments,
   link,
-  userId,
-  authorId,
+
   shouldDisplayReplyIcon,
   shouldDisplayEditOptions,
   accessToken,
   changeReplyingTo,
+  // userId,
+  // authorId,
 }) => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -96,6 +90,7 @@ const Article = ({
         setIsDeleted(() => true);
       }, 1000);
 
+      setTimeout(() => router.push('/'));
       // todo: check for errors аnd set them
       // setErrors(() => result);
     });
@@ -262,7 +257,9 @@ const Article = ({
             className={styles.article__information__icon}
           />
           <Link href={{ pathname: '/view', query: { name: formText, postId } }}>
-            <a>{comments} коментара</a>
+            <a>
+              {comments}&nbsp;{pluralizeComments(comments)}
+            </a>
           </Link>
         </div>
       </div>

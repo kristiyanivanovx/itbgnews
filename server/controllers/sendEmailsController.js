@@ -99,7 +99,6 @@ async function forgottenPassword(req, res) {
     .then((response) => {
       const statusCode = response[0].statusCode;
       // const headers = response[0].headers;
-
       // console.log('statusCode: ' + statusCode);
       // console.log(response);
 

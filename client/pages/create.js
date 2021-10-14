@@ -14,9 +14,9 @@ import jwt from 'jsonwebtoken';
 import requireAuthentication from '../helpers/requireAuthentication';
 import getUserToken from '../utilities/getUserToken';
 import ensureValidCookie from '../utilities/ensureValidCookie';
-import { addComment, createArticle } from '../components/redux';
+import { createArticle } from '../components/redux';
 import { useDispatch, useSelector } from 'react-redux';
-import { isEmpty } from '../utilities/common';
+import store from '../components/redux/store';
 
 export const getServerSideProps = requireAuthentication((context) => {
   let accessToken = getUserToken(context.req?.headers.cookie).split('=')[1];
@@ -28,6 +28,7 @@ export const getServerSideProps = requireAuthentication((context) => {
   };
 });
 
+// todo: finish up here
 const Create = ({ accessToken }) => {
   const router = useRouter();
   const article = useSelector((state) => state.article);
@@ -43,18 +44,20 @@ const Create = ({ accessToken }) => {
     setShouldDisplay((shouldDisplay) => !shouldDisplay);
   }
 
-  // todo: fix state not updating
   const submitForm = async () => {
-    console.log('submitForm');
-
     let userId = jwt.decode(accessToken).sub;
     const token = await ensureValidCookie(accessToken);
     commentDispatch(await createArticle(text, url, userId, token));
 
+    // todo: fix state not updating
     console.log('the article i got is: ');
     console.log(article);
+
     console.log('the errors that i got are: ');
     console.log(errors);
+
+    console.log('store.getState() ');
+    console.log(store.getState());
 
     checkResponse();
   };
@@ -68,8 +71,13 @@ const Create = ({ accessToken }) => {
       setModalMessage(() => 'Новината беше успешно създадена!');
       toggleModal();
 
+      console.log('store.getState() ');
+      console.log(store.getState());
+
       setTimeout(async () => await router.push('/'), 1000);
     } else {
+      console.log('store.getState() ');
+      console.log(store.getState());
       console.log('debug: yes errors');
     }
   };

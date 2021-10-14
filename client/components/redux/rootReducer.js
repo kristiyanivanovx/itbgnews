@@ -1,12 +1,12 @@
 import { combineReducers } from 'redux';
-import cakeReducer from './cake/cakeReducer';
 import commentReducer from './comment/commentReducer';
 import articleReducer from './article/articleReducer';
+import infrastructureReducer from './infrastructure/infrastructureReducer';
 
 const rootReducer = combineReducers({
-  cake: cakeReducer,
   comment: commentReducer,
   article: articleReducer,
+  infrastructure: infrastructureReducer,
 });
 
 export default rootReducer;

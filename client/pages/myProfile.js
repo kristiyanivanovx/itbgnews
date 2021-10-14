@@ -13,6 +13,8 @@ import jwt from 'jsonwebtoken';
 import getUserToken from '../utilities/getUserToken';
 import ensureValidCookie from '../utilities/ensureValidCookie';
 import setProfilePicture from '../utilities/pictures/setProfilePicture';
+import getMoreArticles from '../helpers/getMoreArticles';
+import Http from '../services/http';
 
 export const getServerSideProps = requireAuthentication(async (context) => {
   const ENDPOINT = getEndpoint();
@@ -62,6 +64,7 @@ const MyProfile = ({
   const [shouldRedirect, setShouldRedirect] = useState(false);
   const [currentImage, setCurrentImage] = useState(picture);
   const router = useRouter();
+  const http = new Http(ENDPOINT);
 
   // articles
   useEffect(() => {
@@ -69,35 +72,26 @@ const MyProfile = ({
       router.push('/login');
       setShouldRedirect((prev) => !prev);
     }
+
     setHasMore(data.postsCount > articles.length);
   }, [articles.length, shouldRedirect, data.postsCount, router]);
 
   const submitLogoutForm = async () => {
-    const logoutResponse = await fetch(ENDPOINT + '/logout', {
-      headers: {
-        authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
-      },
-      method: 'POST',
-    });
+    const token = await ensureValidCookie(accessToken);
+    await http.post('/logout', false, true, true, token, null);
+    await http.post('/api/removeCookie', true, false, false, token, null);
 
-    const cookieRemoveResponse = await fetch('/api/removeCookie', {
-      method: 'POST',
-      body: JSON.stringify({}),
-      headers: { 'Content-Type': 'application/json' },
-    });
-
-    let result = await logoutResponse.json();
+    // todo: dispatch is logged out
     setShouldRedirect(() => true);
-    // if (result.status === SUCCESS_RESPONSE_CODE) { }
   };
 
-  const getMoreArticles = async () => {
-    const response = await fetch(
-      ENDPOINT + '/posts/by/' + userId + `?skip=${articles.length}&limit=10`,
+  const loadMoreArticles = async () => {
+    return await getMoreArticles(
+      setArticles,
+      articles,
+      ENDPOINT,
+      `/posts/by/${userId}?skip=${articles.length}&limit=10`,
     );
-
-    const { posts } = await response.json();
-    setArticles((articles) => [...articles, ...posts]);
   };
 
   return (
@@ -123,7 +117,7 @@ const MyProfile = ({
           >
             <InfiniteScroll
               dataLength={articles.length || 0}
-              next={getMoreArticles}
+              next={async () => await loadMoreArticles()}
               hasMore={hasMore}
               loader={<h4>Зареждане...</h4>}
               endMessage={
@@ -140,13 +134,13 @@ const MyProfile = ({
                       upvotes={article.upvoters.length}
                       username={article.authorName}
                       date={article.creationDate}
-                      // todo: show real comment count
-                      comments={index}
                       link={article.url}
-                      authorId={article.authorId}
-                      userId={userId}
-                      shouldDisplayEditOptions={userId === article.authorId}
+                      // todo, important: show real comment count
+                      comments={index}
                       accessToken={accessToken}
+                      shouldDisplayEditOptions={userId === article.authorId}
+                      // authorId={article.authorId}
+                      // userId={userId}
                     />
                   ))
                 : null}

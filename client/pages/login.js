@@ -8,7 +8,6 @@ import Form from '../components/Form';
 import HeadComponent from '../components/HeadComponent';
 import getDefaultLayout from '../helpers/getDefaultLayout';
 import {
-  getEndpoint,
   INCORRECT_PASSWORD_ERROR,
   USER_NOT_FOUND_ERROR,
 } from '../utilities/common';
@@ -16,17 +15,16 @@ import Modal from '../components/Modal';
 import Router from 'next/router';
 import renewCookie from '../utilities/renewCookie';
 import AuthLink from '../components/AuthLink';
-import Brand from '../components/Brand';
-import SideNav from '../components/SideNav';
 import Header from '../components/Header';
+import Http from '../services/http';
 
 const Login = () => {
-  const ENDPOINT = getEndpoint();
+  // const [errors, setErrors] = useState({});
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState({});
   const [modalMessage, setModalMessage] = useState('');
   const [shouldDisplay, setShouldDisplay] = useState(false);
+  const http = new Http();
 
   const toggleModal = () => {
     setShouldDisplay((shouldDisplay) => !shouldDisplay);
@@ -40,8 +38,7 @@ const Login = () => {
       setModalMessage(() => 'Грешна парола');
       toggleModal();
     } else {
-      const { accessToken } = result.data;
-      await renewCookie(accessToken);
+      await renewCookie(result.data.accessToken);
 
       setModalMessage(() => 'Влязохте успешно.');
       toggleModal();
@@ -53,16 +50,10 @@ const Login = () => {
   };
 
   const submitForm = async () => {
-    const response = await fetch(ENDPOINT + '/login', {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    const result = await http.post('/login', true, false, true, null, {
+      email,
+      password,
     });
-
-    let result = await response.json();
-    setErrors(() => result.data);
 
     await checkResult(result);
   };
@@ -84,13 +75,11 @@ const Login = () => {
               onChange={(e) => setEmail(e.target.value)}
               placeholder={'Имейл'}
               type={'text'}
-              errorMessage={errors?.email}
             />
             <FormInput
               onChange={(e) => setPassword(e.target.value)}
               placeholder={'Парола'}
               type={'password'}
-              errorMessage={errors?.password}
             />
             <Button onClick={async () => await submitForm()} text={'Влез'} />
             <AuthLinks>

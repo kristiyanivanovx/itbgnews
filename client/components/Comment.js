@@ -3,67 +3,56 @@ import styles from '../styles/Comment.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faChevronUp,
-  faClock,
   faComment,
   faEdit,
   faReply,
   faSave,
   faTrashAlt,
-  faUser,
+  // faClock,
+  // faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import countChildren from '../utilities/countChildren';
-import {
-  CREATED_RESPONSE_CODE,
-  DELETED_RESPONSE_CODE,
-  EDITED_RESPONSE_CODE,
-  REMOVED_RESPONSE_CODE,
-  UNAUTHORIZED_RESPONSE_CODE,
-} from '../utilities/common';
+import { pluralizeReplies } from '../utilities/common';
 import ensureValidCookie from '../utilities/ensureValidCookie';
 import Input from './Input';
 import Modal from './Modal';
 import { useRouter } from 'next/router';
 import isTokenPresent from '../helpers/isTokenPresent';
-import { addComment, upvoteComment, deleteComment, editComment } from './redux';
+import { upvoteComment, deleteComment, editComment } from './redux';
 import { useDispatch, useSelector } from 'react-redux';
+import store from './redux/store';
 
 const Comment = ({
   commentId,
   title,
-  username,
   date,
-  comments,
   upvotes,
-  shouldDisplayModifyButtons,
+  username,
+  comments,
+  childrenComments,
   changeReplyingTo,
   shouldDisplayReplyIcon,
-  childrenComments,
   postId,
   replyingTo,
   accessToken,
-  ENDPOINT,
   userId,
   shouldDisplayEditOption,
 }) => {
+  const router = useRouter();
   const dispatch = useDispatch();
+  const state = useSelector((state) => state);
   const [formText, setFormText] = useState(title);
   const [shouldDisplayEditInputs, setShouldDisplayEditInputs] = useState(false);
   const [upvotesCount, setUpvotesCount] = useState(upvotes);
-  const [shouldShowInput, setShouldShowInput] = useState(false);
   const [shouldRedirectLogin, setShouldRedirectLogin] = useState(false);
-  const [iconsDisplay, setIconsDisplay] = useState(false);
   const [originalText, setOriginalText] = useState(title);
   const [shouldDisplayModal, setShouldDisplayModal] = useState(false);
   const [shouldRotate, setShouldRotate] = useState(false);
   const [hasDeleteOption, setHasDeleteOption] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [isDeleted, setIsDeleted] = useState(false);
-  const router = useRouter();
-
-  const state = useSelector((state) => state);
-  const comment = useSelector((state) => state.comment.comment);
-  const message = useSelector((state) => state.comment.message);
-  const count = useSelector((state) => state.comment.count);
+  // const [shouldShowInput, setShouldShowInput] = useState(false);
+  // const [iconsDisplay, setIconsDisplay] = useState(false);
 
   useEffect(() => {
     if (shouldRedirectLogin) {
@@ -106,12 +95,10 @@ const Comment = ({
     const token = await ensureValidCookie(accessToken);
 
     dispatch(upvoteComment(commentId, token)).then(() => {
-      console.log('.then state');
-      console.log(state);
+      const count = store.getState().comment.count;
+      setUpvotesCount(() => count);
 
-      console.log('.then count');
-      console.log(count);
-      // setUpvotesCount(() => state.comment.count);
+      // console.log(state);
       // setShouldRotate((shouldRotate) => !shouldRotate);
     });
   };
@@ -233,7 +220,9 @@ const Comment = ({
                   className={styles.comment__information__icon}
                 />
               </div>
-              <span>{comments}&nbsp;отговора</span>
+              <span>
+                {comments}&nbsp;{pluralizeReplies(comments)}
+              </span>
             </div>
           </div>
         </div>
@@ -259,7 +248,6 @@ const Comment = ({
               postId={postId}
               replyingTo={replyingTo}
               accessToken={accessToken}
-              ENDPOINT={ENDPOINT}
               // todo: check if current user === comment creator
               userId={userId}
               shouldDisplayEditOption={shouldDisplayEditOption}

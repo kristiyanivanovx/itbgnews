@@ -2,16 +2,16 @@ import React from 'react';
 import { useState } from 'react';
 import { useRef } from 'react';
 import ensureValidCookie from '../utilities/ensureValidCookie';
-import { getEndpoint } from '../utilities/common';
 import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpload } from '@fortawesome/free-solid-svg-icons';
+import { useSelector } from 'react-redux';
 
 const CustomImage = ({ image, accessToken }) => {
   const inputFile = useRef(null);
   const [currentImage, setCurrentImage] = useState(image);
   const [showButton, setShowButton] = useState(false);
-  const ENDPOINT = getEndpoint();
+  const ENDPOINT = useSelector((state) => state.infrastructure.endpoint);
 
   const onButtonClick = () => {
     inputFile.current.click();

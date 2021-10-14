@@ -13,28 +13,27 @@ import {
 } from '../utilities/common';
 import Header from '../components/Header';
 import Modal from '../components/Modal';
+import { useSelector } from 'react-redux';
+import Http from '../services/http';
+import { useRouter } from 'next/router';
 
 const Forgotten = () => {
-  const ENDPOINT = getEndpoint();
   const [email, setEmail] = useState('');
   const [error, setError] = useState(null);
   const [modalMessage, setModalMessage] = useState('');
   const [shouldDisplay, setShouldDisplay] = useState(false);
+  const http = new Http();
+  const router = useRouter();
 
   const toggleModal = () => {
     setShouldDisplay((shouldDisplay) => !shouldDisplay);
   };
 
   const submitForm = async () => {
-    const response = await fetch(ENDPOINT + '/forgotten', {
-      method: 'POST',
-      body: JSON.stringify({ email }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    const result = await http.post('/forgotten', true, false, true, null, {
+      email,
     });
 
-    const result = await response.json();
     await checkResponse(result);
   };
 

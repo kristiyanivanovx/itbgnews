@@ -6,11 +6,11 @@ import { faSearch, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import MobileNav from './MobileNav';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { getEndpoint } from '../utilities/common';
 import { useRouter } from 'next/router';
+import { useSelector } from 'react-redux';
 
 const Header = ({ shouldHideSearchBar }) => {
-  const ENDPOINT = getEndpoint();
+  const ENDPOINT = useSelector((state) => state.infrastructure.endpoint);
   const [shouldDisplay, setShouldDisplay] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
