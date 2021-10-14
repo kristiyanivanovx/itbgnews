@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
-import FormInput from '../components/FormInput';
-import Button from '../components/Button';
-import FormTitle from '../components/FormTitle';
-import AuthLinks from '../components/AuthLinks';
-import FormContainer from '../components/FormContainer';
-import Form from '../components/Form';
-import HeadComponent from '../components/HeadComponent';
-import getDefaultLayout from '../helpers/getDefaultLayout';
+import FormInput from '../components/form/FormInput';
+import Button from '../components/common/Button';
+import FormTitle from '../components/form/FormTitle';
+import AuthLinks from '../components/auth/AuthLinks';
+import FormContainer from '../components/form/FormContainer';
+import Form from '../components/form/Form';
+import HeadComponent from '../components/common/HeadComponent';
+import getDefaultLayout from '../utilities/layout/getDefaultLayout';
 import {
   INCORRECT_PASSWORD_ERROR,
   USER_NOT_FOUND_ERROR,
-} from '../utilities/common';
-import Modal from '../components/Modal';
+} from '../utilities/infrastructure/messages';
+import Modal from '../components/common/Modal';
 import Router from 'next/router';
-import renewCookie from '../utilities/renewCookie';
-import AuthLink from '../components/AuthLink';
-import Header from '../components/Header';
-import Http from '../services/http';
+import renewCookie from '../utilities/auth/renewCookie';
+import AuthLink from '../components/auth/AuthLink';
+import Header from '../components/stateful/Header';
+import Http from '../utilities/service/http';
 
 const Login = () => {
   // const [errors, setErrors] = useState({});

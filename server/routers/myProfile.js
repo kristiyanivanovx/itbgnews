@@ -35,7 +35,7 @@ router.post('/image', verifyToken, upload.single('image'), async (req, res) => {
   const uploadResponse = await cloudinary.uploader
     .upload(file.path, {
       public_id: userId,
-      folder: 'itbg-news/profile-pictures',
+      folder: 'itbg-news/profile-image',
     })
     .catch((err) => console.log(err))
     .then((data) => {

@@ -1,22 +1,22 @@
-import Header from '../components/Header';
+import Header from '../components/stateful/Header';
 import React, { useState } from 'react';
-import FormInput from '../components/FormInput';
-import Button from '../components/Button';
-import FormTitle from '../components/FormTitle';
-import Form from '../components/Form';
-import HeadComponent from '../components/HeadComponent';
-import getDefaultLayout from '../helpers/getDefaultLayout';
-import FormContainer from '../components/FormContainer';
-import SideNav from '../components/SideNav';
+import FormInput from '../components/form/FormInput';
+import Button from '../components/common/Button';
+import FormTitle from '../components/form/FormTitle';
+import Form from '../components/form/Form';
+import HeadComponent from '../components/common/HeadComponent';
+import getDefaultLayout from '../utilities/layout/getDefaultLayout';
+import FormContainer from '../components/form/FormContainer';
+import SideNav from '../components/nav/SideNav';
 import { useRouter } from 'next/router';
-import Modal from '../components/Modal';
+import Modal from '../components/common/Modal';
 import jwt from 'jsonwebtoken';
-import requireAuthentication from '../helpers/requireAuthentication';
-import getUserToken from '../utilities/getUserToken';
-import ensureValidCookie from '../utilities/ensureValidCookie';
-import { createArticle } from '../components/redux';
+import requireAuthentication from '../utilities/auth/requireAuthentication';
+import getUserToken from '../utilities/auth/getUserToken';
+import ensureValidCookie from '../utilities/auth/ensureValidCookie';
+import { createArticle } from '../redux';
 import { useDispatch, useSelector } from 'react-redux';
-import store from '../components/redux/store';
+import store from '../redux/store';
 
 export const getServerSideProps = requireAuthentication((context) => {
   let accessToken = getUserToken(context.req?.headers.cookie).split('=')[1];

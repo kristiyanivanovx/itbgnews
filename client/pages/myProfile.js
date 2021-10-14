@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import Header from '../components/Header';
-import SideNav from '../components/SideNav';
-import Profile from '../components/Profile';
-import HeadComponent from '../components/HeadComponent';
-import getDefaultLayout from '../helpers/getDefaultLayout';
-import { getEndpoint } from '../utilities/common';
-import Article from '../components/Article';
+import Header from '../components/stateful/Header';
+import SideNav from '../components/nav/SideNav';
+import Profile from '../components/stateful/Profile';
+import HeadComponent from '../components/common/HeadComponent';
+import getDefaultLayout from '../utilities/layout/getDefaultLayout';
+import getEndpoint from '../utilities/infrastructure/getEndpoint';
+import Article from '../components/stateful/Article';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useRouter } from 'next/router';
-import requireAuthentication from '../helpers/requireAuthentication';
+import requireAuthentication from '../utilities/auth/requireAuthentication';
 import jwt from 'jsonwebtoken';
-import getUserToken from '../utilities/getUserToken';
-import ensureValidCookie from '../utilities/ensureValidCookie';
-import setProfilePicture from '../utilities/pictures/setProfilePicture';
-import getMoreArticles from '../helpers/getMoreArticles';
-import Http from '../services/http';
+import getUserToken from '../utilities/auth/getUserToken';
+import ensureValidCookie from '../utilities/auth/ensureValidCookie';
+import setProfilePicture from '../utilities/image/setProfilePicture';
+import getMoreArticles from '../utilities/article/getMoreArticles';
+import Http from '../utilities/service/http';
 
 export const getServerSideProps = requireAuthentication(async (context) => {
   const ENDPOINT = getEndpoint();
@@ -66,7 +66,7 @@ const MyProfile = ({
   const router = useRouter();
   const http = new Http(ENDPOINT);
 
-  // articles
+  // article
   useEffect(() => {
     if (shouldRedirect) {
       router.push('/login');
