@@ -15,7 +15,6 @@ import {
 const initialState = {
   comment: '',
   message: '',
-  text: '',
   count: -9,
 };
 
@@ -28,7 +27,6 @@ const commentReducer = (state = initialState, action) => {
     case ADD_COMMENT_SUCCESS:
       return {
         ...state,
-        loading: false,
         comment: action.payload,
         error: '',
       };
@@ -40,15 +38,12 @@ const commentReducer = (state = initialState, action) => {
     case EDIT_COMMENT_SUCCESS:
       return {
         ...state,
-        loading: false,
         comment: action.payload,
-        text: action.payload.text,
         error: '',
       };
     case EDIT_COMMENT_FAILURE:
       return {
         ...state,
-        loading: false,
         error: action.payload,
       };
     case DELETE_COMMENT:
@@ -58,7 +53,8 @@ const commentReducer = (state = initialState, action) => {
     case DELETE_COMMENT_SUCCESS:
       return {
         ...state,
-        message: action.payload.message,
+        message: action.payload,
+        comment: null,
       };
     case DELETE_COMMENT_FAILURE:
       return {

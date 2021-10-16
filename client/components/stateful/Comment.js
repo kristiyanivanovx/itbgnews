@@ -18,7 +18,7 @@ import Input from '../common/Input';
 import Modal from '../common/Modal';
 import { useRouter } from 'next/router';
 import { upvoteComment, deleteComment, editComment } from '../../redux';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import store from '../../redux/store';
 
 const Comment = ({
@@ -40,14 +40,13 @@ const Comment = ({
   const router = useRouter();
   const dispatch = useDispatch();
   const [formText, setFormText] = useState(title);
+  const [originalText, setOriginalText] = useState(title);
   const [shouldDisplayEditInputs, setShouldDisplayEditInputs] = useState(false);
   const [upvotesCount, setUpvotesCount] = useState(upvotes);
   const [shouldRedirectLogin, setShouldRedirectLogin] = useState(false);
-  const [originalText, setOriginalText] = useState(title);
   const [shouldDisplayModal, setShouldDisplayModal] = useState(false);
   const [hasDeleteOption, setHasDeleteOption] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
-  const [isDeleted, setIsDeleted] = useState(false);
   // const [shouldShowInput, setShouldShowInput] = useState(false);
   // const [iconsDisplay, setIconsDisplay] = useState(false);
   // const state = useSelector((state) => state);
@@ -110,18 +109,20 @@ const Comment = ({
       setHasDeleteOption((hasDeleteOption) => !hasDeleteOption);
       setModalMessage(() => 'Коментарът беше успешно изтрит.');
 
+      setOriginalText(() => null);
+      setFormText(() => null);
+
       setTimeout(() => {
-        setIsDeleted(() => true);
+        setShouldDisplayModal((prev) => !prev);
       }, 1000);
+      setTimeout(() => {
+        router.replace(router.asPath);
+      }, 1050);
     });
   };
 
   return (
-    <div
-      className={styles.comment}
-      style={{ display: originalText && !isDeleted ? 'flex' : 'none' }}
-      // style={{ display: isDeleted ? 'none' : 'flex' }}
-    >
+    <div className={styles.comment}>
       <Modal
         text={modalMessage}
         shouldDisplay={shouldDisplayModal}
@@ -157,7 +158,9 @@ const Comment = ({
               </div>
             </>
           ) : (
-            <p className={styles.comment__title}>{originalText}</p>
+            <p className={styles.comment__title}>
+              {originalText || '[deleted]'}
+            </p>
           )}
           <div className={styles.comment__votes__icon}>
             <div
