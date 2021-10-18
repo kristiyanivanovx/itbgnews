@@ -17,8 +17,6 @@ EXPOSE 3000
 
 ENV NODE_ENV=production
 
-# Run the app when the container launches
-# CMD npm build
 RUN npm run build
 
-CMD npm start
+CMD ["npm", "start"]
