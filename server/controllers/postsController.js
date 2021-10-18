@@ -83,6 +83,7 @@ async function postPost(req, res) {
     authorName: user.username,
     lastEditDate: Date.now(),
     creationDate: Date.now(),
+    commentsCount: 0,
   });
 
   try {

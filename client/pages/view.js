@@ -57,7 +57,6 @@ const View = ({ postId, accessToken, data, tree }) => {
   const [shouldRedirectLogin, setShouldRedirectLogin] = useState(false);
   const [replyingTo, setReplyingTo] = useState({ id: postId, isPost: true });
   const userId = accessToken ? jwt.decode(accessToken).sub : null;
-
   // const isNotFoundPost = data?.message?.includes(CANNOT_FIND_POST_ERROR);
   // const isNotValidId = data?.message?.includes(INVALID_ID_ERROR);
 
@@ -115,8 +114,8 @@ const View = ({ postId, accessToken, data, tree }) => {
     });
   };
 
-  let commentsCount = 0;
-  tree.map((comment) => (commentsCount += countChildren(comment)));
+  // let commentsCount = 0;
+  // tree.map((comment) => (commentsCount += countChildren(comment)));
 
   const singleArticle = (
     <Article
@@ -128,7 +127,7 @@ const View = ({ postId, accessToken, data, tree }) => {
       username={article.authorName}
       date={article.creationDate}
       link={article.url}
-      comments={commentsCount}
+      comments={article.commentsCount}
       accessToken={accessToken}
       shouldDisplayEditOptions={userId === article.authorId}
       shouldDisplayReplyIcon={true}

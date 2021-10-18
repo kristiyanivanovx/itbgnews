@@ -37,7 +37,6 @@ export async function getServerSideProps(context) {
 const Home = ({ data, accessToken, ENDPOINT }) => {
   const [articles, setArticles] = useState(data.posts);
   const [hasMore, setHasMore] = useState(true);
-  // const userId = jwt.decode(accessToken ?? null)?.sub ?? null;
   const userId = accessToken ? jwt.decode(accessToken).sub : null;
 
   useEffect(() => {
@@ -84,8 +83,7 @@ const Home = ({ data, accessToken, ENDPOINT }) => {
                         username={article.authorName}
                         date={article.creationDate}
                         link={article.url}
-                        // todo, important: show real comment count
-                        comments={index}
+                        comments={article.commentsCount}
                         shouldDisplayEditOptions={userId === article.authorId}
                         accessToken={accessToken}
                         // authorId={article.authorId}

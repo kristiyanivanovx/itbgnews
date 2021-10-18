@@ -135,8 +135,7 @@ const MyProfile = ({
                       username={article.authorName}
                       date={article.creationDate}
                       link={article.url}
-                      // todo, important: show real comment count
-                      comments={index}
+                      comments={article.commentsCount}
                       accessToken={accessToken}
                       shouldDisplayEditOptions={userId === article.authorId}
                       redirectUrl={'/myProfile'}

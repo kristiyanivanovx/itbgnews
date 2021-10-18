@@ -18,7 +18,7 @@ const CustomImage = ({ image, accessToken }) => {
     setShowButton(() => true);
   };
 
-  async function onSubmit(ev) {
+  const onSubmit = async (ev) => {
     ev.preventDefault();
     const files = inputFile.current.files;
     if (files.length === 0) {
@@ -45,7 +45,7 @@ const CustomImage = ({ image, accessToken }) => {
       console.log(img);
       setCurrentImage(() => img);
     }
-  }
+  };
 
   return (
     <div>

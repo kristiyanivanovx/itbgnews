@@ -32,6 +32,7 @@ const Verify = () => {
     setShouldDisplay((shouldDisplay) => !shouldDisplay);
   };
 
+  // todo: use redux
   const submitForm = async () => {
     const result = await http.post('/password-reset', true, false, true, null, {
       token,

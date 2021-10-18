@@ -55,6 +55,7 @@ const Register = () => {
     }
   };
 
+  // todo: use redux
   const submitForm = async () => {
     let result = await http.post('/register', true, false, true, null, {
       username,

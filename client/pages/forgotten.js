@@ -21,12 +21,12 @@ const Forgotten = () => {
   const [modalMessage, setModalMessage] = useState('');
   const [shouldDisplay, setShouldDisplay] = useState(false);
   const http = new Http();
-  const router = useRouter();
 
   const toggleModal = () => {
     setShouldDisplay((shouldDisplay) => !shouldDisplay);
   };
 
+  // todo: use redux
   const submitForm = async () => {
     const result = await http.post('/forgotten', true, false, true, null, {
       email,

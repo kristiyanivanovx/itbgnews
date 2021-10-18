@@ -23,11 +23,11 @@ import store from '../redux/store';
 import { login } from '../redux/auth/authActions';
 
 const Login = () => {
-  // const [errors, setErrors] = useState({});
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [modalMessage, setModalMessage] = useState('');
   const [shouldDisplay, setShouldDisplay] = useState(false);
+  // const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
 
   const toggleModal = () => {

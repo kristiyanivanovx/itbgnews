@@ -248,7 +248,6 @@ const Comment = ({
               postId={postId}
               replyingTo={replyingTo}
               accessToken={accessToken}
-              // todo: check if current user === comment creator
               userId={userId}
               shouldDisplayEditOption={shouldDisplayEditOption}
             />

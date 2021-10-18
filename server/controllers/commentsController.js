@@ -1,5 +1,7 @@
 const Comment = require('../models/comment');
 const User = require('../models/user');
+const Post = require('../models/post');
+const { log } = require('nodemon/lib/utils');
 
 async function postComment(req, res) {
   const user = req.userObject;
@@ -17,6 +19,14 @@ async function postComment(req, res) {
   });
 
   try {
+    if (newComment.parentPostId) {
+      const post = await Post.findById(newComment.parentPostId).exec();
+      if (post) {
+        post.commentsCount++;
+        await post.save();
+      }
+    }
+
     await newComment.save();
 
     user.commentsCount += 1;
@@ -115,6 +125,15 @@ async function deleteComment(req, res) {
 
         upvoter.save();
       }
+
+      // if (comment.parentPostId) {
+      //   const post = await Post.findById(comment.parentPostId);
+      //
+      //   if (post) {
+      //     post.commentsCount--;
+      //     await post.save();
+      //   }
+      // }
 
       await comment.save();
       await user.save();
