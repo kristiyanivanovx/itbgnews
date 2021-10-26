@@ -31,6 +31,7 @@ const Article = ({
   isFirstArticle,
   title,
   upvotes,
+  currentUserHasLiked,
   username,
   date,
   comments,
@@ -43,10 +44,7 @@ const Article = ({
   // userId,
   // authorId,
 }) => {
-  // const article = useSelector((state) => state.article);
-  const shouldRotateInit =
-    store.getState().article.verb.toLowerCase() === 'added'.toLowerCase();
-  const [shouldRotate, setShouldRotate] = useState(shouldRotateInit);
+  const [shouldRotate, setShouldRotate] = useState(currentUserHasLiked);
   const router = useRouter();
   const dispatch = useDispatch();
   const [shouldDisplayEditInputs, setShouldDisplayEditInputs] = useState(false);

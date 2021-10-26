@@ -39,6 +39,9 @@ const Home = ({ data, accessToken, ENDPOINT }) => {
   const [hasMore, setHasMore] = useState(true);
   const userId = accessToken ? jwt.decode(accessToken).sub : null;
 
+  console.log('HOME DATA')
+  console.log(data)
+
   useEffect(() => {
     setHasMore(data.postsCount > articles.length);
   }, [articles, data.postsCount]);
@@ -79,6 +82,7 @@ const Home = ({ data, accessToken, ENDPOINT }) => {
                         postId={article._id}
                         isFirstArticle={index === 0}
                         title={article.text}
+                        currentUserHasLiked={article.upvoters.filter(upvoter => upvoter.userId === userId).length > 0}
                         upvotes={article.upvoters.length}
                         username={article.authorName}
                         date={article.creationDate}

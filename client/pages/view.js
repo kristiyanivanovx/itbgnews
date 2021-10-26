@@ -123,6 +123,7 @@ const View = ({ postId, accessToken, data, tree }) => {
       postId={article._id}
       isFirstArticle={true}
       title={article.text}
+      currentUserHasLiked={article.upvoters.filter(upvoter => upvoter.userId === userId).length > 0}
       upvotes={article.upvoters.length}
       username={article.authorName}
       date={article.creationDate}
@@ -183,6 +184,7 @@ const View = ({ postId, accessToken, data, tree }) => {
                     commentId={comment._id}
                     title={comment.text}
                     date={comment.creationDate}
+                    currentUserHasLiked={comment.upvoters.filter(upvoter => upvoter.userId === userId).length > 0}
                     upvotes={comment.upvoters.length}
                     username={comment.authorName}
                     comments={childrenCount}

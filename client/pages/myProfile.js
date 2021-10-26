@@ -131,6 +131,7 @@ const MyProfile = ({
                       postId={article._id}
                       isFirstArticle={index === 0}
                       title={article.text}
+                      currentUserHasLiked={article.upvoters.filter(upvoter => upvoter.userId === userId).length > 0}
                       upvotes={article.upvoters.length}
                       username={article.authorName}
                       date={article.creationDate}

@@ -25,6 +25,7 @@ const Comment = ({
   commentId,
   title,
   date,
+  currentUserHasLiked,
   upvotes,
   username,
   comments,
@@ -39,6 +40,7 @@ const Comment = ({
 }) => {
   const router = useRouter();
   const dispatch = useDispatch();
+  const [shouldRotate, setShouldRotate] = useState(currentUserHasLiked);
   const [formText, setFormText] = useState(title);
   const [originalText, setOriginalText] = useState(title);
   const [shouldDisplayEditInputs, setShouldDisplayEditInputs] = useState(false);
@@ -50,7 +52,6 @@ const Comment = ({
   // const [shouldShowInput, setShouldShowInput] = useState(false);
   // const [iconsDisplay, setIconsDisplay] = useState(false);
   // const state = useSelector((state) => state);
-  // const [shouldRotate, setShouldRotate] = useState(false);
 
   useEffect(() => {
     if (shouldRedirectLogin) {
@@ -96,8 +97,9 @@ const Comment = ({
 
     dispatch(upvoteComment(commentId, token)).then(() => {
       const count = store.getState().comment.count;
+
       setUpvotesCount(() => count);
-      // setShouldRotate((shouldRotate) => !shouldRotate);
+      setShouldRotate((shouldRotate) => !shouldRotate);
     });
   };
 
@@ -207,10 +209,10 @@ const Comment = ({
                 onClick={async () => await confirmUpvote()}
               >
                 <FontAwesomeIcon
-                  className={styles.comment__votes__icon}
-                  // className={`${styles.comment__votes__icon} ${
-                  //     shouldRotate ? styles.rotated : ''
-                  // }`}
+                  // className={styles.comment__votes__icon}
+                  className={`${styles.comment__votes__icon} ${
+                      shouldRotate ? styles.rotated : ''
+                  }`}
                   icon={faChevronUp}
                 />
               </div>
@@ -239,6 +241,7 @@ const Comment = ({
               commentId={comment._id}
               title={comment.text}
               date={comment.creationDate}
+              currentUserHasLiked={comment.upvoters.filter(upvoter => upvoter.userId === userId).length > 0}
               upvotes={comment.upvoters.length}
               username={comment.authorName}
               comments={childrenCount}
