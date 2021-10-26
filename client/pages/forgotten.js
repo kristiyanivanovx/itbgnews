@@ -13,7 +13,6 @@ import {
 import Header from '../components/stateful/Header';
 import Modal from '../components/common/Modal';
 import Http from '../utilities/service/http';
-import { useRouter } from 'next/router';
 
 const Forgotten = () => {
   const [email, setEmail] = useState('');

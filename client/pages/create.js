@@ -15,9 +15,8 @@ import requireAuthentication from '../utilities/auth/requireAuthentication';
 import getUserToken from '../utilities/auth/getUserToken';
 import ensureValidCookie from '../utilities/auth/ensureValidCookie';
 import { createArticle } from '../redux';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import store from '../redux/store';
-import { error } from 'next/dist/build/output/log';
 
 export const getServerSideProps = requireAuthentication((context) => {
   let accessToken = getUserToken(context.req?.headers.cookie).split('=')[1];
@@ -29,17 +28,14 @@ export const getServerSideProps = requireAuthentication((context) => {
   };
 });
 
-// todo: finish up here
 const Create = ({ accessToken }) => {
   const router = useRouter();
-  const article = useSelector((state) => state.article);
   const commentDispatch = useDispatch();
   const [shouldDisplay, setShouldDisplay] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [text, setText] = useState('');
   const [url, setUrl] = useState('');
   const [errors, setErrors] = useState({});
-  // const errorsCount = useSelector((state) => state.article.errors?.count || 0);
 
   function toggleModal() {
     setShouldDisplay((shouldDisplay) => !shouldDisplay);

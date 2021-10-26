@@ -39,9 +39,6 @@ const Home = ({ data, accessToken, ENDPOINT }) => {
   const [hasMore, setHasMore] = useState(true);
   const userId = accessToken ? jwt.decode(accessToken).sub : null;
 
-  console.log('HOME DATA')
-  console.log(data)
-
   useEffect(() => {
     setHasMore(data.postsCount > articles.length);
   }, [articles, data.postsCount]);
