@@ -91,8 +91,6 @@ const Article = ({
       }, 1000);
 
       setTimeout(() => router.push(redirectUrl || '/'));
-      // todo: check for errors аnd set them
-      // setErrors(() => result);
     });
   };
 
@@ -103,8 +101,6 @@ const Article = ({
     dispatch(editArticle(postId, formText, formUrl, token)).then(() => {
       const article = store.getState().article.article;
 
-      // todo: check for errors аnd set them
-      // setErrors(() => result);
       setOriginalText(() => article.text);
       setOriginalUrl(() => article.url);
       setFormText(() => article.text);

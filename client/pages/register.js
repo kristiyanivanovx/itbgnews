@@ -30,11 +30,11 @@ const Register = () => {
   }
 
   const checkResponse = async (result) => {
-    // let stateErrors = store.getState().article.errors;
-
     setErrors((prev) => ({
       ...prev,
-      errorEmail: result.errorEmail ? 'Имейлът ви не е валиден.' : null,
+      errorEmail: result.errorEmail
+        ? 'Имейлът ви не е валиден.'
+        : null,
       errorPassword: result.errorPassword
         ? 'Паролата трябва да съдържа поне една цифра и да е с дължина от 8 до 35 символа.'
         : null,

@@ -27,8 +27,8 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [modalMessage, setModalMessage] = useState('');
   const [shouldDisplay, setShouldDisplay] = useState(false);
-  // const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
+  // const [errors, setErrors] = useState({});
 
   const toggleModal = () => {
     setShouldDisplay((shouldDisplay) => !shouldDisplay);
@@ -78,6 +78,7 @@ const Login = () => {
           />
           <FormTitle text={'Вход'} />
           <Form>
+            {/*todo: proper form, onsubmit*/}
             <FormInput
               onChange={(e) => setEmail(e.target.value)}
               placeholder={'Имейл'}
@@ -88,7 +89,7 @@ const Login = () => {
               placeholder={'Парола'}
               type={'password'}
             />
-            <Button onClick={async () => await submitForm()} text={'Влез'} />
+            <Button type={'submit'} onClick={async () => await submitForm()} text={'Влез'} />
             <AuthLinks>
               <AuthLink text={'Нямаш профил?'} link={'/register'} />
               <AuthLink text={'Забравена парола?'} link={'/forgotten'} />

@@ -82,10 +82,6 @@ const View = ({ postId, accessToken, data, tree }) => {
     if (!shouldShowInput && text) {
       setText(() => '');
     }
-
-    // TODO: Should display icons
-    // const shouldDisplayIcons = data.post.authorId === ...
-    // console.log(data);
   }, [shouldShowInput, text]);
 
   const article = data.post;

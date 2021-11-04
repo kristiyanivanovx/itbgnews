@@ -19,6 +19,7 @@
     align-items: center;
     color: var(--clr-white);
 }
+
 .user__input {
     width: 70%;
     height: 40px;
