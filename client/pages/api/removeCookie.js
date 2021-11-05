@@ -1,5 +1,5 @@
 import { serialize } from 'cookie';
-import { ACCESS_TOKEN_NAME } from '../../utilities/infrastructure/names';
+import { ACCESS_TOKEN_NAME } from '../../utilities/names';
 
 export default function handle(req, res) {
   res.setHeader(

@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import Article from '../components/stateful/Article';
-import SideNav from '../components/nav/SideNav';
-import Header from '../components/stateful/Header';
-import HeadComponent from '../components/common/HeadComponent';
-import getDefaultLayout from '../utilities/layout/getDefaultLayout';
-import getEndpoint from '../utilities/infrastructure/getEndpoint';
+import Article from '../components/Article';
+import SideNav from '../components/SideNav';
+import Header from '../components/Header';
+import HeadComponent from '../components/HeadComponent';
+import getDefaultLayout from '../utilities/getDefaultLayout';
+import getEndpoint from '../utilities/getEndpoint';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import getUserToken from '../utilities/auth/getUserToken';
+import getUserToken from '../utilities/getUserToken';
 import jwt from 'jsonwebtoken';
 import styles from '../styles/Articles.module.css';
-import getMoreArticles from '../utilities/article/getMoreArticles';
+import getMoreArticles from '../utilities/getMoreArticles';
 
 export async function getServerSideProps(context) {
   const ENDPOINT = getEndpoint();

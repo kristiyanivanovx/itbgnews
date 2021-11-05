@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../styles/Articles.module.css';
-import Article from '../components/stateful/Article';
-import Comment from '../components/stateful/Comment';
-import Header from '../components/stateful/Header';
-import SideNav from '../components/nav/SideNav';
-import HeadComponent from '../components/common/HeadComponent';
-import getDefaultLayout from '../utilities/layout/getDefaultLayout';
+import Article from '../components/Article';
+import Comment from '../components/Comment';
+import Header from '../components/Header';
+import SideNav from '../components/SideNav';
+import HeadComponent from '../components/HeadComponent';
+import getDefaultLayout from '../utilities/getDefaultLayout';
 import commentStyles from '../styles/Comment.module.css';
 import { useRouter } from 'next/router';
-import getUserToken from '../utilities/auth/getUserToken';
+import getUserToken from '../utilities/getUserToken';
 import jwt from 'jsonwebtoken';
-import countChildren from '../utilities/comment/countChildren';
+import countChildren from '../utilities/countChildren';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faSave } from '@fortawesome/free-regular-svg-icons';
 import { useDispatch } from 'react-redux';
 import { addComment } from '../redux';
-import ensureValidCookie from '../utilities/auth/ensureValidCookie';
-import getEndpoint from '../utilities/infrastructure/getEndpoint';
+import ensureValidCookie from '../utilities/ensureValidCookie';
+import getEndpoint from '../utilities/getEndpoint';
 
 export async function getServerSideProps(context) {
   const ENDPOINT = getEndpoint();

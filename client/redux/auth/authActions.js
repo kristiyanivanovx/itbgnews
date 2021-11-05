@@ -9,7 +9,7 @@ import {
   REGISTER_FAILURE,
   REGISTER_SUCCESS,
 } from './authTypes';
-import Http from '../../utilities/service/http';
+import Http from '../../utilities/http';
 
 export const login = (email, password) => {
   return (dispatch) => {

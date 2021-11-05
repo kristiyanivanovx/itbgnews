@@ -7,7 +7,7 @@ import {
   UPVOTE_ARTICLE_SUCCESS,
   UPVOTE_ARTICLE_FAILURE,
 } from './articleTypes';
-import Http from '../../utilities/service/http';
+import Http from '../../utilities/http';
 
 export const createArticle = (text, url, userId, token) => {
   return (dispatch) => {

@@ -1,4 +1,4 @@
-import ensureValidCookie from '../auth/ensureValidCookie';
+import ensureValidCookie from '../ensureValidCookie';
 
 const getProfilePicture = async (accessToken, ENDPOINT) => {
   console.log(`${ENDPOINT}/my-profile/image`);

@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
-import FormContainer from '../components/form/FormContainer';
-import FormTitle from '../components/form/FormTitle';
-import Form from '../components/form/Form';
-import FormInput from '../components/form/FormInput';
-import Button from '../components/common/Button';
-import HeadComponent from '../components/common/HeadComponent';
-import Modal from '../components/common/Modal';
-import getDefaultLayout from '../utilities/layout/getDefaultLayout';
-import { EXISTING_USER_ERROR_CODE } from '../utilities/infrastructure/codes';
-import { SUCCESSFUL_REGISTRATION_ERROR } from '../utilities/infrastructure/messages';
+import FormContainer from '../components/FormContainer';
+import FormTitle from '../components/FormTitle';
+import Form from '../components/Form';
+import FormInput from '../components/FormInput';
+import Button from '../components/Button';
+import HeadComponent from '../components/HeadComponent';
+import Modal from '../components/Modal';
+import getDefaultLayout from '../utilities/getDefaultLayout';
+import { EXISTING_USER_ERROR_CODE } from '../utilities/codes';
+import { SUCCESSFUL_REGISTRATION_ERROR } from '../utilities/messages';
 import Router from 'next/router';
-import renewCookie from '../utilities/auth/renewCookie';
-import AuthLinks from '../components/auth/AuthLinks';
-import AuthLink from '../components/auth/AuthLink';
-import Header from '../components/stateful/Header';
-import Http from '../utilities/service/http';
+import renewCookie from '../utilities/renewCookie';
+import AuthLinks from '../components/AuthLinks';
+import AuthLink from '../components/AuthLink';
+import Header from '../components/Header';
+import Http from '../utilities/http';
 
 const Register = () => {
   const [modalMessage, setModalMessage] = useState('');

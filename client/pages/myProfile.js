@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import Header from '../components/stateful/Header';
-import SideNav from '../components/nav/SideNav';
-import Profile from '../components/stateful/Profile';
-import HeadComponent from '../components/common/HeadComponent';
-import getDefaultLayout from '../utilities/layout/getDefaultLayout';
-import getEndpoint from '../utilities/infrastructure/getEndpoint';
-import Article from '../components/stateful/Article';
+import Header from '../components/Header';
+import SideNav from '../components/SideNav';
+import Profile from '../components/Profile';
+import HeadComponent from '../components/HeadComponent';
+import getDefaultLayout from '../utilities/getDefaultLayout';
+import getEndpoint from '../utilities/getEndpoint';
+import Article from '../components/Article';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useRouter } from 'next/router';
-import requireAuthentication from '../utilities/auth/requireAuthentication';
+import requireAuthentication from '../utilities/requireAuthentication';
 import jwt from 'jsonwebtoken';
-import getUserToken from '../utilities/auth/getUserToken';
-import ensureValidCookie from '../utilities/auth/ensureValidCookie';
+import getUserToken from '../utilities/getUserToken';
+import ensureValidCookie from '../utilities/ensureValidCookie';
 import setProfilePicture from '../utilities/image/setProfilePicture';
-import getMoreArticles from '../utilities/article/getMoreArticles';
+import getMoreArticles from '../utilities/getMoreArticles';
 import { useDispatch } from 'react-redux';
 import { logout } from '../redux/auth/authActions';
 
@@ -74,8 +74,8 @@ const MyProfile = ({
       setShouldRedirect((prev) => !prev);
     }
 
-    setHasMore(data.postsCount > articles.length);
-  }, [articles.length, shouldRedirect, data.postsCount, router]);
+    setHasMore(data.postsCount > articles?.length);
+  }, [articles?.length, shouldRedirect, data.postsCount, router]);
 
   const submitLogoutForm = async () => {
     const token = await ensureValidCookie(accessToken);
@@ -116,7 +116,7 @@ const MyProfile = ({
             accessToken={accessToken}
           >
             <InfiniteScroll
-              dataLength={articles.length || 0}
+              dataLength={articles?.length || 0}
               next={async () => await loadMoreArticles()}
               hasMore={hasMore}
               loader={<h4>Зареждане...</h4>}
@@ -124,7 +124,7 @@ const MyProfile = ({
                 <p className={'center'}>Това са всичките налични статии!</p>
               }
             >
-              {articles.length > 0
+              {articles?.length > 0
                 ? articles.map((article, index) => (
                     <Article
                       key={article._id}

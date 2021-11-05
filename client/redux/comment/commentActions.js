@@ -12,7 +12,7 @@ import {
   UPVOTE_COMMENT_SUCCESS,
   UPVOTE_COMMENT_FAILURE,
 } from './commentTypes';
-import Http from '../../utilities/service/http';
+import Http from '../../utilities/http';
 
 export const addCommentSuccess = (comment) => {
   return {

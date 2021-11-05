@@ -1,4 +1,4 @@
-import getEndpoint from '../../utilities/infrastructure/getEndpoint';
+import getEndpoint from '../../utilities/getEndpoint';
 
 const initialState = {
   endpoint: getEndpoint(),

@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
-import FormInput from '../components/form/FormInput';
-import Button from '../components/common/Button';
-import FormTitle from '../components/form/FormTitle';
-import FormContainer from '../components/form/FormContainer';
-import Form from '../components/form/Form';
-import HeadComponent from '../components/common/HeadComponent';
-import getDefaultLayout from '../utilities/layout/getDefaultLayout';
+import FormInput from '../components/FormInput';
+import Button from '../components/Button';
+import FormTitle from '../components/FormTitle';
+import FormContainer from '../components/FormContainer';
+import Form from '../components/Form';
+import HeadComponent from '../components/HeadComponent';
+import getDefaultLayout from '../utilities/getDefaultLayout';
 import {
   INVALID_EMAIL_ERROR,
   NO_USER_FOUND_ERROR,
-} from '../utilities/infrastructure/messages';
-import Header from '../components/stateful/Header';
-import Modal from '../components/common/Modal';
-import Http from '../utilities/service/http';
+} from '../utilities/messages';
+import Header from '../components/Header';
+import Modal from '../components/Modal';
+import Http from '../utilities/http';
 
 const Forgotten = () => {
   const [email, setEmail] = useState('');
