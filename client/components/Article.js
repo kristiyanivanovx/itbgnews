@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from '../styles/Article.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
@@ -14,37 +14,41 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import Modal from './Modal';
 import { useRouter } from 'next/router';
-import {
-  UNAUTHORIZED_RESPONSE_CODE,
-  REMOVED_RESPONSE_CODE,
-  CREATED_RESPONSE_CODE,
-  DELETED_RESPONSE_CODE,
-  EDITED_RESPONSE_CODE,
-  getEndpoint,
-} from '../utilities/common';
+import { pluralizeComments } from '../utilities/pluralize';
 import ensureValidCookie from '../utilities/ensureValidCookie';
 import Input from './Input';
+import {
+  deleteArticle,
+  deleteComment,
+  editArticle,
+  upvoteArticle,
+} from '../redux';
+import { useDispatch, useSelector } from 'react-redux';
+import store from '../redux/store';
 
 const Article = ({
   postId,
   isFirstArticle,
   title,
   upvotes,
+  currentUserHasLiked,
   username,
   date,
   comments,
   link,
-  userId,
-  authorId,
   shouldDisplayReplyIcon,
   shouldDisplayEditOptions,
   accessToken,
   changeReplyingTo,
+  redirectUrl,
+  // userId,
+  // authorId,
 }) => {
-  const ENDPOINT = getEndpoint();
+  const [shouldRotate, setShouldRotate] = useState(currentUserHasLiked);
+  const router = useRouter();
+  const dispatch = useDispatch();
   const [shouldDisplayEditInputs, setShouldDisplayEditInputs] = useState(false);
   const [shouldDisplayModal, setShouldDisplayModal] = useState(false);
-  const [shouldRotate, setShouldRotate] = useState(false);
   const [hasDeleteOption, setHasDeleteOption] = useState(false);
   const [shouldRedirectLogin, setShouldRedirectLogin] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
@@ -54,7 +58,6 @@ const Article = ({
   const [originalText, setOriginalText] = useState(title);
   const [originalUrl, setOriginalUrl] = useState(link);
   const [isDeleted, setIsDeleted] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     if (shouldRedirectLogin) {
@@ -62,6 +65,12 @@ const Article = ({
       setShouldRedirectLogin((prev) => !prev);
     }
   }, [shouldRedirectLogin, router]);
+
+  const toggleEditInputs = () => {
+    setShouldDisplayEditInputs(
+      (shouldDisplayEditInputs) => !shouldDisplayEditInputs,
+    );
+  };
 
   const toggleModalDelete = (message) => {
     setHasDeleteOption(() => true);
@@ -71,101 +80,50 @@ const Article = ({
 
   // delete
   const confirmDelete = async () => {
-    if (!accessToken) {
-      setShouldRedirectLogin(() => true);
-      return;
-    }
+    let token = await ensureValidCookie(accessToken);
 
-    const response = await fetch(ENDPOINT + '/posts/delete/' + postId, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
-      },
-    });
-
-    // todo: check for errors аnd set them
-    // setErrors(() => result);
-    checkResponseDelete(response);
-  };
-
-  const checkResponseDelete = (response) => {
-    if (response.status === DELETED_RESPONSE_CODE) {
+    dispatch(deleteArticle(postId, token)).then(() => {
       setHasDeleteOption((hasDeleteOption) => !hasDeleteOption);
       setModalMessage(() => 'Новината беше успешно изтрита.');
+
       setTimeout(() => {
         setIsDeleted(() => true);
       }, 1000);
-    }
+
+      setTimeout(() => router.push(redirectUrl || '/'));
+    });
   };
 
   // edit
-  const toggleEditInputs = () => {
-    setShouldDisplayEditInputs(
-      (shouldDisplayEditInputs) => !shouldDisplayEditInputs,
-    );
-  };
-
   const confirmEdit = async () => {
-    if (!accessToken) {
-      setShouldRedirectLogin(() => true);
-      return;
-    }
+    const token = await ensureValidCookie(accessToken);
 
-    const response = await fetch(ENDPOINT + '/posts/update/' + postId, {
-      method: 'PATCH',
-      body: JSON.stringify({ text: formText, url: formUrl }),
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
-      },
+    dispatch(editArticle(postId, formText, formUrl, token)).then(() => {
+      const article = store.getState().article.article;
+
+      setOriginalText(() => article.text);
+      setOriginalUrl(() => article.url);
+      setFormText(() => article.text);
+      setFormUrl(() => article.url);
     });
-
-    // todo: check for errors аnd set them
-    // setErrors(() => result);
-    await checkResponseEdit(response);
-  };
-
-  const checkResponseEdit = async (response) => {
-    if (response.status === EDITED_RESPONSE_CODE) {
-      const data = await response.json();
-
-      setOriginalText(() => data.text);
-      setOriginalUrl(() => data.url);
-      setFormText(() => data.text);
-      setFormUrl(() => data.url);
-    }
   };
 
   // vote
   const upvote = async () => {
     if (!accessToken) {
-      setShouldRedirectLogin(() => true);
+      setShouldRedirectLogin(true);
       return;
     }
 
-    const response = await fetch(ENDPOINT + '/posts/upvote/' + postId, {
-      method: 'PATCH',
-      headers: {
-        Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
-      },
-    });
+    const token = await ensureValidCookie(accessToken);
 
-    setShouldRotate(() => !shouldRotate);
-    await checkResponseVote(response);
-  };
+    dispatch(upvoteArticle(postId, token)).then(() => {
+      const count = store.getState().article.count;
+      const verb = store.getState().article.verb;
 
-  const checkResponseVote = async (response) => {
-    const data = await response.json();
-    const { count } = data;
-
-    if (
-      response.status === CREATED_RESPONSE_CODE ||
-      response.status === REMOVED_RESPONSE_CODE
-    ) {
       setUpvotesCount(() => count);
-    } else if (response.status === UNAUTHORIZED_RESPONSE_CODE) {
-      setShouldRedirectLogin(() => true);
-    }
+      setShouldRotate(() => verb.toLowerCase() === 'added'.toLowerCase());
+    });
   };
 
   const articleClasses = isFirstArticle
@@ -177,6 +135,7 @@ const Article = ({
       className={articleClasses}
       style={{ display: isDeleted ? 'none' : 'flex' }}
     >
+      {' '}
       <div
         className={
           shouldDisplayEditInputs
@@ -263,13 +222,13 @@ const Article = ({
               className={`${styles.article__votes__icon} ${
                 shouldRotate ? styles.rotated : ''
               }`}
+              // className={styles.article__votes__icon}
               icon={faChevronUp}
             />
             {upvotesCount} гласа
           </div>
         </div>
       </div>
-
       <div
         className={`${styles.article__information} ${styles.article__small__text}`}
       >
@@ -296,7 +255,9 @@ const Article = ({
             className={styles.article__information__icon}
           />
           <Link href={{ pathname: '/view', query: { name: formText, postId } }}>
-            <a>{comments} коментара</a>
+            <a>
+              {comments}&nbsp;{pluralizeComments(comments)}
+            </a>
           </Link>
         </div>
       </div>

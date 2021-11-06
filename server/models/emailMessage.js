@@ -13,10 +13,12 @@ const HOST = isProduction
   ? process.env.REMOTE_FRONTEND_HOST
   : process.env.LOCAL_FRONTEND_HOST;
 
+const SENDER_EMAIL = process.env.SENDER_EMAIL;
+
 function createMessage(email, code) {
   return {
     to: email,
-    from: 'itbgnews@gmail.com',
+    from: SENDER_EMAIL,
     subject: 'Имейл за възстановяване на паролата в IT-BG News',
     html: getHTML(HOST, code, email),
   };
@@ -25,7 +27,7 @@ function createMessage(email, code) {
 function verifyMessage(email, code) {
   return {
     to: email,
-    from: 'itbgnews@gmail.com',
+    from: SENDER_EMAIL,
     subject: 'Verify account',
     html: `<a href="${HOST}/reset-pass?token=${code}">Click here to verify your account at IT-BG News.</a>`,
   };

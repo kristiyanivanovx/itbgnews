@@ -3,58 +3,55 @@ import styles from '../styles/Comment.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faChevronUp,
-  faClock,
   faComment,
   faEdit,
   faReply,
   faSave,
   faTrashAlt,
-  faUser,
+  // faClock,
+  // faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import countChildren from '../utilities/countChildren';
-import {
-  CREATED_RESPONSE_CODE,
-  DELETED_RESPONSE_CODE,
-  EDITED_RESPONSE_CODE,
-  REMOVED_RESPONSE_CODE,
-  UNAUTHORIZED_RESPONSE_CODE,
-} from '../utilities/common';
+import { pluralizeReplies } from '../utilities/pluralize';
 import ensureValidCookie from '../utilities/ensureValidCookie';
 import Input from './Input';
 import Modal from './Modal';
 import { useRouter } from 'next/router';
+import { upvoteComment, deleteComment, editComment } from '../redux';
+import { useDispatch } from 'react-redux';
+import store from '../redux/store';
 
 const Comment = ({
   commentId,
   title,
-  username,
   date,
-  comments,
+  currentUserHasLiked,
   upvotes,
-  shouldDisplayModifyButtons,
+  username,
+  comments,
+  childrenComments,
   changeReplyingTo,
   shouldDisplayReplyIcon,
-  childrenComments,
   postId,
   replyingTo,
   accessToken,
-  ENDPOINT,
   userId,
   shouldDisplayEditOption,
 }) => {
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const [shouldRotate, setShouldRotate] = useState(currentUserHasLiked);
   const [formText, setFormText] = useState(title);
+  const [originalText, setOriginalText] = useState(title);
   const [shouldDisplayEditInputs, setShouldDisplayEditInputs] = useState(false);
   const [upvotesCount, setUpvotesCount] = useState(upvotes);
-  const [shouldShowInput, setShouldShowInput] = useState(false);
   const [shouldRedirectLogin, setShouldRedirectLogin] = useState(false);
-  const [iconsDisplay, setIconsDisplay] = useState(false);
-  const [originalText, setOriginalText] = useState(title);
   const [shouldDisplayModal, setShouldDisplayModal] = useState(false);
-  const [shouldRotate, setShouldRotate] = useState(false);
   const [hasDeleteOption, setHasDeleteOption] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
-  const [isDeleted, setIsDeleted] = useState(false);
-  const router = useRouter();
+  // const [shouldShowInput, setShouldShowInput] = useState(false);
+  // const [iconsDisplay, setIconsDisplay] = useState(false);
+  // const state = useSelector((state) => state);
 
   useEffect(() => {
     if (shouldRedirectLogin) {
@@ -62,69 +59,10 @@ const Comment = ({
     }
   }, [shouldRedirectLogin, router]);
 
-  // edit
-  const confirmEdit = async () => {
-    if (!accessToken) {
-      setShouldRedirectLogin(() => true);
-      return;
-    }
-
-    const response = await fetch(
-      ENDPOINT + '/comments/update/' + commentId, // replyingTo.id
-      {
-        method: 'PATCH',
-        body: JSON.stringify({ text: formText }),
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
-        },
-      },
-    );
-
-    // todo: check for errors аnd set them
-    // setErrors(() => result);
-    await checkResponseEdit(response);
-  };
-
-  const checkResponseEdit = async (response) => {
-    if (response.status === EDITED_RESPONSE_CODE) {
-      const data = await response.json();
-
-      setOriginalText(() => data.text);
-      setFormText(() => data.text);
-    }
-  };
-
-  // voting
-  const upvote = async () => {
-    if (!accessToken) {
-      setShouldRedirectLogin(() => true);
-      return;
-    }
-
-    const response = await fetch(ENDPOINT + '/comments/upvote/' + commentId, {
-      method: 'PATCH',
-      headers: {
-        Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
-      },
-    });
-
-    setShouldRotate((shouldRotate) => !shouldRotate);
-    await checkResponseVote(response);
-  };
-
-  const checkResponseVote = async (response) => {
-    const data = await response.json();
-    const { count } = data;
-
-    if (
-      response.status === CREATED_RESPONSE_CODE ||
-      response.status === REMOVED_RESPONSE_CODE
-    ) {
-      setUpvotesCount(() => count);
-    } else if (response.status === UNAUTHORIZED_RESPONSE_CODE) {
-      setShouldRedirectLogin(() => true);
-    }
+  const toggleModalDelete = (message) => {
+    setHasDeleteOption(() => true);
+    setModalMessage(() => message);
+    setShouldDisplayModal((shouldDisplay) => !shouldDisplay);
   };
 
   const toggleEditInputs = () => {
@@ -133,49 +71,60 @@ const Comment = ({
     );
   };
 
-  // delete
-  const confirmDelete = async () => {
+  // edit
+  const confirmEdit = async () => {
+    toggleEditInputs();
+
+    const token = await ensureValidCookie(accessToken);
+
+    dispatch(editComment(commentId, formText, token)).then(() => {
+      const comment = store.getState().comment.comment;
+
+      setOriginalText(() => comment.text);
+      setFormText(() => comment.text);
+      // setErrors(() => result);
+    });
+  };
+
+  // voting
+  const confirmUpvote = async () => {
     if (!accessToken) {
-      setShouldRedirectLogin(() => true);
+      setShouldRedirectLogin(true);
       return;
     }
 
-    const response = await fetch(
-      ENDPOINT + '/comments/delete/' + postId + '/' + commentId,
-      {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
-        },
-      },
-    );
+    const token = await ensureValidCookie(accessToken);
 
-    // todo: check for errors аnd set them
-    // setErrors(() => result);
-    checkResponseDelete(response);
+    dispatch(upvoteComment(commentId, token)).then(() => {
+      const count = store.getState().comment.count;
+
+      setUpvotesCount(() => count);
+      setShouldRotate((shouldRotate) => !shouldRotate);
+    });
   };
 
-  const checkResponseDelete = (response) => {
-    if (response.status === DELETED_RESPONSE_CODE) {
+  // delete
+  const confirmDelete = async () => {
+    const token = await ensureValidCookie(accessToken);
+
+    dispatch(deleteComment(commentId, postId, token)).then(() => {
       setHasDeleteOption((hasDeleteOption) => !hasDeleteOption);
       setModalMessage(() => 'Коментарът беше успешно изтрит.');
-      setTimeout(() => {
-        setIsDeleted(() => true);
-      }, 1000);
-    }
-  };
 
-  const toggleModalDelete = (message) => {
-    setHasDeleteOption(() => true);
-    setModalMessage(() => message);
-    setShouldDisplayModal((shouldDisplay) => !shouldDisplay);
+      setOriginalText(() => null);
+      setFormText(() => null);
+
+      setTimeout(() => {
+        setShouldDisplayModal((prev) => !prev);
+      }, 1000);
+      setTimeout(() => {
+        router.replace(router.asPath);
+      }, 1050);
+    });
   };
 
   return (
-    <div
-      className={styles.comment}
-      style={{ display: originalText ? 'flex' : 'none' }}
-    >
+    <div className={styles.comment}>
       <Modal
         text={modalMessage}
         shouldDisplay={shouldDisplayModal}
@@ -211,7 +160,9 @@ const Comment = ({
               </div>
             </>
           ) : (
-            <p className={styles.comment__title}>{originalText}</p>
+            <p className={styles.comment__title}>
+              {originalText || '[deleted]'}
+            </p>
           )}
           <div className={styles.comment__votes__icon}>
             <div
@@ -219,12 +170,14 @@ const Comment = ({
             >
               {shouldDisplayEditOption ? (
                 <>
-                  <div
-                    className={styles.comment__modify}
-                    onClick={toggleEditInputs}
-                  >
-                    <FontAwesomeIcon icon={faSave} onClick={confirmEdit} />
-                  </div>
+                  {shouldDisplayEditInputs ? (
+                    <div className={styles.comment__modify}>
+                      <FontAwesomeIcon
+                        icon={faSave}
+                        onClick={async () => await confirmEdit()}
+                      />
+                    </div>
+                  ) : null}
                   <div
                     className={styles.comment__modify}
                     onClick={toggleEditInputs}
@@ -251,10 +204,14 @@ const Comment = ({
                   <FontAwesomeIcon icon={faReply} />
                 </div>
               ) : null}
-              <div className={styles.comment__modify} onClick={upvote}>
+              <div
+                className={styles.comment__modify}
+                onClick={async () => await confirmUpvote()}
+              >
                 <FontAwesomeIcon
+                  // className={styles.comment__votes__icon}
                   className={`${styles.comment__votes__icon} ${
-                    shouldRotate ? styles.rotated : ''
+                      shouldRotate ? styles.rotated : ''
                   }`}
                   icon={faChevronUp}
                 />
@@ -265,13 +222,13 @@ const Comment = ({
                   className={styles.comment__information__icon}
                 />
               </div>
-              <span>2&nbsp;отговора</span>
-
-              {/*<span>{comments} отговора</span>*/}
+              <span>
+                {comments}&nbsp;{pluralizeReplies(comments)}
+              </span>
             </div>
           </div>
         </div>
-        {/* nested comments */}
+        {/* nested comment */}
         {childrenComments?.map((comment) => {
           const childrenCount = countChildren(comment);
           const shouldDisplayEditOption =
@@ -284,6 +241,7 @@ const Comment = ({
               commentId={comment._id}
               title={comment.text}
               date={comment.creationDate}
+              currentUserHasLiked={comment.upvoters.filter(upvoter => upvoter.userId === userId).length > 0}
               upvotes={comment.upvoters.length}
               username={comment.authorName}
               comments={childrenCount}
@@ -293,8 +251,6 @@ const Comment = ({
               postId={postId}
               replyingTo={replyingTo}
               accessToken={accessToken}
-              ENDPOINT={ENDPOINT}
-              // todo: check if current user === comment creator
               userId={userId}
               shouldDisplayEditOption={shouldDisplayEditOption}
             />

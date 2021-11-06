@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken';
 import isTokenExpired from './isTokenExpired';
-import renewToken from './refreshToken';
+import renewToken from './renewToken';
 import renewCookie from './renewCookie';
-import { getEndpoint } from './common';
+import getEndpoint from './getEndpoint';
 
 const ensureValidCookie = async (accessToken) => {
   const ENDPOINT = getEndpoint();

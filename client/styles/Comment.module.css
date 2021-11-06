@@ -35,6 +35,7 @@
 .comment__icons svg:hover {
   color: var(--clr-main);
 }
+
 .comment__wrapper {
   width: 97%;
 }

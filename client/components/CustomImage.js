@@ -2,21 +2,26 @@ import React from 'react';
 import { useState } from 'react';
 import { useRef } from 'react';
 import ensureValidCookie from '../utilities/ensureValidCookie';
-import { getEndpoint } from '../utilities/common';
 import Image from 'next/image';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUpload } from '@fortawesome/free-solid-svg-icons';
+import { useSelector } from 'react-redux';
+import Modal from './Modal';
 
 const CustomImage = ({ image, accessToken }) => {
   const inputFile = useRef(null);
   const [currentImage, setCurrentImage] = useState(image);
   const [showButton, setShowButton] = useState(false);
-  const ENDPOINT = getEndpoint();
+  const ENDPOINT = useSelector((state) => state.infrastructure.endpoint);
+  const [errorText , setErrorText] = useState("")
+  const [shouldDisplay , setShouldDisplay] = useState(false)
 
   const onButtonClick = () => {
     inputFile.current.click();
     setShowButton(() => true);
   };
 
-  async function onSubmit(ev) {
+  const onSubmit = async (ev) => {
     ev.preventDefault();
     const files = inputFile.current.files;
     if (files.length === 0) {
@@ -29,6 +34,7 @@ const CustomImage = ({ image, accessToken }) => {
     setShowButton(() => false);
     delete inputFile.current.files;
 
+    // todo: use http service
     const response = await fetch(ENDPOINT + `/my-profile/image`, {
       method: 'POST',
       body: data,
@@ -36,35 +42,42 @@ const CustomImage = ({ image, accessToken }) => {
         authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
       },
     });
-
+    if (response.status === 405){
+      let {message} = await response.json();
+      setErrorText(() => message)
+      setShouldDisplay(true)
+    }
     if (response.status === 200) {
       const { img } = await response.json();
-      console.log(img);
       setCurrentImage(() => img);
     }
-  }
+  };
 
   return (
     <div>
+      <Modal
+        text={errorText}
+        shouldDisplay={shouldDisplay}
+        toggleModal={(shouldDisplay) => setShouldDisplay(!shouldDisplay)}
+      />
       <form method="POST" onSubmit={onSubmit}>
-        <img
+        <Image
           src={currentImage}
           onClick={onButtonClick}
           alt="There is no image"
-          style={{ width: '100%' }}
+          width={150}
+          height={150}
           name="image"
         />
 
-        {/*<Image*/}
-        {/*  src={currentImage}*/}
-        {/*  onClick={onButtonClick}*/}
-        {/*  alt="There is no image"*/}
-        {/*  style={{ width: '100%' }}*/}
-        {/*  name="image"*/}
-        {/*/>*/}
-
-        <input type="file" ref={inputFile} style={{ display: 'none' }} />
-        {showButton ? <button>Upload</button> : null}
+        <div>
+          <input type="file" ref={inputFile} style={{ display: 'none' }} />
+          {showButton ? (
+            <button>
+              <FontAwesomeIcon icon={faUpload} /> <span>Качи</span>
+            </button>
+          ) : null}
+        </div>
       </form>
     </div>
   );

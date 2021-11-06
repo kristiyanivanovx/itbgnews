@@ -29,6 +29,9 @@ const postSchema = new mongoose.Schema({
   creationDate: {
     type: Date,
   },
+  commentsCount: {
+    type: Number,
+  },
 });
 
 module.exports = mongoose.model('Post', postSchema);

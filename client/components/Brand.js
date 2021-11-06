@@ -11,24 +11,21 @@ const Brand = () => {
   const [shouldDisplay, setShouldDisplay] = useState(false);
   let icon = shouldDisplay ? faTimes : faBars;
 
-  console.log(logo);
   return (
-    <>
-      <div className={styles.site__header}>
-        <header className={styles.header__main}>
-          <div className={styles.brand}>
-            <div className={styles.brand__logo}>
-              <Image src={logo} alt={'logo'} />
-            </div>
-            <div className={styles.brand__title}>
-              <Link href={'/'}>
-                <a>IT-BG News</a>
-              </Link>
-            </div>
+    <div className={styles.site__header}>
+      <header className={styles.header__main}>
+        <div className={styles.brand}>
+          <div className={styles.brand__logo}>
+            <Image src={logo} alt={'logo'} />
           </div>
-        </header>
-      </div>
-    </>
+          <div className={styles.brand__title}>
+            <Link href={'/'}>
+              <a>IT-BG News</a>
+            </Link>
+          </div>
+        </div>
+      </header>
+    </div>
   );
 };
 

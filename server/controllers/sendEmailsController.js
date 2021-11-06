@@ -84,7 +84,8 @@ async function forgottenPassword(req, res) {
       console.log(err);
     })
     .then(() => {
-      console.log(`${req.body.email} has been added successfully`);
+      // console.log(`${req.body.email} has been added successfully`);
+      console.log(`Email has been added successfully`);
     })
     .catch((error) => {
       console.error(error);
@@ -98,6 +99,8 @@ async function forgottenPassword(req, res) {
     .then((response) => {
       const statusCode = response[0].statusCode;
       // const headers = response[0].headers;
+      // console.log('statusCode: ' + statusCode);
+      // console.log(response);
 
       res.status(statusCode).json({ data: statusCode });
     })

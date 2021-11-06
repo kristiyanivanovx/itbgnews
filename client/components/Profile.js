@@ -3,7 +3,7 @@ import styles from '../styles/Profile.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import { faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import CustomImage from '../components/CustomImage';
+import CustomImage from './CustomImage';
 
 const Profile = ({
   image,
@@ -18,12 +18,10 @@ const Profile = ({
   accessToken,
 }) => {
   const [shouldBlurEmail, setShouldBlurEmail] = useState(true);
+
   const toggleDisplayEmail = () => {
     setShouldBlurEmail((shouldBlurEmail) => !shouldBlurEmail);
   };
-
-  console.log('cloud image');
-  console.log(image);
 
   return (
     <main className={styles.profile}>

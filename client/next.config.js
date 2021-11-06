@@ -1,12 +1,14 @@
 module.exports = {
   reactStrictMode: true,
   images: {
-    domains: ['avatars.dicebear.com', 'dicebear.com'],
+    domains: [
+      'avatars.dicebear.com',
+      'dicebear.com',
+      'res.cloudinary.com',
+      'cloudinary.com',
+    ],
   },
   publicRuntimeConfig: {
-    // Will be available on both server and client
-    // staticFolder: '/static',
-
     LOCAL_FRONTEND_HOST: 'http://localhost:3000',
     LOCAL_BACKEND_HOST: 'http://localhost:5000',
 

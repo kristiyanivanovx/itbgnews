@@ -4,39 +4,37 @@ import styles from '../styles/Header.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import MobileNav from './MobileNav';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { getEndpoint } from '../utilities/common';
 import { useRouter } from 'next/router';
+import { useSelector } from 'react-redux';
+import Http from '../utilities/http';
 
 const Header = ({ shouldHideSearchBar }) => {
-  const ENDPOINT = getEndpoint();
+  const ENDPOINT = useSelector((state) => state.infrastructure.endpoint);
   const [shouldDisplay, setShouldDisplay] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
   const router = useRouter();
+  const http = useMemo(() => new Http(), []);
+
   let icon = shouldDisplay ? faTimes : faBars;
 
   const toggleNavigation = () => {
     setShouldDisplay((shouldDisplay) => !shouldDisplay);
   };
 
-  const handleChange = (newTerm) => {
-    setSearchTerm(() => newTerm);
-    // todo: set search term to be query parameter
-  };
-
   useEffect(() => {
     if (searchTerm) {
-      fetch(ENDPOINT + '/posts/search?searchTerm=' + searchTerm)
-        .then((data) => data.json())
+      http
+        .get('/posts/search?searchTerm=' + searchTerm, false, true, null)
         .then((data) => {
           setResults(() => data.posts);
         });
     } else {
       setResults(() => []);
     }
-  }, [ENDPOINT, router, searchTerm]);
+  }, [ENDPOINT, http, router, searchTerm]);
 
   return (
     <>
@@ -78,26 +76,21 @@ const Header = ({ shouldHideSearchBar }) => {
             </div>
           )}
         </header>
-        <>
-          <div className={styles.predictions}>
-            {results?.map((post) => (
-              <>
-                <div className={styles.prediction}>
-                  <Link
-                    key={post._id}
-                    href={{
-                      pathname: '/view',
-                      query: { name: post.text, postId: post._id },
-                    }}
-                  >
-                    <a>{post.text}</a>
-                  </Link>
-                </div>
-                {/*<br />*/}
-              </>
-            ))}
-          </div>
-        </>
+        <div className={styles.predictions}>
+          {results?.map((post, index) => (
+            <div className={styles.prediction} key={index}>
+              <Link
+                key={post._id}
+                href={{
+                  pathname: '/view',
+                  query: { name: post.text, postId: post._id },
+                }}
+              >
+                <a>{post.text}</a>
+              </Link>
+            </div>
+          ))}
+        </div>
       </div>
     </>
   );

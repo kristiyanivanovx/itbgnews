@@ -5,36 +5,32 @@ import FormTitle from '../components/FormTitle';
 import FormContainer from '../components/FormContainer';
 import Form from '../components/Form';
 import HeadComponent from '../components/HeadComponent';
-import getDefaultLayout from '../helpers/getDefaultLayout';
+import getDefaultLayout from '../utilities/getDefaultLayout';
 import {
-  getEndpoint,
   INVALID_EMAIL_ERROR,
   NO_USER_FOUND_ERROR,
-} from '../utilities/common';
+} from '../utilities/messages';
 import Header from '../components/Header';
 import Modal from '../components/Modal';
+import Http from '../utilities/http';
 
 const Forgotten = () => {
-  const ENDPOINT = getEndpoint();
   const [email, setEmail] = useState('');
   const [error, setError] = useState(null);
   const [modalMessage, setModalMessage] = useState('');
   const [shouldDisplay, setShouldDisplay] = useState(false);
+  const http = new Http();
 
   const toggleModal = () => {
     setShouldDisplay((shouldDisplay) => !shouldDisplay);
   };
 
+  // todo: use redux
   const submitForm = async () => {
-    const response = await fetch(ENDPOINT + '/forgotten', {
-      method: 'POST',
-      body: JSON.stringify({ email }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    const result = await http.post('/forgotten', true, false, true, null, {
+      email,
     });
 
-    const result = await response.json();
     await checkResponse(result);
   };
 
