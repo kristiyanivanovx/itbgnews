@@ -1,12 +1,11 @@
 const router = require('express').Router();
 const multer = require('multer');
-const allowedExtensions = ["gif" ,  "jpg" , "png" , "jpeg"]
+const allowedExtensions = ["image/gif" ,  "image/jpg" , "image/png" , "image/jpeg"]
 const upload = multer({
   dest: 'uploads/' ,
   fileFilter : function (req, file, cb) {
-    let currentExtension = file.originalname.split(".")[1]
-    if (!allowedExtensions.includes(currentExtension)) {
-      req.errorMessage = `${currentExtension} is not allowed extension`
+    if (!allowedExtensions.includes(file.mimetype)) {
+      req.errorMessage = `${file.mimetype.split("/")[1]} is not allowed mimetype`
       return cb(null , false)
     }
     cb(null, true);
