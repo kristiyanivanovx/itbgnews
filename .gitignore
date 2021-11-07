@@ -8,3 +8,5 @@ server/.env
 .directory
 data.txt
 dump.rdb
+/dump.rdb/
+./dump.rdb
