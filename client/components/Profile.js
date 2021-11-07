@@ -27,6 +27,7 @@ const Profile = ({
     <main className={styles.profile}>
       <div className={styles.top__info}>
         <h2 className={styles.profile__title}>Моят Профил</h2>
+        <div>
         <button
           className={styles.exit__btn}
           onClick={(e) => triggerConfirmation(e)}
@@ -34,6 +35,7 @@ const Profile = ({
           <div className={styles.exit__btn__shadow}></div>
           <span className={styles.exit__btn__text}>Изход</span>
         </button>
+        </div>
       </div>
 
       <div className={styles.profile__information}>

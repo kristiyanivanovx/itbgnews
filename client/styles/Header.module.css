@@ -56,9 +56,8 @@
 
 .predictions {
     float: right;
-    width: 70%;
+    width: 65%;
     background: var(--clr-main);
-    /*border-radius: 22px;*/
     border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
 }

@@ -24,6 +24,10 @@ const Header = ({ shouldHideSearchBar }) => {
     setShouldDisplay((shouldDisplay) => !shouldDisplay);
   };
 
+  const handleChange = (searchTerm) => {
+    setSearchTerm(searchTerm);
+  }
+
   useEffect(() => {
     if (searchTerm) {
       http
