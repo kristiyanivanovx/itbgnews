@@ -35,7 +35,7 @@
 
 .user__input__error__text {
     max-width: 400px;
-    /*color: var(--clr-red);*/
+    color: var(--clr-red);
 }
 
 .user__input::placeholder {

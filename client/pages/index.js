@@ -1,16 +1,15 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Article from '../components/Article';
 import SideNav from '../components/SideNav';
 import Header from '../components/Header';
 import HeadComponent from '../components/HeadComponent';
-import getDefaultLayout from '../helpers/getDefaultLayout';
-import { getEndpoint } from '../utilities/common';
+import getDefaultLayout from '../utilities/getDefaultLayout';
+import getEndpoint from '../utilities/getEndpoint';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import INDEX_PATH from '../next.config';
 import getUserToken from '../utilities/getUserToken';
 import jwt from 'jsonwebtoken';
-import { useRouter } from 'next/router';
 import styles from '../styles/Articles.module.css';
+import getMoreArticles from '../utilities/getMoreArticles';
 
 export async function getServerSideProps(context) {
   const ENDPOINT = getEndpoint();
@@ -36,31 +35,21 @@ export async function getServerSideProps(context) {
 }
 
 const Home = ({ data, accessToken, ENDPOINT }) => {
-  const router = useRouter();
   const [articles, setArticles] = useState(data.posts);
   const [hasMore, setHasMore] = useState(true);
-  const [userId, setUserId] = useState(
-    jwt.decode(accessToken ?? null)?.sub ?? null,
-  );
-
-  // function useRouterRefresh() {
-  //   const { asPath } = useRouter();
-  //
-  //   console.log(' useRouterRefresh');
-  //   return useCallback(() => router.replace(asPath), [asPath]);
-  // }
+  const userId = accessToken ? jwt.decode(accessToken).sub : null;
 
   useEffect(() => {
     setHasMore(data.postsCount > articles.length);
   }, [articles, data.postsCount]);
 
-  const getMoreArticles = async () => {
-    const response = await fetch(
-      ENDPOINT + `/posts?skip=${articles.length}&limit=10`,
+  const loadMoreArticles = async () => {
+    return await getMoreArticles(
+      setArticles,
+      articles,
+      ENDPOINT,
+      `/posts?skip=${articles.length}&limit=10`,
     );
-
-    const { posts } = await response.json();
-    setArticles((articles) => [...articles, ...posts]);
   };
 
   return (
@@ -74,8 +63,8 @@ const Home = ({ data, accessToken, ENDPOINT }) => {
           <SideNav />
           <main className={styles.articles}>
             <InfiniteScroll
-              dataLength={articles.length ?? 0}
-              next={getMoreArticles}
+              dataLength={articles.length || 0}
+              next={async () => await loadMoreArticles()}
               hasMore={hasMore}
               loader={<h4>Зареждане...</h4>}
               endMessage={
@@ -83,26 +72,27 @@ const Home = ({ data, accessToken, ENDPOINT }) => {
               }
             >
               {articles.length > 0
-                ? articles.map((article, index) => (
-                    <Article
-                      key={article._id}
-                      postId={article._id}
-                      isFirstArticle={index === 0}
-                      title={article.text}
-                      upvotes={article.upvoters.length}
-                      username={article.authorName}
-                      date={article.creationDate}
-                      // todo: show real comments count
-                      comments={index}
-                      link={article.url}
-                      redirectUrl={INDEX_PATH}
-                      authorId={article.authorId}
-                      userId={userId}
-                      // refreshData={refreshData}
-                      shouldDisplayEditOptions={userId === article.authorId}
-                      accessToken={accessToken}
-                    />
-                  ))
+                ? articles.map((article, index) => {
+                    return (
+                      <Article
+                        key={article._id}
+                        postId={article._id}
+                        isFirstArticle={index === 0}
+                        title={article.text}
+                        currentUserHasLiked={article.upvoters.filter(upvoter => upvoter.userId === userId).length > 0}
+                        upvotes={article.upvoters.length}
+                        username={article.authorName}
+                        date={article.creationDate}
+                        link={article.url}
+                        comments={article.commentsCount}
+                        shouldDisplayEditOptions={userId === article.authorId}
+                        accessToken={accessToken}
+                        // authorId={article.authorId}
+                        // userId={userId}
+                        // redirectUrl={INDEX_PATH}
+                      />
+                    );
+                  })
                 : null}
             </InfiniteScroll>
           </main>

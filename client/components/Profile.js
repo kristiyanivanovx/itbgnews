@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import Image from 'next/image';
 import styles from '../styles/Profile.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import { faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import CustomImage from './CustomImage';
 
 const Profile = ({
   image,
@@ -15,6 +15,7 @@ const Profile = ({
   articlesCount,
   triggerConfirmation,
   children,
+  accessToken,
 }) => {
   const [shouldBlurEmail, setShouldBlurEmail] = useState(true);
 
@@ -30,20 +31,18 @@ const Profile = ({
           className={styles.exit__btn}
           onClick={(e) => triggerConfirmation(e)}
         >
-          <div className={styles.exit__btn__shadow}> </div>
+          <div className={styles.exit__btn__shadow}></div>
           <span className={styles.exit__btn__text}>Изход</span>
         </button>
       </div>
 
       <div className={styles.profile__information}>
         <div className={styles.user__profile__pic}>
-          <Image
-            className={styles.profile__pic}
-            // src={profile}
-            // src={img}
+          <CustomImage
             width={100}
             height={100}
-            src={image}
+            image={image}
+            accessToken={accessToken}
             alt={'profile picture'}
           />
         </div>

@@ -1,20 +1,22 @@
 import Header from '../components/Header';
 import React, { useState } from 'react';
-import Input from '../components/Input';
+import FormInput from '../components/FormInput';
 import Button from '../components/Button';
 import FormTitle from '../components/FormTitle';
 import Form from '../components/Form';
 import HeadComponent from '../components/HeadComponent';
-import getDefaultLayout from '../helpers/getDefaultLayout';
+import getDefaultLayout from '../utilities/getDefaultLayout';
 import FormContainer from '../components/FormContainer';
 import SideNav from '../components/SideNav';
-import { CREATED_RESPONSE_CODE, getEndpoint } from '../utilities/common';
 import { useRouter } from 'next/router';
 import Modal from '../components/Modal';
 import jwt from 'jsonwebtoken';
-import requireAuthentication from '../helpers/requireAuthentication';
+import requireAuthentication from '../utilities/requireAuthentication';
 import getUserToken from '../utilities/getUserToken';
 import ensureValidCookie from '../utilities/ensureValidCookie';
+import { createArticle } from '../redux';
+import { useDispatch } from 'react-redux';
+import store from '../redux/store';
 
 export const getServerSideProps = requireAuthentication((context) => {
   let accessToken = getUserToken(context.req?.headers.cookie).split('=')[1];
@@ -27,13 +29,13 @@ export const getServerSideProps = requireAuthentication((context) => {
 });
 
 const Create = ({ accessToken }) => {
-  const [errors, setErrors] = useState({});
   const router = useRouter();
-  const ENDPOINT = getEndpoint();
+  const commentDispatch = useDispatch();
   const [shouldDisplay, setShouldDisplay] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [text, setText] = useState('');
   const [url, setUrl] = useState('');
+  /*<<<<<<< HEAD
 
   const checkResponse = async (response, result) => {
     console.log(errors);
@@ -44,7 +46,9 @@ const Create = ({ accessToken }) => {
 
       setTimeout(async () => await router.push('/'), 1000);
     }
-  };
+  };*/
+
+  const [errors, setErrors] = useState({});
 
   function toggleModal() {
     setShouldDisplay((shouldDisplay) => !shouldDisplay);
@@ -52,19 +56,32 @@ const Create = ({ accessToken }) => {
 
   const submitForm = async () => {
     let userId = jwt.decode(accessToken).sub;
+    const token = await ensureValidCookie(accessToken);
 
-    const response = await fetch(ENDPOINT + '/posts/create', {
-      method: 'POST',
-      body: JSON.stringify({ text, url, authorId: userId }),
-      headers: {
-        Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
-        'Content-Type': 'application/json',
-      },
+    commentDispatch(createArticle(text, url, userId, token)).then(() => {
+      checkResponse();
     });
+  };
 
-    let result = await response.json();
-    setErrors(() => result);
-    await checkResponse(response, result);
+  const checkResponse = () => {
+    let stateErrors = store.getState().article.errors;
+
+    setErrors((prev) => ({
+      ...prev,
+      errorTitle: stateErrors?.errorTitle
+        ? 'Заглавието трябва да е с дължина от 6 до 250 букви.'
+        : null,
+      errorUrl: stateErrors?.errorUrl
+        ? 'Хиперлинкът трябва да е валиден.'
+        : null,
+    }));
+
+    if (!stateErrors?.errorTitle && !stateErrors?.errorUrl) {
+      setModalMessage(() => 'Новината беше успешно създадена!');
+      toggleModal();
+
+      setTimeout(async () => await router.push('/'), 1000);
+    }
   };
 
   return (
@@ -81,13 +98,13 @@ const Create = ({ accessToken }) => {
           />
           <FormTitle text={'Създай Статия'} />
           <Form>
-            <Input
+            <FormInput
               onChange={(e) => setText(e.target.value)}
               type={'text'}
               placeholder={'Заглавие'}
               errorMessage={errors?.errorTitle}
             />
-            <Input
+            <FormInput
               onChange={(e) => setUrl(e.target.value)}
               type={'url'}
               placeholder={'Линк'}

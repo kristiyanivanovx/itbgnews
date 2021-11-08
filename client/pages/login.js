@@ -1,102 +1,114 @@
 import React, { useState } from 'react';
-import Input from '../components/Input';
+import FormInput from '../components/FormInput';
 import Button from '../components/Button';
 import FormTitle from '../components/FormTitle';
 import AuthLinks from '../components/AuthLinks';
 import FormContainer from '../components/FormContainer';
 import Form from '../components/Form';
 import HeadComponent from '../components/HeadComponent';
-import getDefaultLayout from '../helpers/getDefaultLayout';
+import getDefaultLayout from '../utilities/getDefaultLayout';
 import {
-  getEndpoint,
-  INCORRECT_PASSWORD_ERROR_MESSAGE,
-  USER_NOT_FOUND_ERROR_MESSAGE,
-} from '../utilities/common';
+  INCORRECT_PASSWORD_ERROR,
+  USER_NOT_FOUND_ERROR,
+} from '../utilities/messages';
 import Modal from '../components/Modal';
 import Router from 'next/router';
 import renewCookie from '../utilities/renewCookie';
+import AuthLink from '../components/AuthLink';
+import Header from '../components/Header';
+import Http from '../utilities/http';
+import { deleteComment } from '../redux';
+import { useDispatch } from 'react-redux';
+import store from '../redux/store';
+import { login } from '../redux/auth/authActions';
 
 const Login = () => {
-  const ENDPOINT = getEndpoint();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState({});
   const [modalMessage, setModalMessage] = useState('');
   const [shouldDisplay, setShouldDisplay] = useState(false);
+  const dispatch = useDispatch();
+  // const [errors, setErrors] = useState({});
 
   const toggleModal = () => {
     setShouldDisplay((shouldDisplay) => !shouldDisplay);
   };
 
-  const checkResult = async (result) => {
-    if (result.message === USER_NOT_FOUND_ERROR_MESSAGE) {
+  const submitForm = async () => {
+    dispatch(login(email, password)).then(() => {
+      checkResult();
+      // await checkResult(store.getState().auth);
+    });
+  };
+
+  const checkResult = () => {
+    const auth = store.getState().auth;
+
+    if (auth.error === USER_NOT_FOUND_ERROR) {
       setModalMessage(() => 'Няма потребител с този имейл.');
       toggleModal();
-    } else if (result.error === INCORRECT_PASSWORD_ERROR_MESSAGE) {
-      setModalMessage(() => 'Грешна парола');
+    } else if (auth.error === INCORRECT_PASSWORD_ERROR) {
+      setModalMessage(() => 'Грешна парола.');
       toggleModal();
+      /*
     } else {
       console.log('result.data');
       console.log(result);
       const { accessToken } = result.data;
       await renewCookie(accessToken);
-
+*/
+    } else if (auth.accessToken) {
       setModalMessage(() => 'Влязохте успешно.');
       toggleModal();
 
-      setTimeout(() => {
-        Router.push('/');
-      }, 2000);
+      renewCookie(auth.accessToken).then(() => {
+        setTimeout(() => {
+          Router.push('/');
+        }, 2000);
+      });
+    } else {
+      setModalMessage(() => 'Стана неочаквана грешка...');
+      toggleModal();
     }
   };
 
-  const submitForm = async () => {
-    const response = await fetch(ENDPOINT + '/login', {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    let result = await response.json();
-    setErrors(() => result.data);
-
-    await checkResult(result);
-  };
-
   return (
-    <>
+    <div className="container">
       <HeadComponent currentPageName={'Вход'} />
-      <FormContainer>
-        <Modal
-          text={modalMessage}
-          shouldDisplay={shouldDisplay}
-          toggleModal={(shouldDisplay) => setShouldDisplay(!shouldDisplay)}
-        />
-        <FormTitle text={'Вход'} />
-        <Form>
-          <Input
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder={'Имейл'}
-            type={'text'}
-            errorMessage={errors?.email}
+      <Header shouldHideSearchBar={true} />
+      <div className={'col'}>
+        <FormContainer>
+          <Modal
+            text={modalMessage}
+            shouldDisplay={shouldDisplay}
+            toggleModal={(shouldDisplay) => setShouldDisplay(!shouldDisplay)}
           />
-          <Input
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder={'Парола'}
-            type={'password'}
-            errorMessage={errors?.password}
-          />
-          <Button onClick={async () => await submitForm()} text={'Влез'} />
-
-          <AuthLinks
-            firstText={'Нямаш профил?'}
-            secondText={'Забравена парола?'}
-          />
-        </Form>
-      </FormContainer>
-    </>
+          <FormTitle text={'Вход'} />
+          <Form>
+            {/*todo: proper form, onsubmit*/}
+            <FormInput
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={'Имейл'}
+              type={'text'}
+            />
+            <FormInput
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder={'Парола'}
+              type={'password'}
+            />
+            <Button
+              type={'submit'}
+              onClick={async () => await submitForm()}
+              text={'Влез'}
+            />
+            <AuthLinks>
+              <AuthLink text={'Нямаш профил?'} link={'/register'} />
+              <AuthLink text={'Забравена парола?'} link={'/forgotten'} />
+            </AuthLinks>
+          </Form>
+        </FormContainer>
+      </div>
+    </div>
   );
 };
 

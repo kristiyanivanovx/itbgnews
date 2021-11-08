@@ -2,6 +2,7 @@ const router = require('express').Router();
 const redisClient = require('../config/redisConfig');
 const comments = require('../models/comment');
 const { makeTree } = require('../utilities/makeTree');
+const {cache} = require("../middlewares/cache")
 
 router.get('/:parentPostId', async (req, res) => {
   const allData = await comments
@@ -18,18 +19,18 @@ router.get('/:parentPostId', async (req, res) => {
 });
 
 // this is for caching tree
-async function cache(req, res, next) {
-  redisClient.get('tree', (err, data) => {
-    if (err) {
-      throw err;
-    } else if (data !== null) {
-      res.json({
-        tree: JSON.parse(data),
-      });
-    } else {
-      next();
-    }
-  });
-}
+// async function cache(req, res, next) {
+//   redisClient.get('tree', (err, data) => {
+//     if (err) {
+//       throw err;
+//     } else if (data !== null) {
+//       res.json({
+//         tree: JSON.parse(data),
+//       });
+//     } else {
+//       next();
+//     }
+//   });
+// }
 
 module.exports = router;

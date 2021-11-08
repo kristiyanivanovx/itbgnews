@@ -1,5 +1,7 @@
 const Comment = require('../models/comment');
 const User = require('../models/user');
+const Post = require('../models/post');
+const { log } = require('nodemon/lib/utils');
 
 async function postComment(req, res) {
   const user = req.userObject;
@@ -17,6 +19,14 @@ async function postComment(req, res) {
   });
 
   try {
+    if (newComment.parentPostId) {
+      const post = await Post.findById(newComment.parentPostId).exec();
+      if (post) {
+        post.commentsCount++;
+        await post.save();
+      }
+    }
+
     await newComment.save();
 
     user.commentsCount += 1;
@@ -31,7 +41,7 @@ async function postComment(req, res) {
 
 async function upvoteComment(req, res) {
   const comment = req.comment;
-  const user = req.user;
+  const user = req.userObject;
 
   //check if upvote exists
   const upvoteExists = !!(await Comment.findOne({
@@ -99,11 +109,12 @@ async function patchComment(req, res) {
 
 async function deleteComment(req, res) {
   const comment = req.comment;
-  const user = req.userObject;
+  const userId = req.user.sub;
+  const user = await User.findById(userId).exec();
 
   if (String(comment.authorId) === String(user._id)) {
     try {
-      comment.text = 'Deleted';
+      comment.text = null;
       user.commentCount -= 1;
 
       for (let j = 0; j < comment.upvoters.length; j++) {
@@ -114,6 +125,15 @@ async function deleteComment(req, res) {
 
         upvoter.save();
       }
+
+      // if (comment.parentPostId) {
+      //   const post = await Post.findById(comment.parentPostId);
+      //
+      //   if (post) {
+      //     post.commentsCount--;
+      //     await post.save();
+      //   }
+      // }
 
       await comment.save();
       await user.save();

@@ -3,6 +3,8 @@ const router = express.Router();
 const getters = require('../functions/getters');
 const controllers = require('../controllers/postsController');
 const auth = require('../middlewares/authMiddleware');
+const { cloudinary } = require('../config/cloudinaryConfig');
+const { verifyToken } = require('../middlewares/authMiddleware');
 
 //Getting all Posts by page ✔
 router.get('/', controllers.getPost);
@@ -13,7 +15,7 @@ router.get('/by/:userId', getters.userGetter, controllers.getPosts);
 //Getting results by a search query
 router.get('/search', getters.getSearch);
 
-//Getting comments and post by post id ✔
+//Getting comment and post by post id ✔
 router.get('/comments/:postId', getters.postGetter, controllers.getComments);
 
 //Creating a Post ✔

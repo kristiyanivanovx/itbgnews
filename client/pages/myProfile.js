@@ -3,19 +3,19 @@ import Header from '../components/Header';
 import SideNav from '../components/SideNav';
 import Profile from '../components/Profile';
 import HeadComponent from '../components/HeadComponent';
-import getDefaultLayout from '../helpers/getDefaultLayout';
-import { getEndpoint } from '../utilities/common';
+import getDefaultLayout from '../utilities/getDefaultLayout';
+import getEndpoint from '../utilities/getEndpoint';
 import Article from '../components/Article';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import MY_PROFILE_PATH from '../next.config';
 import { useRouter } from 'next/router';
-import requireAuthentication from '../helpers/requireAuthentication';
+import requireAuthentication from '../utilities/requireAuthentication';
 import jwt from 'jsonwebtoken';
-import isTokenExpired from '../utilities/isTokenExpired';
-import renewToken from '../utilities/refreshToken';
 import getUserToken from '../utilities/getUserToken';
-import renewCookie from '../utilities/renewCookie';
 import ensureValidCookie from '../utilities/ensureValidCookie';
+import setProfilePicture from '../utilities/image/setProfilePicture';
+import getMoreArticles from '../utilities/getMoreArticles';
+import { useDispatch } from 'react-redux';
+import { logout } from '../redux/auth/authActions';
 
 export const getServerSideProps = requireAuthentication(async (context) => {
   const ENDPOINT = getEndpoint();
@@ -37,6 +37,9 @@ export const getServerSideProps = requireAuthentication(async (context) => {
   const userInformation = await fetch(ENDPOINT + '/users/info/' + userId);
   const userData = await userInformation.json();
 
+  const pictureResponse = await fetch(ENDPOINT + '/my-profile/image/' + userId);
+  const picture = await setProfilePicture(pictureResponse, userId);
+
   return {
     props: {
       data,
@@ -44,61 +47,52 @@ export const getServerSideProps = requireAuthentication(async (context) => {
       userData,
       accessToken,
       ENDPOINT,
+      picture,
     },
   };
 });
 
-const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
+const MyProfile = ({
+  data,
+  userId,
+  userData,
+  accessToken,
+  ENDPOINT,
+  picture,
+}) => {
   const [articles, setArticles] = useState(data.posts);
   const [hasMore, setHasMore] = useState(true);
   const [shouldRedirect, setShouldRedirect] = useState(false);
+  const [currentImage, setCurrentImage] = useState(picture);
   const router = useRouter();
+  const dispatch = useDispatch();
 
-  console.log('user data');
-  console.log(userData);
-
-  // articles
+  // article
   useEffect(() => {
     if (shouldRedirect) {
       router.push('/login');
       setShouldRedirect((prev) => !prev);
     }
 
-    setHasMore(data.postsCount > articles.length);
-  }, [articles.length, shouldRedirect, data.postsCount, router]);
+    setHasMore(data.postsCount > articles?.length);
+  }, [articles?.length, shouldRedirect, data.postsCount, router]);
 
   const submitLogoutForm = async () => {
-    const logoutResponse = await fetch(ENDPOINT + '/logout', {
-      headers: {
-        authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
-      },
-      method: 'POST',
-    });
+    const token = await ensureValidCookie(accessToken);
 
-    const cookieRemoveResponse = await fetch('/api/removeCookie', {
-      method: 'POST',
-      body: JSON.stringify({}),
-      headers: { 'Content-Type': 'application/json' },
+    dispatch(logout(token)).then(() => {
+      setShouldRedirect(() => true);
     });
-
-    let result = await logoutResponse.json();
-    setShouldRedirect(() => true);
-    // if (result.status === SUCCESS_RESPONSE_CODE) { }
   };
 
-  const getMoreArticles = async () => {
-    const response = await fetch(
-      ENDPOINT + '/posts/by/' + userId + `?skip=${articles.length}&limit=10`,
+  const loadMoreArticles = async () => {
+    return await getMoreArticles(
+      setArticles,
+      articles,
+      ENDPOINT,
+      `/posts/by/${userId}?skip=${articles.length}&limit=10`,
     );
-
-    const { posts } = await response.json();
-    setArticles((articles) => [...articles, ...posts]);
   };
-
-  // todo: upload profile image - https://codesandbox.io/s/thyb0?file=/pages/index.js:869-895
-  const style = `jdenticon`;
-  const randomized = userId + Math.random();
-  const image = `https://avatars.dicebear.com/api/${style}/${randomized}.svg`;
 
   return (
     <>
@@ -111,41 +105,46 @@ const MyProfile = ({ data, userId, userData, accessToken, ENDPOINT }) => {
           <SideNav />
           <Profile
             triggerConfirmation={async () => await submitLogoutForm()}
-            image={image}
+            userId={userId}
+            image={currentImage}
             username={userData.username}
             bio={userData?.bio ?? ''}
             email={userData.email}
             commentsCount={userData.commentsCount}
             upvotesCount={userData.upvotesCount}
             articlesCount={userData.postsCount}
+            accessToken={accessToken}
           >
             <InfiniteScroll
-              dataLength={articles.length}
-              next={getMoreArticles}
+              dataLength={articles?.length || 0}
+              next={async () => await loadMoreArticles()}
               hasMore={hasMore}
               loader={<h4>Зареждане...</h4>}
               endMessage={
                 <p className={'center'}>Това са всичките налични статии!</p>
               }
             >
-              {articles.map((article, index) => (
-                <Article
-                  key={article._id}
-                  postId={article._id}
-                  isFirstArticle={index === 0}
-                  title={article.text}
-                  upvotes={article.upvoters.length}
-                  username={article.authorName}
-                  date={article.creationDate}
-                  // todo: show real comments count
-                  comments={index}
-                  link={article.url}
-                  authorId={article.authorId}
-                  userId={userId}
-                  shouldDisplayEditOptions={userId === article.authorId}
-                  accessToken={accessToken}
-                />
-              ))}
+              {articles?.length > 0
+                ? articles.map((article, index) => (
+                    <Article
+                      key={article._id}
+                      postId={article._id}
+                      isFirstArticle={index === 0}
+                      title={article.text}
+                      currentUserHasLiked={article.upvoters.filter(upvoter => upvoter.userId === userId).length > 0}
+                      upvotes={article.upvoters.length}
+                      username={article.authorName}
+                      date={article.creationDate}
+                      link={article.url}
+                      comments={article.commentsCount}
+                      accessToken={accessToken}
+                      shouldDisplayEditOptions={userId === article.authorId}
+                      redirectUrl={'/myProfile'}
+                      // authorId={article.authorId}
+                      // userId={userId}
+                    />
+                  ))
+                : null}
             </InfiniteScroll>
           </Profile>
         </div>

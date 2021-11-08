@@ -61,9 +61,12 @@
     margin: 0 2rem;
 }
 
+.profile_pic {
+    object-fit: cover !important;
+}
+
 .user__bio {
     margin: 1.5rem 5rem 3rem 0;
-
     width: 100%;
 }
 

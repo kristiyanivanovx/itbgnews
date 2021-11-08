@@ -2,6 +2,7 @@
     width: 100%;
     margin-bottom: 80px;
 }
+
 .header__main {
     position: relative;
     width: 100%;
@@ -12,6 +13,7 @@
 .brand {
     display: flex;
 }
+
 .brand__logo {
     width: 60px;
     height: 60px;
@@ -37,6 +39,7 @@
 .search__bar__input:focus {
     outline: none;
 }
+
 .search__icon {
     display: block;
     font-size: xx-large;
@@ -64,9 +67,11 @@
     padding: 10px 20px 10px 20px ;
     margin: 10px;
 }
+
 .search__bar__edges {
 
 }
+
 .prediction:hover {
     background: rgba(48, 38, 54, 0.5);
     border-radius: 10px;
@@ -75,30 +80,30 @@
 .search__bar {
     display: flex;
     align-items: center;
-    width: 70%;
+    width: 65%;
     border-radius: 15px;
     padding: 0.5em 1em;
     background: var(--clr-main);
 }
 
-
 .search__bar__edges {
     display: flex;
     align-items: center;
-    width: 70%;
+    width: 65%;
     padding: 0.5em 1em;
     background: var(--clr-main);
     border-radius: 15px 15px 0 0;
 }
 
-
 .prediction:hover {
     background: rgba(48, 38, 54, 0.5);
     border-radius: 10px;
 }
+
 .prediction a{
     text-decoration: none;
 }
+
 @media (max-width: 600px) {
     .icon__burger {
         display: block;

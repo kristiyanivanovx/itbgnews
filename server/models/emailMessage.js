@@ -1,6 +1,7 @@
 const dotenv = require('dotenv');
 const mail = require('@sendgrid/mail');
 const { getEnvironmentInfo } = require('../utilities/common');
+const { getHTML } = require('./templates/email');
 
 dotenv.config();
 
@@ -12,23 +13,23 @@ const HOST = isProduction
   ? process.env.REMOTE_FRONTEND_HOST
   : process.env.LOCAL_FRONTEND_HOST;
 
+const SENDER_EMAIL = process.env.SENDER_EMAIL;
+
 function createMessage(email, code) {
   return {
     to: email,
-    from: 'itbgnews@gmail.com',
-    subject: 'Reset password email',
-    text: 'Your email for password reset at IT-BG News',
-    html: `<a href="${HOST}/verify?token=${code}&email=${email}">Click here to reset your password.</a>`,
+    from: SENDER_EMAIL,
+    subject: 'Имейл за възстановяване на паролата в IT-BG News',
+    html: getHTML(HOST, code, email),
   };
 }
 
 function verifyMessage(email, code) {
   return {
     to: email,
-    from: 'itbgnews@gmail.com',
+    from: SENDER_EMAIL,
     subject: 'Verify account',
-    text: 'Click the link to verify your registration at IT-BG News',
-    html: `<a href="${HOST}/reset-pass?token=${code}">Click here to verify your account.</a>`,
+    html: `<a href="${HOST}/reset-pass?token=${code}">Click here to verify your account at IT-BG News.</a>`,
   };
 }
 

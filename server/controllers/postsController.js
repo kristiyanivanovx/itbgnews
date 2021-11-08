@@ -1,9 +1,8 @@
 const getters = require('../functions/getters');
 const Post = require('../models/post');
 const User = require('../models/user');
-const { validateUrl } = require('../utilities/validation');
 const { isEmpty } = require('../utilities/common');
-const { upvoteComment } = require('./commentsController');
+const validator = require('validator');
 
 async function getPosts(req, res) {
   const { skip, limit } = req.query;
@@ -40,6 +39,7 @@ async function getPost(req, res) {
     res.json({
       posts: posts,
       postsCount: count,
+      user: req.user,
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -67,9 +67,8 @@ async function postPost(req, res) {
     errors.errorTitle = 'The title must be at least 6 letters and at most 250.';
   }
 
-  if (!validateUrl(url)) {
-    errors.errorUrl =
-      'The url must be valid hyperlink and have 1 character at least and at most 1024.';
+  if (!validator.isURL(url, { require_protocol: true })) {
+    errors.errorUrl = 'The url must be a valid hyperlink.';
   }
 
   if (!isEmpty(errors)) {
@@ -84,6 +83,7 @@ async function postPost(req, res) {
     authorName: user.username,
     lastEditDate: Date.now(),
     creationDate: Date.now(),
+    commentsCount: 0,
   });
 
   try {
@@ -99,7 +99,7 @@ async function postPost(req, res) {
 }
 
 async function patchPost(req, res) {
-  // todo make validation on url if exists
+  // todo make validation on url if is valid
   const { text, url } = req.body;
   let hasChanged = false;
 
@@ -185,7 +185,7 @@ async function deletePost(req, res) {
 
   if (String(post.authorId) === String(userId)) {
     try {
-      //get all comments and upvotes on comments connected to the post and delete them too
+      //get all comment and upvotes on comment connected to the post and delete them too
       let comments = await getters.commentsGetter(post._id);
       //const commentCountUserPairs = [];
 
@@ -224,7 +224,7 @@ async function deletePost(req, res) {
 
       res
         .status(200)
-        .json({ message: 'Post and comments have been deleted successfully!' });
+        .json({ message: 'Post and comment have been deleted successfully!' });
 
       return;
     } catch (err) {

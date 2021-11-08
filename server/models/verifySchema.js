@@ -6,7 +6,7 @@ const verifySchema = new Schema({
   token: String,
   createdAt: {
     type: Date,
-    expires: 2,
+    expires: 60 * 5,
     default: Date.now,
   },
 });
