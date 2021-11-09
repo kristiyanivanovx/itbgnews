@@ -4,6 +4,7 @@ const { getEnvironmentInfo } = require('../utilities/common');
 
 const [ENV, isProduction] = getEnvironmentInfo();
 
+// when you use docker-compose, swap '127.0.0.1' with 'redis' in the below line
 const host = isProduction ? process.env.REDIS_HOST : '127.0.0.1';
 const port = isProduction ? process.env.REDIS_PORT : 6379;
 const password = isProduction ? process.env.REDIS_PASSWORD : 'pass';

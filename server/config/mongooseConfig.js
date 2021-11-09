@@ -4,8 +4,11 @@ const { getEnvironmentInfo } = require('../utilities/common');
 
 const [ENV, isProduction] = getEnvironmentInfo();
 
+console.log('NODE_ENV' + process.env.NODE_ENV || '');
+
+// with docker-compose, use 'mongodb' instead of 'localhost'
 const connectionString = isProduction
-  ? process.env.MONGODB_REMOTE_CONNECTION_STRING
+  ? process.env.DATABASE_URL
   : 'mongodb://localhost:27017/itbgnews';
 
 mongoose

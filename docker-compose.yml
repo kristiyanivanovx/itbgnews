@@ -1,8 +1,11 @@
 version: "3"
+
 services:
   itbgnews-client:
     image: itbgnews-client
     stdin_open: true
+    environment:
+      PORT: 3000
     ports:
       - "3000:3000"
     networks:
@@ -12,9 +15,38 @@ services:
     image: itbgnews-server
     ports:
       - "5000:5000"
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - itbgnews-webapp
+
+  mongodb:
+    image: mongo:4.0.4
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb:/data/mongodb
+    networks:
+      - itbgnews-webapp
+
+  redis:
+    image: "redis:alpine"
+    command: redis-server
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis:/data/redis
     networks:
       - itbgnews-webapp
 
 networks:
   itbgnews-webapp:
     driver: bridge
+
+volumes:
+  mongodb:
+  redis:

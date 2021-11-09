@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM node:16-alpine
 
 # Set the working directory to /server
 WORKDIR /server
@@ -15,7 +15,8 @@ COPY . /server/
 # Make port 5000 available to the world outside this container
 EXPOSE 5000
 
-ENV NODE_ENV=production
+ENV NODE_ENV=development
+#ENV NODE_ENV=production
 
 # Run the app when the container launches
-CMD ["npm", "run", "nodemon-deploy"]
+CMD ["npm", "run", "node-deploy"]

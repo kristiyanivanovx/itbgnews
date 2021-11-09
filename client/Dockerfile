@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM node:16-alpine
 
 # Set the working directory to /client
 WORKDIR /client
@@ -15,7 +15,8 @@ COPY . /client/
 # Make port 3000 available to the world outside this container
 EXPOSE 3000
 
-ENV NODE_ENV=production
+ENV NODE_ENV=development
+#ENV NODE_ENV=production
 
 RUN npm run build
 
