@@ -102,6 +102,7 @@ async function patchPost(req, res) {
   // todo make validation on url if is valid
   if (String(post.authorId) !== String(userId)) {
     res.status(401).json({ message: 'The user does not own the post!' });
+    return;
   }
   const { text, url } = req.body;
   let hasChanged = false;
@@ -188,6 +189,7 @@ async function deletePost(req, res) {
 
   if (String(post.authorId) !== String(userId)) {
     res.status(401).json({ message: 'The user does not own the post!' });
+    return;
   }
 
   try {

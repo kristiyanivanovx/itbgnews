@@ -93,6 +93,7 @@ async function patchComment(req, res) {
 
   if (String(comment.authorId) !== String(user._id)) {
     res.status(401).json({ message: 'The user does not own the comment!' });
+    return;
   }
 
   try {
@@ -118,6 +119,7 @@ async function deleteComment(req, res) {
 
   if (String(comment.authorId) !== String(user._id)) {
     res.status(401).json({ message: 'The user does not own the comment!' });
+    return;
   }
 
   try {
