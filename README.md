@@ -2,13 +2,7 @@
 
 Project of the web development study group in IT Bulgaria.
 
-![Alt text](./assets/itbgnews.svg)
-
-<img src="./assets/itbgnews.svg">
-
-<img src="./assets/itbgnews.svg" alt="itbgnews"/>
-
-Used for a starting point - https://github.com/bradtraversy/react_express_starter
+![itbgnews design](./assets/itbgnews.svg)
 
 ## How to configure, install & start the application (React + Express + Redis + MongoDB)
 
