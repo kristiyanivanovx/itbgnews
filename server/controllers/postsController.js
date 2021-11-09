@@ -100,6 +100,10 @@ async function postPost(req, res) {
 
 async function patchPost(req, res) {
   // todo make validation on url if is valid
+  if (String(post.authorId) !== String(userId)) {
+    res.status(401).json({ message: 'The user does not own the post!' });
+    return;
+  }
   const { text, url } = req.body;
   let hasChanged = false;
 
@@ -183,58 +187,58 @@ async function deletePost(req, res) {
   const post = req.post;
   const userId = req.user.sub;
 
-  if (String(post.authorId) === String(userId)) {
-    try {
-      //get all comment and upvotes on comment connected to the post and delete them too
-      let comments = await getters.commentsGetter(post._id);
-      //const commentCountUserPairs = [];
-
-      for (let i = 0; i < comments.length; i++) {
-        let author = await User.findById(comments[i].authorId);
-        author.commentsCount -= 1;
-        await author.save();
-
-        for (let j = 0; j < comments[i].upvoters.length; j++) {
-          console.log(comments[i].upvoters[j].userId);
-
-          let upvoter = await User.findById(comments[i].upvoters[j].userId);
-          upvoter.commitedLikes -= 1;
-
-          upvoter.save();
-        }
-        //Find each users commentCount on the post
-        //if (commentCountUserPairs.includes(author._id)) author._id += 1;
-        //else commentCountUserPairs.push({ [author._id]: 1 });
-
-        await comments[i].delete();
-      }
-
-      for (let k = 0; k < post.upvoters.length; k++) {
-        let author = await User.findById(post.upvoters[k].userId);
-        author.commitedLikes -= 1;
-
-        author.save();
-      }
-
-      await post.delete();
-
-      const user = await User.findById(userId);
-
-      user.postsCount -= 1;
-      await user.save();
-
-      res
-        .status(200)
-        .json({ message: 'Post and comment have been deleted successfully!' });
-
-      return;
-    } catch (err) {
-      res.status(500).json({ message: err.message });
-      return;
-    }
+  if (String(post.authorId) !== String(userId)) {
+    res.status(401).json({ message: 'The user does not own the post!' });
+    return;
   }
 
-  res.status(401).json({ message: 'The user does not own the post!' });
+  try {
+    //get all comment and upvotes on comment connected to the post and delete them too
+    let comments = await getters.commentsGetter(post._id);
+    //const commentCountUserPairs = [];
+
+    for (let i = 0; i < comments.length; i++) {
+      let author = await User.findById(comments[i].authorId);
+      author.commentsCount -= 1;
+      await author.save();
+
+      for (let j = 0; j < comments[i].upvoters.length; j++) {
+        console.log(comments[i].upvoters[j].userId);
+
+        let upvoter = await User.findById(comments[i].upvoters[j].userId);
+        upvoter.upvotesCount -= 1;
+
+        upvoter.save();
+      }
+      //Find each users commentCount on the post
+      //if (commentCountUserPairs.includes(author._id)) author._id += 1;
+      //else commentCountUserPairs.push({ [author._id]: 1 });
+
+      await comments[i].delete();
+    }
+    for (let i = 0; i < post.upvoters.length; i++) {
+      let author = await User.findById(post.upvoters[i].userId);
+      author.upvotesCount -= 1;
+
+      author.save();
+    }
+
+    await post.delete();
+
+    const user = await User.findById(userId);
+
+    user.postsCount -= 1;
+    await user.save();
+
+    res
+      .status(200)
+      .json({ message: 'Post and comment have been deleted successfully!' });
+
+    return;
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+    return;
+  }
 }
 
 module.exports = {

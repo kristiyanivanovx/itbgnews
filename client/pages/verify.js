@@ -40,6 +40,13 @@ const Verify = () => {
       password,
     });
 
+    /*<<<<<<< HEAD
+    const result = await response.json();
+    console.log(result);
+*/
+    // setErrors(() => result);
+    // checkResponse(result);
+
     await checkResponse(result);
   };
 

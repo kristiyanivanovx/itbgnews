@@ -65,6 +65,7 @@ const View = ({ postId, accessToken, data, tree }) => {
   };
 
   const handleChange = (text) => {
+    console.log(text);
     setText(() => text);
   };
 
@@ -74,9 +75,15 @@ const View = ({ postId, accessToken, data, tree }) => {
     // }
 
     if (shouldRedirectLogin) {
+      console.log(shouldRedirectLogin);
       router.push('/login');
     }
   }, [router, shouldRedirectLogin]);
+
+  const refreshData = () => {
+    console.log('refreshing in parent ...');
+    router.replace(router.asPath);
+  };
 
   useEffect(() => {
     if (!shouldShowInput && text) {
@@ -94,6 +101,7 @@ const View = ({ postId, accessToken, data, tree }) => {
 
     setReplyingTo(() => ({ id: replyToId, isPost: isPost }));
     setShouldShowInput(() => true);
+    console.log(replyingTo);
   };
 
   const confirmCreate = async () => {
@@ -101,6 +109,25 @@ const View = ({ postId, accessToken, data, tree }) => {
       setShouldRedirectLogin(true);
       return;
     }
+
+    /*const response = await fetch(ENDPOINT + '/comments/create', {
+      method: 'POST',
+      body: JSON.stringify({
+        parentPostId: postId,
+        parentCommentId: replyingTo.isPost ? 'false' : replyingTo.id,
+        text: text,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
+      },
+    });
+
+    console.log(response);
+    console.log(await response.json());*/
+    // todo: check for errors аnd set them
+    // setErrors(() => result);
+    // checkResponseEdit(response);
 
     const token = await ensureValidCookie(accessToken);
 
@@ -119,7 +146,10 @@ const View = ({ postId, accessToken, data, tree }) => {
       postId={article._id}
       isFirstArticle={true}
       title={article.text}
-      currentUserHasLiked={article.upvoters.filter(upvoter => upvoter.userId === userId).length > 0}
+      currentUserHasLiked={
+        article.upvoters.filter((upvoter) => upvoter.userId === userId).length >
+        0
+      }
       upvotes={article.upvoters.length}
       username={article.authorName}
       date={article.creationDate}
@@ -180,7 +210,11 @@ const View = ({ postId, accessToken, data, tree }) => {
                     commentId={comment._id}
                     title={comment.text}
                     date={comment.creationDate}
-                    currentUserHasLiked={comment.upvoters.filter(upvoter => upvoter.userId === userId).length > 0}
+                    currentUserHasLiked={
+                      comment.upvoters.filter(
+                        (upvoter) => upvoter.userId === userId,
+                      ).length > 0
+                    }
                     upvotes={comment.upvoters.length}
                     username={comment.authorName}
                     comments={childrenCount}

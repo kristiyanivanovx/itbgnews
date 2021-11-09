@@ -50,6 +50,13 @@ const Login = () => {
     } else if (auth.error === INCORRECT_PASSWORD_ERROR) {
       setModalMessage(() => 'Грешна парола.');
       toggleModal();
+      /*
+    } else {
+      console.log('result.data');
+      console.log(result);
+      const { accessToken } = result.data;
+      await renewCookie(accessToken);
+*/
     } else if (auth.accessToken) {
       setModalMessage(() => 'Влязохте успешно.');
       toggleModal();
@@ -89,7 +96,11 @@ const Login = () => {
               placeholder={'Парола'}
               type={'password'}
             />
-            <Button type={'submit'} onClick={async () => await submitForm()} text={'Влез'} />
+            <Button
+              type={'submit'}
+              onClick={async () => await submitForm()}
+              text={'Влез'}
+            />
             <AuthLinks>
               <AuthLink text={'Нямаш профил?'} link={'/register'} />
               <AuthLink text={'Забравена парола?'} link={'/forgotten'} />

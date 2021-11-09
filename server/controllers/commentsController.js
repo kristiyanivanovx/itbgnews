@@ -91,6 +91,11 @@ async function patchComment(req, res) {
     req.comment.lastEditDate = Date.now();
   }
 
+  if (String(comment.authorId) !== String(user._id)) {
+    res.status(401).json({ message: 'The user does not own the comment!' });
+    return;
+  }
+
   try {
     if (!hasChanged) {
       res.status(200).json({
@@ -112,41 +117,42 @@ async function deleteComment(req, res) {
   const userId = req.user.sub;
   const user = await User.findById(userId).exec();
 
-  if (String(comment.authorId) === String(user._id)) {
-    try {
-      comment.text = null;
-      user.commentCount -= 1;
-
-      for (let j = 0; j < comment.upvoters.length; j++) {
-        console.log(comment.upvoters[j].userId);
-
-        let upvoter = await User.findById(comments.upvoters[j].userId);
-        upvoter.commitedLikes -= 1;
-
-        upvoter.save();
-      }
-
-      // if (comment.parentPostId) {
-      //   const post = await Post.findById(comment.parentPostId);
-      //
-      //   if (post) {
-      //     post.commentsCount--;
-      //     await post.save();
-      //   }
-      // }
-
-      await comment.save();
-      await user.save();
-
-      res.status(200).json({ message: 'comment deleted!' });
-      return;
-    } catch (err) {
-      res.status(500).json({ message: err.message });
-      return;
-    }
+  if (String(comment.authorId) !== String(user._id)) {
+    res.status(401).json({ message: 'The user does not own the comment!' });
+    return;
   }
 
-  res.status(401).json({ message: 'The user does not own the comment!' });
+  try {
+    comment.text = null;
+    user.commentCount -= 1;
+
+    for (let j = 0; j < comment.upvoters.length; j++) {
+      console.log(comment.upvoters[j].userId);
+
+      let upvoter = await User.findById(comments.upvoters[j].userId);
+      upvoter.upvotesCount -= 1;
+
+      upvoter.save();
+    }
+
+    // if (comment.parentPostId) {
+    //   const post = await Post.findById(comment.parentPostId);
+    //
+    //   if (post) {
+    //     post.commentsCount--;
+    //     await post.save();
+    //   }
+    // }
+
+    await comment.save();
+    await user.save();
+
+    res.status(200).json({ message: 'comment deleted!' });
+    return;
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+    return;
+  }
 }
 
 module.exports = {

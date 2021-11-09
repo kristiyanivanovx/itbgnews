@@ -35,6 +35,19 @@ const Create = ({ accessToken }) => {
   const [modalMessage, setModalMessage] = useState('');
   const [text, setText] = useState('');
   const [url, setUrl] = useState('');
+  /*<<<<<<< HEAD
+
+  const checkResponse = async (response, result) => {
+    console.log(errors);
+
+    if (response.status === CREATED_RESPONSE_CODE) {
+      setModalMessage(() => 'Новината беше успешно създадена!');
+      toggleModal();
+
+      setTimeout(async () => await router.push('/'), 1000);
+    }
+  };*/
+
   const [errors, setErrors] = useState({});
 
   function toggleModal() {
