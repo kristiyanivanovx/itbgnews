@@ -3,10 +3,12 @@ node_modules/
 server/test.rest
 package-lock.json
 server/.env
+
 *.env
 .env
 .directory
 data.txt
+
 dump.rdb
 /dump.rdb/
 ./dump.rdb
