@@ -1,18 +1,16 @@
-/* The Modal (background) */
 .modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
+  display: none;
+  position: fixed;
+  z-index: 1;
   left: 0;
   top: 0;
   bottom: 0;
   right: 0;
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0, 0, 0); /* Fallback color */
-  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
 }
 
-/* Modal Content/Box */
 .modal__content {
   border-radius: 15px;
   background-color: #cf42db;
@@ -26,7 +24,6 @@
   transform: translate(-50%, -50%);
 }
 
-/* The Close Button */
 .close {
   color: #ffffff;
   top: 0;

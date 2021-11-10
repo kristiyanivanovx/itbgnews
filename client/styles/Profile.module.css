@@ -8,11 +8,6 @@
     overflow-x: hidden;
 }
 
-/* file upload */
-/*.file__upload__input {*/
-/*    display: none;*/
-/*}*/
-
 .file__upload {
     margin-top: 10px;
     margin-bottom: 5px;
@@ -29,8 +24,6 @@
 
 .upload__photo {
     width:auto;
-    /*opacity: 0;*/
-    /*z-index: -1;*/
 }
 
 /* .profile__pic {
@@ -115,7 +108,6 @@
     justify-content: space-between;
 }
 
-/* exit button in profile*/
 .exit__btn {
     position: relative;
     font-weight: var(--fw-bold);
@@ -139,10 +131,7 @@
 
 .exit__btn__confirm {
     position: relative;
-    /*width: 157px;*/
-    /*height: 53px;*/
     display: inline-block;
-
     border-radius: 10px;
     background: linear-gradient(
         264.39deg,

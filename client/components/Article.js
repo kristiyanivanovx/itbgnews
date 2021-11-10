@@ -218,18 +218,9 @@ const Article = ({
             onClick={async () => await upvote()}
             className={`${styles.article__votes} ${styles.article__small__text} `}
           >
-
             <div className={styles.article__votes__icon}>
               {upvotesCount}
             </div>
-            {/*<FontAwesomeIcon*/}
-            {/*  className={`${styles.article__votes__icon} ${*/}
-            {/*    shouldRotate ? styles.rotated : ''*/}
-            {/*  }`}*/}
-            {/*  className={styles.article__votes__icon}*/}
-            {/*  icon={faChevronUp}*/}
-            {/*/>*/}
-            {/*{upvotesCount} гласа*/}
           </div>
         </div>
       </div>

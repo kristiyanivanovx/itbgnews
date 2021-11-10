@@ -27,13 +27,8 @@
     width: unset !important;
 }
 
-/* for active links */
 .mobile__active {
     color: pink;
 }
 
-/*@media (max-width: 600px) {*/
-/*    .nav {*/
-/*        display: none;*/
-/*    }*/
-/*}*/
+
