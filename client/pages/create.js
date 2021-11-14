@@ -89,7 +89,6 @@ const Create = ({ accessToken }) => {
       <HeadComponent currentPageName={'Създай Статия'} />
       <Header shouldHideSearchBar={true} />
       <div className={'col'}>
-        <SideNav />
         <FormContainer>
           <Modal
             text={modalMessage}

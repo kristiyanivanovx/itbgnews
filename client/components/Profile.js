@@ -29,7 +29,7 @@ const Profile = ({
         <h2 className={styles.profile__title}>Моят Профил</h2>
         <button
           className={styles.exit__btn}
-          onClick={(e) => triggerConfirmation(e)}
+          onClick={() => triggerConfirmation()}
         >
           <div className={styles.exit__btn__shadow}></div>
           <span className={styles.exit__btn__text}>Изход</span>
