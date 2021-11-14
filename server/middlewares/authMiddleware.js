@@ -75,9 +75,9 @@ function validateInputData(req, res, next) {
   const { password, username, email } = req.body;
   let errors = {};
 
-  if (username.length < 6 || username.length > 30) {
+  if (username.length < 6 || username.length > 13) {
     errors.errorUsername =
-      'Username must be at least 6 letters and at most 30.';
+      'Username must be at least 6 letters and at most 13. (inclusive)';
   }
 
   if (!validator.isEmail(email)) {
@@ -86,7 +86,7 @@ function validateInputData(req, res, next) {
 
   if (!validatePassword(password)) {
     errors.errorPassword =
-      'The password must have one digit at least and be between 8 and 35 symbols';
+      'The password must have one digit at least and be between 8 and 35 symbols (inclusive)';
   }
 
   if (isEmpty(errors)) {

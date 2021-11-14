@@ -32,14 +32,12 @@ const Register = () => {
   const checkResponse = async (result) => {
     setErrors((prev) => ({
       ...prev,
-      errorEmail: result.errorEmail
-        ? 'Имейлът ви не е валиден.'
-        : null,
+      errorEmail: result.errorEmail ? 'Имейлът ви не е валиден.' : null,
       errorPassword: result.errorPassword
-        ? 'Паролата трябва да съдържа поне една цифра и да е с дължина от 8 до 35 символа.'
+        ? 'Паролата трябва да съдържа поне една цифра и да е с дължина от 8 до 35 символа включително.'
         : null,
       errorUsername: result.errorUsername
-        ? 'Потребителското ви име трябва да е с дължина от 6 до 30 символа.'
+        ? 'Потребителското ви име трябва да е с дължина от 6 до 13 символа включително.'
         : null,
     }));
 

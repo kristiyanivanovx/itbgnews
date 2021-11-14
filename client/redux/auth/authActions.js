@@ -86,7 +86,6 @@ export const logoutFailure = (error) => {
   };
 };
 
-// todo: implement
 export const register = (user) => {
   return {
     type: REGISTER,

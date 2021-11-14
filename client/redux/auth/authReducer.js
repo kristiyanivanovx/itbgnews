@@ -17,8 +17,6 @@ const initialState = {
   error: null,
 };
 
-// todo: implement syncing between next.js server and redux state
-// when page is reloaded, the state is gone and user is logged out
 const authReducer = (state = initialState, action) => {
   switch (action.type) {
     case LOGIN:
