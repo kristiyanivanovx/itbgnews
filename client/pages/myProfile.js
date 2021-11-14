@@ -53,13 +53,13 @@ export const getServerSideProps = requireAuthentication(async (context) => {
 });
 
 const MyProfile = ({
-  data,
-  userId,
-  userData,
-  accessToken,
-  ENDPOINT,
-  picture,
-}) => {
+                     data,
+                     userId,
+                     userData,
+                     accessToken,
+                     ENDPOINT,
+                     picture,
+                   }) => {
   const [articles, setArticles] = useState(data.posts);
   const [hasMore, setHasMore] = useState(true);
   const [shouldRedirect, setShouldRedirect] = useState(false);
@@ -126,24 +126,24 @@ const MyProfile = ({
             >
               {articles?.length > 0
                 ? articles.map((article, index) => (
-                    <Article
-                      key={article._id}
-                      postId={article._id}
-                      isFirstArticle={index === 0}
-                      title={article.text}
-                      currentUserHasLiked={article.upvoters.filter(upvoter => upvoter.userId === userId).length > 0}
-                      upvotes={article.upvoters.length}
-                      username={article.authorName}
-                      date={article.creationDate}
-                      link={article.url}
-                      comments={article.commentsCount}
-                      accessToken={accessToken}
-                      shouldDisplayEditOptions={userId === article.authorId}
-                      redirectUrl={'/myProfile'}
-                      // authorId={article.authorId}
-                      // userId={userId}
-                    />
-                  ))
+                  <Article
+                    key={article._id}
+                    postId={article._id}
+                    isFirstArticle={index === 0}
+                    title={article.text}
+                    currentUserHasLiked={article.upvoters.filter(upvoter => upvoter.userId === userId).length > 0}
+                    upvotes={article.upvoters.length}
+                    username={article.authorName}
+                    date={article.creationDate}
+                    link={article.url}
+                    comments={article.commentsCount}
+                    accessToken={accessToken}
+                    shouldDisplayEditOptions={userId === article.authorId}
+                    redirectUrl={'/myProfile'}
+                    // authorId={article.authorId}
+                    // userId={userId}
+                  />
+                ))
                 : null}
             </InfiniteScroll>
           </Profile>

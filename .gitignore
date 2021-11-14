@@ -10,3 +10,5 @@ data.txt
 dump.rdb
 /dump.rdb/
 ./dump.rdb
+
+scripts/azure.frontend.sh

@@ -7,12 +7,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpload } from '@fortawesome/free-solid-svg-icons';
 import { useSelector } from 'react-redux';
 import styles from '../styles/Profile.module.css';
+import Modal from './Modal';
 
 const CustomImage = ({ image, accessToken }) => {
   const inputFile = useRef(null);
   const [currentImage, setCurrentImage] = useState(image);
   const [showButton, setShowButton] = useState(false);
   const ENDPOINT = useSelector((state) => state.infrastructure.endpoint);
+  const [errorText, setErrorText] = useState('');
+  const [shouldDisplay, setShouldDisplay] = useState(false);
 
   const onButtonClick = () => {
     inputFile.current.click();
@@ -40,24 +43,25 @@ const CustomImage = ({ image, accessToken }) => {
         authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
       },
     });
-
+    if (response.status === 405) {
+      let { message } = await response.json();
+      setErrorText(() => message);
+      setShouldDisplay(true);
+    }
     if (response.status === 200) {
       const { img } = await response.json();
-      console.log(img);
       setCurrentImage(() => img);
     }
   };
 
   return (
     <div>
+      <Modal
+        text={errorText}
+        shouldDisplay={shouldDisplay}
+        toggleModal={(shouldDisplay) => setShouldDisplay(!shouldDisplay)}
+      />
       <form method="POST" onSubmit={onSubmit}>
-        {/*<img*/}
-        {/*  src={currentImage}*/}
-        {/*  onClick={onButtonClick}*/}
-        {/*  alt="There is no image"*/}
-        {/*  style={{ width: '100%' }}*/}
-        {/*  name="image"*/}
-        {/*/>*/}
         <Image
           className={styles.profile_pic}
           src={currentImage}
