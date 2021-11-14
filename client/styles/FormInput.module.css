@@ -1,47 +1,21 @@
-/* Email FormInput */
 .input__component {
-    /*position: absolute;*/
-    /*width: 410px;*/
-    /*height: 65.5px;*/
-
-    /*left: 515px;*/
-    /*top: 220px;*/
-
-    color: #FFFFFF;
+    color: var(--clr-white);
 }
 
-/* Border */
 .input__border {
     position: absolute;
-
-    /*left: 0%;*/
-    /*right: 0%;*/
-    /*top: 0%;*/
-    /*bottom: 0%;*/
-
-    background: #302636;
-    /*border: 2px solid #51515B;*/
+    background: var(clr-background);
     box-sizing: border-box;
     border-radius: 10px;
 }
 
-/* Е-мейл */
 .input__text {
     position: absolute;
-
-    /*left: 7.32%;*/
-    /*right: 73.17%;*/
-    /*top: 25.95%;*/
-    /*bottom: 23.66%;*/
-
     font-style: normal;
     font-weight: normal;
     font-size: 24px;
     line-height: 33px;
-
-    /* identical to box height */
     display: flex;
     align-items: center;
-
     color: rgba(255, 255, 255, 0.8);
 }

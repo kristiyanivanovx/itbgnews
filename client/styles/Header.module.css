@@ -25,13 +25,9 @@
     padding-right: 10px;
 }
 
-
 .search__bar__input {
     width: 100%;
     height: 100%;
-    /* margin-left: 5rem; */
-    /*height: 100%;*/
-    /*margin: 1rem 0 1rem 4rem;*/
     margin-left: 0.5em;
     border: none;
 }
@@ -56,9 +52,8 @@
 
 .predictions {
     float: right;
-    width: 70%;
+    width: 65%;
     background: var(--clr-main);
-    /*border-radius: 22px;*/
     border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
 }
