@@ -2,8 +2,7 @@
 
 Project of the web development study group in IT Bulgaria.
 
-![itbgnews design](./assets/itbgnews.svg)
-<img src="./assets/itbgnews.svg" alt="itbgnews"/>
+![itbgnews design](./assets/itbgnews.png)
 
 ## How to configure, install & start the application (React + Express + Redis + MongoDB)
 
