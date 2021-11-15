@@ -8,7 +8,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "nodemon": "^2.0.12"
+    "nodemon": "^2.0.15"
   },
   "dependencies": {
     "cors": "^2.8.5",
