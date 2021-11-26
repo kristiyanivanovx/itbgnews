@@ -1,7 +1,6 @@
 const Comment = require('../models/comment');
 const User = require('../models/user');
 const Post = require('../models/post');
-const { log } = require('nodemon/lib/utils');
 
 async function postComment(req, res) {
   const user = req.userObject;
@@ -91,7 +90,7 @@ async function patchComment(req, res) {
     req.comment.lastEditDate = Date.now();
   }
 
-  if (String(comment.authorId) !== String(user._id)) {
+  if (String(req.comment.authorId) !== String(req.user.sub)) {
     res.status(401).json({ message: 'The user does not own the comment!' });
     return;
   }
@@ -129,7 +128,8 @@ async function deleteComment(req, res) {
     for (let j = 0; j < comment.upvoters.length; j++) {
       console.log(comment.upvoters[j].userId);
 
-      let upvoter = await User.findById(comments.upvoters[j].userId);
+      // let upvoter = await User.findById(comments.upvoters[j].userId);
+      let upvoter = await User.findById(comment.upvoters[j].userId);
       upvoter.upvotesCount -= 1;
 
       upvoter.save();

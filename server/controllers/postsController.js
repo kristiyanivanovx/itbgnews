@@ -100,7 +100,8 @@ async function postPost(req, res) {
 
 async function patchPost(req, res) {
   // todo make validation on url if is valid
-  if (String(post.authorId) !== String(userId)) {
+  // if (String(post.authorId) !== String(userId)) {
+  if (String(req.post.authorId) !== String(req.user.sub)) {
     res.status(401).json({ message: 'The user does not own the post!' });
     return;
   }
