@@ -101,7 +101,7 @@ const View = ({ postId, accessToken, data, tree }) => {
 
     setReplyingTo(() => ({ id: replyToId, isPost: isPost }));
     setShouldShowInput(() => true);
-    console.log(replyingTo);
+    // console.log(replyingTo);
   };
 
   const confirmCreate = async () => {

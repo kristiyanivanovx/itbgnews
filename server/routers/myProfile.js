@@ -1,22 +1,26 @@
-const router = require('express').Router();
-const multer = require('multer');
-const allowedExtensions = ["image/gif" ,  "image/jpg" , "image/png" , "image/jpeg"]
-const upload = multer({
-  dest: 'uploads/' ,
-  fileFilter : function (req, file, cb) {
-    if (!allowedExtensions.includes(file.mimetype)) {
-      req.errorMessage = `${file.mimetype.split("/")[1]} is not allowed mimetype`
-      return cb(null , false)
-    }
-    cb(null, true);
-  }
-});
 const { verifyToken } = require('../middlewares/authMiddleware');
 const { cloudinary } = require(`../config/cloudinaryConfig`);
 const fs = require('fs');
 const { promisify } = require('util');
 const { log } = require('nodemon/lib/utils');
 const unlinkAsync = promisify(fs.unlink);
+
+const router = require('express').Router();
+const multer = require('multer');
+const allowedExtensions = ['image/gif', 'image/jpg', 'image/png', 'image/jpeg'];
+
+const upload = multer({
+  dest: 'uploads/',
+  fileFilter: function (req, file, cb) {
+    if (!allowedExtensions.includes(file.mimetype)) {
+      // req.errorMessage = `${file.mimetype.split('/')[1]} is not allowed mimetype`;
+
+      req.errorMessage = 'Error: this mimetype is not allowed.';
+      return cb(null, false);
+    }
+    cb(null, true);
+  },
+});
 
 router.get('/image/:userId', async (req, res) => {
   const userId = req.params.userId;
@@ -42,11 +46,13 @@ router.get('/image/:userId', async (req, res) => {
 router.post('/image', verifyToken, upload.single('image'), async (req, res) => {
   const userId = req.user.sub;
   const file = req.file;
-  if (req.errorMessage){
+
+  if (req.errorMessage) {
     return res.status(405).json({
-      message : req.errorMessage
-    })
+      message: req.errorMessage,
+    });
   }
+
   const uploadResponse = await cloudinary.uploader
     .upload(file.path, {
       public_id: userId,

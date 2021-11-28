@@ -31,10 +31,10 @@ const Forgotten = () => {
       email,
     });
 
-    await checkResponse(result);
+    checkResponse(result);
   };
 
-  const checkResponse = async (result) => {
+  const checkResponse = (result) => {
     if (result.errorEmail === INVALID_EMAIL_ERROR) {
       setError(() => 'Имейлът ви е невалиден.');
     } else if (result.errorUser === NO_USER_FOUND_ERROR) {

@@ -24,6 +24,7 @@ const CustomImage = ({ image, accessToken }) => {
 
   const onSubmit = async (ev) => {
     ev.preventDefault();
+
     const files = inputFile.current.files;
     if (files.length === 0) {
       inputFile.current.click();
@@ -43,9 +44,12 @@ const CustomImage = ({ image, accessToken }) => {
         authorization: `Bearer ${await ensureValidCookie(accessToken)}`,
       },
     });
+
     if (response.status === 405) {
-      let { message } = await response.json();
-      setErrorText(() => message);
+      // let { message } = await response.json();
+      // setErrorText(() => message);
+
+      setErrorText(() => 'Каченият от вас файл не е снимка.');
       setShouldDisplay(true);
     }
     if (response.status === 200) {

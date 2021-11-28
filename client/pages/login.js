@@ -50,13 +50,6 @@ const Login = () => {
     } else if (auth.error === INCORRECT_PASSWORD_ERROR) {
       setModalMessage(() => 'Грешна парола.');
       toggleModal();
-      /*
-    } else {
-      console.log('result.data');
-      console.log(result);
-      const { accessToken } = result.data;
-      await renewCookie(accessToken);
-*/
     } else if (auth.accessToken) {
       setModalMessage(() => 'Влязохте успешно.');
       toggleModal();
